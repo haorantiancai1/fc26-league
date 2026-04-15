@@ -1292,50 +1292,75 @@ function sfxWhistle() {
   } catch(e) {}
 }
 
-// Foul whistle - short sharp referee whistle
-function sfxFoulWhistle() {
+// Long referee whistle - for kickoff, halftime and fulltime
+function sfxWhistle() {
   try {
     var ctx = _getAudioCtx();
-    // Quick two-tone whistle
-    var o1 = ctx.createOscillator(); o1.type = 'sine'; o1.frequency.value = 3500;
+    // First long blast (0.8s)
+    var o1 = ctx.createOscillator(); o1.type = 'sine'; o1.frequency.value = 3100;
     var g1 = ctx.createGain();
-    g1.gain.setValueAtTime(0.3, ctx.currentTime);
-    g1.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+    g1.gain.setValueAtTime(0, ctx.currentTime);
+    g1.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.05);
+    g1.gain.setValueAtTime(0.3, ctx.currentTime + 0.6);
+    g1.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.9);
     o1.connect(g1); g1.connect(ctx.destination);
-    o1.start(); o1.stop(ctx.currentTime + 0.25);
+    o1.start(); o1.stop(ctx.currentTime + 1.0);
+    // Second long blast (0.7s) after brief pause
     setTimeout(function() {
-      var o2 = ctx.createOscillator(); o2.type = 'sine'; o2.frequency.value = 3800;
+      var o2 = ctx.createOscillator(); o2.type = 'sine'; o2.frequency.value = 3300;
       var g2 = ctx.createGain();
-      g2.gain.setValueAtTime(0.25, ctx.currentTime);
-      g2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+      g2.gain.setValueAtTime(0, ctx.currentTime);
+      g2.gain.linearRampToValueAtTime(0.28, ctx.currentTime + 0.04);
+      g2.gain.setValueAtTime(0.28, ctx.currentTime + 0.5);
+      g2.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.75);
       o2.connect(g2); g2.connect(ctx.destination);
-      o2.start(); o2.stop(ctx.currentTime + 0.2);
-    }, 80);
-    // Brief crowd groan
-    if(_matchNoiseGain) _matchNoiseGain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + 0.05);
-    setTimeout(function() { if(_matchNoiseGain) _matchNoiseGain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.3); }, 400);
+      o2.start(); o2.stop(ctx.currentTime + 0.8);
+    }, 1000);
+    // Third blast (0.6s) for fulltime emphasis
+    setTimeout(function() {
+      var o3 = ctx.createOscillator(); o3.type = 'sine'; o3.frequency.value = 3500;
+      var g3 = ctx.createGain();
+      g3.gain.setValueAtTime(0, ctx.currentTime);
+      g3.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 0.04);
+      g3.gain.setValueAtTime(0.25, ctx.currentTime + 0.4);
+      g3.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 0.65);
+      o3.connect(g3); g3.connect(ctx.destination);
+      o3.start(); o3.stop(ctx.currentTime + 0.7);
+    }, 1900);
   } catch(e) {}
 }
 
-// Card sound - sharp warning tone (yellow/red)
-function sfxCard() {
+// Card sound - short beep for yellow, longer harsh buzz for red
+function sfxCard(isRed) {
   try {
     var ctx = _getAudioCtx();
-    // Yellow = two short beeps, Red = longer buzz
-    var o = ctx.createOscillator(); o.type = 'square'; o.frequency.value = 880;
-    var g = ctx.createGain();
-    g.gain.setValueAtTime(0.18, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-    o.connect(g); g.connect(ctx.destination);
-    o.start(); o.stop(ctx.currentTime + 0.15);
-    setTimeout(function() {
-      var o2 = ctx.createOscillator(); o2.type = 'square'; o2.frequency.value = 660;
-      var g2 = ctx.createGain();
-      g2.gain.setValueAtTime(0.15, ctx.currentTime);
-      g2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.12);
-      o2.connect(g2); g2.connect(ctx.destination);
-      o2.start(); o2.stop(ctx.currentTime + 0.15);
-    }, 100);
+    if(isRed) {
+      // Red: long harsh buzz
+      var o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = 220;
+      var g = ctx.createGain();
+      g.gain.setValueAtTime(0.2, ctx.currentTime);
+      g.gain.setValueAtTime(0.2, ctx.currentTime + 0.3);
+      g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+      var f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 600;
+      o.connect(f); f.connect(g); g.connect(ctx.destination);
+      o.start(); o.stop(ctx.currentTime + 0.7);
+    } else {
+      // Yellow: two quick short beeps
+      var o1 = ctx.createOscillator(); o1.type = 'square'; o1.frequency.value = 900;
+      var g1 = ctx.createGain();
+      g1.gain.setValueAtTime(0.15, ctx.currentTime);
+      g1.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+      o1.connect(g1); g1.connect(ctx.destination);
+      o1.start(); o1.stop(ctx.currentTime + 0.1);
+      setTimeout(function() {
+        var o2 = ctx.createOscillator(); o2.type = 'square'; o2.frequency.value = 700;
+        var g2 = ctx.createGain();
+        g2.gain.setValueAtTime(0.12, ctx.currentTime);
+        g2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+        o2.connect(g2); g2.connect(ctx.destination);
+        o2.start(); o2.stop(ctx.currentTime + 0.1);
+      }, 120);
+    }
   } catch(e) {}
 }
 
