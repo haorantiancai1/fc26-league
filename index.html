@@ -11932,8 +11932,8 @@ function simulateMatch() {
         sfxCrowdGoal();
       }
       if(e.type === 'foul') sfxFoulWhistle();
-      if(e.type === 'yellow') sfxCard();
-      if(e.type === 'red') { sfxFoulWhistle(); setTimeout(function(){ sfxCard(); }, 150); }
+      if(e.type === 'yellow') sfxCard(false);
+      if(e.type === 'red') { sfxFoulWhistle(); setTimeout(function(){ sfxCard(true); }, 150); }
 
       eventIdx++;
     }
