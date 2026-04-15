@@ -1241,12 +1241,15 @@ function sfxBGMStart() {
 }
 function sfxBGMStop() {
   try {
-    if(!_matchBGMAudio) return;
+    if(_matchBGMAudio) { _matchBGMAudio.pause(); }
     var fadeOut = setInterval(function() {
       if(!_matchBGMAudio) { clearInterval(fadeOut); return; }
       _matchBGMAudio.volume = Math.max(0, _matchBGMAudio.volume - 0.03);
-      if(_matchBGMAudio.volume <= 0) { clearInterval(fadeOut); _matchBGMAudio.pause(); _matchBGMAudio = null; }
-    }, 100);
+      if(_matchBGMAudio.volume <= 0) { clearInterval(fadeOut); _matchBGMAudio.pause(); _matchBGMAudio.currentTime = 0; _matchBGMAudio = null; }
+    }, 50);
+    setTimeout(function() {
+      if(_matchBGMAudio) { _matchBGMAudio.pause(); _matchBGMAudio.currentTime = 0; _matchBGMAudio = null; }
+    }, 2000);
   } catch(e) {}
 }
 
