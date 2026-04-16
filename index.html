@@ -1184,7 +1184,9 @@ let _fbRef = null; // modular ref helper
 // Firebase read/write helpers using modular API
 function _fbSave(path, data) {
   if(!_fbRef) return;
-  _fbRef(dbRef, path).set(data).catch(function(e) { console.error('FB write error:', e); });
+  _fbRef(dbRef, path).set(data).then(function() {
+    console.log('FB saved:', path);
+  }).catch(function(e) { console.error('FB write error:', e); });
 }
 function _fbListen(path, cb) {
   if(!_fbRef) return;
@@ -12059,6 +12061,7 @@ function initFirebaseSync() {
 
   // Listen for pendingOps changes (most critical - real-time notifications)
   _fbListen('pendingOps', function(data) {
+    console.log('FB listen pendingOps fired, data:', JSON.stringify(data));
     if(data && JSON.stringify(data) !== JSON.stringify(state.pendingOps)) {
       state.pendingOps = data;
       localStorage.setItem('fc26_pendingOps', JSON.stringify(data));
