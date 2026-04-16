@@ -757,6 +757,26 @@ tbody td {
 </style>
 <script src="firebase-sdk/firebase-app-compat.js"></script>
 <script src="firebase-sdk/firebase-database-compat.js"></script>
+<script>
+/* === 自动更新检测（独立模块，不影响任何现有功能） === */
+(function(){
+  var _cv = '18'; // 当前版本号，每次发版时更新
+  try {
+    fetch('version.txt?t=' + Date.now())
+      .then(function(r){ return r.text(); })
+      .then(function(v){
+        if(v && v.trim() !== _cv){
+          var _b = document.createElement('div');
+          _b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:999999;background:#00e676;color:#000;text-align:center;padding:10px 16px;font-size:15px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;';
+          _b.textContent = '📦 发现新版本！点击此处刷新页面';
+          _b.onclick = function(){ location.reload(); };
+          document.body.appendChild(_b);
+        }
+      })
+      .catch(function(){});
+  } catch(e){}
+})();
+</script>
 </head>
 <body>
 <header class="header">
