@@ -1203,9 +1203,13 @@ _loadScript('firebase-sdk/firebase-app-compat.js')
   .then(function() {
     firebase.initializeApp(firebaseConfig);
     dbRef = firebase.database();
-    console.log('Firebase SDK loaded & initialized successfully, dbRef type:', typeof dbRef.child);
+    console.log('Firebase SDK loaded, firebase keys:', Object.keys(firebase));
+    console.log('firebase.database type:', typeof firebase.database);
+    console.log('dbRef:', dbRef);
+    console.log('dbRef.child type:', dbRef ? typeof dbRef.child : 'N/A');
     // Start sync after SDK is ready
-    if(typeof initFirebaseSync === 'function') initFirebaseSync();
+    if(typeof initFirebaseSync === 'function' && dbRef && typeof dbRef.child === 'function') initFirebaseSync();
+    else console.error('Firebase database init failed! dbRef is not a valid reference');
   })
   .catch(function(err) {
     console.error('Firebase SDK failed to load:', err);
@@ -10697,7 +10701,7 @@ function saveState() {
 
 // ===== LOGIN =====
 // Auto-migrate: clear old data if version changed
-const APP_VERSION = 'v19c-firebase-local'; // 2026-04-16: Firebase SDK本地部署
+const APP_VERSION = 'v19d-firebase-debug'; // 2026-04-16: Firebase诊断
 if(localStorage.getItem('fc26_version') !== APP_VERSION) {
   localStorage.removeItem('fc26_budgets');
   localStorage.removeItem('fc26_bteams');
