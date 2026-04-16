@@ -10685,6 +10685,7 @@ let state = {
   awards: JSON.parse(localStorage.getItem('fc26_awards') || 'null') || [],
   pendingOps: JSON.parse(localStorage.getItem('fc26_pendingOps') || 'null') || [],
   playerMoves: JSON.parse(localStorage.getItem('fc26_playerMoves') || 'null') || [],
+  playerUpgrades: JSON.parse(localStorage.getItem('fc26_playerUpgrades') || 'null') || [],
 };
 
 function saveState() {
@@ -10693,12 +10694,14 @@ function saveState() {
   localStorage.setItem('fc26_awards', JSON.stringify(state.awards));
   localStorage.setItem('fc26_pendingOps', JSON.stringify(state.pendingOps));
   localStorage.setItem('fc26_playerMoves', JSON.stringify(state.playerMoves));
+  localStorage.setItem('fc26_playerUpgrades', JSON.stringify(state.playerUpgrades));
   // Sync to Firebase (shared across all users)
   _fbSave('budgets', state.budgets);
   _fbSave('bteams', state.bteams);
   _fbSave('awards', state.awards);
   _fbSave('pendingOps', state.pendingOps);
   _fbSave('playerMoves', state.playerMoves);
+  _fbSave('playerUpgrades', state.playerUpgrades);
 }
 
 // ===== LOGIN =====
@@ -12061,6 +12064,7 @@ function initFirebaseSync() {
       _fbSave('awards', state.awards);
       _fbSave('pendingOps', state.pendingOps);
       _fbSave('playerMoves', state.playerMoves);
+      _fbSave('playerUpgrades', state.playerUpgrades);
     }
   });
 
@@ -12162,6 +12166,37 @@ function initFirebaseSync() {
     }
   });
 
+  // Listen for playerUpgrades changes and apply them to TEAMS_DATA
+  _fbListen('playerUpgrades', function(data) {
+    if(!data) return;
+    if(!Array.isArray(data)) { data = Object.values(data); }
+    console.log('FB sync: playerUpgrades received, count=' + data.length);
+    var localCount = state.playerUpgrades.length;
+    if(data.length > localCount) {
+      for(var i = localCount; i < data.length; i++) {
+        var u = data[i];
+        // Find player and apply upgrade
+        TEAMS_DATA.forEach(function(t) {
+          t.players.forEach(function(p) {
+            if(p.name === u.name) {
+              if(u.type === 'ovr') {
+                p.overall = u.new_overall;
+                p.sell_price = u.new_sell_price;
+                p.market_price = u.new_market_price;
+              } else if(u.type === 'pot') {
+                p.potential_bump = u.new_potential_bump;
+              }
+            }
+          });
+        });
+      }
+      state.playerUpgrades = data;
+      localStorage.setItem('fc26_playerUpgrades', JSON.stringify(data));
+      filterPlayers();
+      console.log('FB sync: applied ' + (data.length - localCount) + ' player upgrades');
+    }
+  });
+
   console.log('Firebase sync ready!');
 
   // Auto-poll Firebase every 30s as fallback (mobile may miss .on() events)
@@ -12236,6 +12271,33 @@ function initFirebaseSync() {
         filterPlayers();
       }
     });
+    _fbRef(dbRef, 'playerUpgrades').once('value', function(snap) {
+      var data = snap.val();
+      if(data) {
+        if(!Array.isArray(data)) { data = Object.values(data); }
+        if(data.length > state.playerUpgrades.length) {
+          for(var i = state.playerUpgrades.length; i < data.length; i++) {
+            var u = data[i];
+            TEAMS_DATA.forEach(function(t) {
+              t.players.forEach(function(p) {
+                if(p.name === u.name) {
+                  if(u.type === 'ovr') {
+                    p.overall = u.new_overall;
+                    p.sell_price = u.new_sell_price;
+                    p.market_price = u.new_market_price;
+                  } else if(u.type === 'pot') {
+                    p.potential_bump = u.new_potential_bump;
+                  }
+                }
+              });
+            });
+          }
+          state.playerUpgrades = data;
+          localStorage.setItem('fc26_playerUpgrades', JSON.stringify(data));
+          filterPlayers();
+        }
+      }
+    });
   }, 30000);
 }
 
@@ -12254,7 +12316,7 @@ window.fbForceSync = function() {
   if(!_fbRef) { alert('Firebase 未连接，请刷新页面重试'); return; }
   console.log('Manual FB sync triggered, _fbRef exists:', !!_fbRef);
   var synced = 0;
-  var total = 4;
+  var total = 5;
   function checkDone() {
     synced++;
     if(synced >= total) {
@@ -12357,6 +12419,44 @@ window.fbForceSync = function() {
     console.error('FB forceSync playerMoves error:', e);
     checkDone();
   }
+
+  try {
+    _fbRef(dbRef, 'playerUpgrades').once('value', function(snap) {
+      console.log('FB forceSync: playerUpgrades callback fired');
+      var data = snap.val();
+      if(data) {
+        if(!Array.isArray(data)) { data = Object.values(data); }
+        var localCount = state.playerUpgrades.length;
+        if(data.length > localCount) {
+          for(var i = localCount; i < data.length; i++) {
+            var u = data[i];
+            TEAMS_DATA.forEach(function(t) {
+              t.players.forEach(function(p) {
+                if(p.name === u.name) {
+                  if(u.type === 'ovr') {
+                    p.overall = u.new_overall;
+                    p.sell_price = u.new_sell_price;
+                    p.market_price = u.new_market_price;
+                  } else if(u.type === 'pot') {
+                    p.potential_bump = u.new_potential_bump;
+                  }
+                }
+              });
+            });
+          }
+          state.playerUpgrades = data;
+          localStorage.setItem('fc26_playerUpgrades', JSON.stringify(data));
+          filterPlayers();
+        }
+      }
+      checkDone();
+    });
+  } catch(e) {
+    console.error('FB forceSync playerUpgrades error:', e);
+    checkDone();
+  }
+
+
 
 
   // Timeout: if no callback in 5s, show error
@@ -13898,6 +13998,16 @@ function doPlayerUpgrade(playerIdx, team, type) {
     for(var i = 0; i < qty; i++) p.potential_bump += '+1';
   }
   
+  // Record upgrade for Firebase sync
+  state.playerUpgrades.push({
+    name: p.name, position: p.position,
+    type: type, qty: qty,
+    new_overall: p.overall,
+    new_sell_price: p.sell_price,
+    new_market_price: p.market_price,
+    new_potential_bump: p.potential_bump || ''
+  });
+  
   // Record in log
   var op = {
     type: 'upgrade', team: team,
@@ -14268,6 +14378,16 @@ function adminSetOverall(team, playerKey) {
   });
 
   if(playerName) {
+    // Record upgrade for Firebase sync
+    state.playerUpgrades.push({
+      name: playerName, position: '',
+      type: 'ovr', qty: newOvr - oldOvr,
+      new_overall: newOvr,
+      new_sell_price: calcSellPrice(newOvr),
+      new_market_price: calcMarketPrice(newOvr),
+      new_potential_bump: ''
+    });
+    saveState();
     alert(`✅ ${playerName} 能力值已修改为 ${newOvr}`);
     adminSearchPlayer(); // refresh
   }
