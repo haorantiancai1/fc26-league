@@ -760,7 +760,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '27'; // 当前版本号，每次发版时更新
+  var _cv = '28'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
@@ -10797,6 +10797,7 @@ function doLogin() {
   else document.querySelector('.nav button').click();
   // 登录后主动从Firebase同步一次所有数据（不依赖WebSocket实时推送）
   _fbPullOnLogin();
+  alert('[v27] 登录同步已触发，请稍候...');
 }
 
 // 登录后主动拉取Firebase数据并replay
@@ -10816,6 +10817,10 @@ function _fbPullOnLogin() {
       updatePendingBadge();
       if(typeof loadTacticsTeam === 'function') loadTacticsTeam();
       if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); }
+      // 找到王钰栋确认OVR
+      var _wyd = null;
+      TEAMS_DATA.forEach(function(t){ t.players.forEach(function(p){ if(p.name === '\u738b\u94b0\u680b') _wyd = p; }); });
+      alert('[v27] \u540c\u6b65\u5b8c\u6210\uff01\u738b\u94b0\u680bOVR=' + (_wyd ? _wyd.overall : '\u672a\u627e\u5230'));
     }
   }
   paths.forEach(function(path) {
