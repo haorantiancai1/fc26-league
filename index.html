@@ -755,8 +755,6 @@ tbody td {
   .pitch-slot { width: 40px; height: 40px; font-size: 20px; }
 }
 </style>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
 <header class="header">
@@ -1168,7 +1166,7 @@ tbody td {
   </div>
 </div>
 <script>
-// ===== FIREBASE INIT =====
+// ===== FIREBASE INIT (dynamic loading) =====
 const firebaseConfig = {
   apiKey: "AIzaSyAvsb1AAF5RffIycA82ai5yWj-Qdzu2Bfo",
   authDomain: "fc26-league-47ef8.firebaseapp.com",
@@ -1178,16 +1176,41 @@ const firebaseConfig = {
   messagingSenderId: "1054047306704",
   appId: "1:1054047306704:web:b74c29a7459b96ca7cefd5"
 };
-firebase.initializeApp(firebaseConfig);
-const dbRef = firebase.database();
+let dbRef = null;
 
-// Firebase read/write helpers
+function _loadScript(url) {
+  return new Promise(function(resolve, reject) {
+    var s = document.createElement('script');
+    s.src = url;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
 function _fbSave(path, data) {
+  if(!dbRef) return;
   dbRef.child(path).set(data).catch(function(e) { console.error('FB write error:', e); });
 }
 function _fbListen(path, cb) {
+  if(!dbRef) return;
   dbRef.child(path).on('value', function(snap) { cb(snap.val()); });
 }
+
+// Dynamically load Firebase SDK, then initialize
+_loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js')
+  .then(function() { return _loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js'); })
+  .then(function() {
+    firebase.initializeApp(firebaseConfig);
+    dbRef = firebase.database();
+    console.log('Firebase SDK loaded & initialized successfully, dbRef type:', typeof dbRef.child);
+    // Start sync after SDK is ready
+    if(typeof initFirebaseSync === 'function') initFirebaseSync();
+  })
+  .catch(function(err) {
+    console.error('Firebase SDK failed to load:', err);
+    console.warn('Firebase sync is DISABLED - check network/proxy for gstatic.com');
+  });
 
 // ===== SOUND EFFECTS =====
 let _audioCtx = null;
@@ -10674,7 +10697,7 @@ function saveState() {
 
 // ===== LOGIN =====
 // Auto-migrate: clear old data if version changed
-const APP_VERSION = 'v19-firebase'; // 2026-04-16: Firebase实时同步
+const APP_VERSION = 'v19b-firebase-dynload'; // 2026-04-16: Firebase动态加载SDK
 if(localStorage.getItem('fc26_version') !== APP_VERSION) {
   localStorage.removeItem('fc26_budgets');
   localStorage.removeItem('fc26_bteams');
@@ -12017,6 +12040,10 @@ let _fbSyncReady = false;
 function initFirebaseSync() {
   if(_fbSyncReady) return;
   _fbSyncReady = true;
+  if(!dbRef || typeof dbRef.child !== 'function') {
+    console.warn('Firebase dbRef not available, sync disabled');
+    return;
+  }
   console.log('Firebase sync started...');
 
   // On first load, seed Firebase with local data if Firebase is empty
@@ -13813,8 +13840,11 @@ document.addEventListener('DOMContentLoaded', () => {
   renderSettlement();
   renderPendingOps();
   updatePendingBadge();
-  // Firebase real-time sync
-  initFirebaseSync();
+  // Firebase real-time sync - will be triggered after SDK loads dynamically
+  // (fallback: if DOMContentLoaded fires after SDK, call now)
+  if(typeof initFirebaseSync === 'function' && dbRef && typeof dbRef.child === 'function') {
+    initFirebaseSync();
+  }
 });
 
 // ===== ADMIN PANEL =====
