@@ -755,6 +755,8 @@ tbody td {
   .pitch-slot { width: 40px; height: 40px; font-size: 20px; }
 }
 </style>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body>
 <header class="header">
@@ -1166,6 +1168,27 @@ tbody td {
   </div>
 </div>
 <script>
+// ===== FIREBASE INIT =====
+const firebaseConfig = {
+  apiKey: "AIzaSyAvsb1AAF5RffIycA82ai5yWj-Qdzu2Bfo",
+  authDomain: "fc26-league-47ef8.firebaseapp.com",
+  databaseURL: "https://fc26-league-47ef8-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "fc26-league-47ef8",
+  storageBucket: "fc26-league-47ef8.firebasestorage.app",
+  messagingSenderId: "1054047306704",
+  appId: "1:1054047306704:web:b74c29a7459b96ca7cefd5"
+};
+firebase.initializeApp(firebaseConfig);
+const dbRef = firebase.database();
+
+// Firebase read/write helpers
+function _fbSave(path, data) {
+  dbRef.child(path).set(data).catch(function(e) { console.error('FB write error:', e); });
+}
+function _fbListen(path, cb) {
+  dbRef.child(path).on('value', function(snap) { cb(snap.val()); });
+}
+
 // ===== SOUND EFFECTS =====
 let _audioCtx = null;
 function _getAudioCtx() {
@@ -10642,11 +10665,16 @@ function saveState() {
   localStorage.setItem('fc26_bteams', JSON.stringify(state.bteams));
   localStorage.setItem('fc26_awards', JSON.stringify(state.awards));
   localStorage.setItem('fc26_pendingOps', JSON.stringify(state.pendingOps));
+  // Sync to Firebase (shared across all users)
+  _fbSave('budgets', state.budgets);
+  _fbSave('bteams', state.bteams);
+  _fbSave('awards', state.awards);
+  _fbSave('pendingOps', state.pendingOps);
 }
 
 // ===== LOGIN =====
 // Auto-migrate: clear old data if version changed
-const APP_VERSION = 'v18-reset'; // 2026-04-16: 正式上线，清除测试数据
+const APP_VERSION = 'v19-firebase'; // 2026-04-16: Firebase实时同步
 if(localStorage.getItem('fc26_version') !== APP_VERSION) {
   localStorage.removeItem('fc26_budgets');
   localStorage.removeItem('fc26_bteams');
@@ -11980,6 +12008,79 @@ function simulateMatch() {
 
   // Start!
   _matchTimer = setTimeout(advanceMatch, msPerMinute);
+}
+
+// ===== BUDGET =====
+// ===== FIREBASE REAL-TIME SYNC =====
+let _fbSyncReady = false;
+
+function initFirebaseSync() {
+  if(_fbSyncReady) return;
+  _fbSyncReady = true;
+  console.log('Firebase sync started...');
+
+  // On first load, seed Firebase with local data if Firebase is empty
+  dbRef.child('pendingOps').once('value', function(snap) {
+    if(!snap.exists() || snap.val() === null) {
+      console.log('Firebase is empty, seeding with local data...');
+      _fbSave('budgets', state.budgets);
+      _fbSave('bteams', state.bteams);
+      _fbSave('awards', state.awards);
+      _fbSave('pendingOps', state.pendingOps);
+    }
+  });
+
+  // Listen for pendingOps changes (most critical - real-time notifications)
+  _fbListen('pendingOps', function(data) {
+    if(data && JSON.stringify(data) !== JSON.stringify(state.pendingOps)) {
+      state.pendingOps = data;
+      localStorage.setItem('fc26_pendingOps', JSON.stringify(data));
+      console.log('Firebase sync: pendingOps updated, count=' + data.length);
+      renderPendingOps();
+      updatePendingBadge();
+      renderSettlement();
+      renderQuickAccount();
+      // Also refresh budget page if visible
+      if(currentUser && currentUser.team) {
+        renderBudget();
+      }
+      filterPlayers();
+    }
+  });
+
+  // Listen for budgets changes
+  _fbListen('budgets', function(data) {
+    if(data && JSON.stringify(data) !== JSON.stringify(state.budgets)) {
+      state.budgets = data;
+      localStorage.setItem('fc26_budgets', JSON.stringify(data));
+      console.log('Firebase sync: budgets updated');
+      renderBudget();
+      renderSettlement();
+      renderQuickAccount();
+    }
+  });
+
+  // Listen for awards changes
+  _fbListen('awards', function(data) {
+    if(data && JSON.stringify(data) !== JSON.stringify(state.awards)) {
+      state.awards = data;
+      localStorage.setItem('fc26_awards', JSON.stringify(data));
+      console.log('Firebase sync: awards updated');
+      initAwards();
+    }
+  });
+
+  // Listen for bteams changes
+  _fbListen('bteams', function(data) {
+    if(data && JSON.stringify(data) !== JSON.stringify(state.bteams)) {
+      state.bteams = data;
+      localStorage.setItem('fc26_bteams', JSON.stringify(data));
+      console.log('Firebase sync: bteams updated');
+      initBteam();
+    }
+  });
+
+  console.log('Firebase sync ready!');
 }
 
 // ===== BUDGET =====
@@ -13712,6 +13813,8 @@ document.addEventListener('DOMContentLoaded', () => {
   renderSettlement();
   renderPendingOps();
   updatePendingBadge();
+  // Firebase real-time sync
+  initFirebaseSync();
 });
 
 // ===== ADMIN PANEL =====
