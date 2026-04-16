@@ -10874,6 +10874,8 @@ function showPage(id) {
   const pageNames = {db:'球员库',tactics:'战术板',match:'模拟',budget:'球队管理',awards:'奖项',bteam:'B队',standings:'积分榜',settle:'结算',admin:'管理员'};
   dnavBtns.forEach(b => { if(b.textContent.includes(pageNames[id]||'')) b.classList.add('active'); });
   if(id === 'db') { renderQuickAccount(); filterPlayers(); }
+  if(id === 'tactics') { if(typeof loadTacticsTeam === 'function') loadTacticsTeam(); }
+  if(id === 'match') { if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); } }
   if(id === 'budget') { renderBudget(); }
   if(id === 'bteam') { renderBteam(); }
   if(id === 'settle') { renderSettlement(); renderPendingOps(); }
@@ -12171,6 +12173,9 @@ function initFirebaseSync() {
         filterPlayers();
         renderBteam();
         renderQuickAccount();
+        // 刷新战术板和模拟比赛的球员缓存（转会后数据可能已变化）
+        if(typeof loadTacticsTeam === 'function') loadTacticsTeam();
+        if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); }
         _needsMovesReplay = false;
         console.log('FB sync: full replay done');
       }
@@ -12208,6 +12213,9 @@ function initFirebaseSync() {
         localStorage.setItem('fc26_playerUpgrades', JSON.stringify(data));
         filterPlayers();
         renderQuickAccount();
+        // 刷新战术板和模拟比赛（能力值变更后需要更新）
+        if(typeof loadTacticsTeam === 'function') loadTacticsTeam();
+        if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); }
         console.log('FB sync: full upgrade replay done');
       }
     }
