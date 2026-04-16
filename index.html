@@ -12191,54 +12191,88 @@ var _requiredBudgetKeys = ['balance','initialPoints','pendingOps','tradeUsed','b
 
 // Manual sync from Firebase (callable from UI)
 window.fbForceSync = function() {
-  if(!_fbRef) { alert('Firebase 未连接'); return; }
-  console.log('Manual FB sync triggered');
-  _fbRef(dbRef, 'pendingOps').once('value', function(snap) {
-    var data = snap.val();
-    if(data && JSON.stringify(data) !== JSON.stringify(state.pendingOps)) {
-      state.pendingOps = data;
-      localStorage.setItem('fc26_pendingOps', JSON.stringify(data));
+  if(!_fbRef) { alert('Firebase 未连接，请刷新页面重试'); return; }
+  console.log('Manual FB sync triggered, _fbRef exists:', !!_fbRef);
+  var synced = 0;
+  var total = 3;
+  function checkDone() {
+    synced++;
+    if(synced >= total) {
+      alert('✅ 同步完成！');
+    }
+  }
+
+  try {
+    var ref = _fbRef(dbRef, 'pendingOps');
+    console.log('pendingOps ref created:', ref, 'typeof ref.once:', typeof ref.once);
+    ref.once('value', function(snap) {
+      console.log('FB forceSync: pendingOps callback fired, exists:', snap.exists(), 'val:', JSON.stringify(snap.val()));
+      var data = snap.val();
+      state.pendingOps = data || [];
+      localStorage.setItem('fc26_pendingOps', JSON.stringify(state.pendingOps));
       renderPendingOps(); updatePendingBadge(); renderSettlement(); renderQuickAccount();
       if(currentUser && currentUser.team) renderBudget();
       filterPlayers();
-    }
-  });
-  _fbRef(dbRef, 'budgets').once('value', function(snap) {
-    var data = snap.val();
-    if(data) {
-      for(var team in data) {
-        if(data[team]) {
-          for(var i = 0; i < _requiredBudgetKeys.length; i++) {
-            if(data[team][_requiredBudgetKeys[i]] === undefined) {
-              data[team][_requiredBudgetKeys[i]] = _requiredBudgetKeys[i] === 'log' ? [] : (_requiredBudgetKeys[i] === 'pendingOps' ? [] : 0);
+      checkDone();
+    });
+  } catch(e) {
+    console.error('FB forceSync pendingOps error:', e);
+    checkDone();
+  }
+
+  try {
+    _fbRef(dbRef, 'budgets').once('value', function(snap) {
+      console.log('FB forceSync: budgets callback fired');
+      var data = snap.val();
+      if(data) {
+        for(var team in data) {
+          if(data[team]) {
+            for(var i = 0; i < _requiredBudgetKeys.length; i++) {
+              if(data[team][_requiredBudgetKeys[i]] === undefined) {
+                data[team][_requiredBudgetKeys[i]] = _requiredBudgetKeys[i] === 'log' ? [] : (_requiredBudgetKeys[i] === 'pendingOps' ? [] : 0);
+              }
             }
           }
         }
-      }
-      if(JSON.stringify(data) !== JSON.stringify(state.budgets)) {
         state.budgets = data;
         localStorage.setItem('fc26_budgets', JSON.stringify(data));
         renderBudget(); renderSettlement(); renderQuickAccount();
       }
-    }
-  });
-  _fbRef(dbRef, 'bteams').once('value', function(snap) {
-    var data = snap.val();
-    if(data) {
-      for(var team in data) {
-        if(data[team]) {
-          if(!data[team].demoted) data[team].demoted = [];
-          if(data[team].name === undefined) data[team].name = '';
+      checkDone();
+    });
+  } catch(e) {
+    console.error('FB forceSync budgets error:', e);
+    checkDone();
+  }
+
+  try {
+    _fbRef(dbRef, 'bteams').once('value', function(snap) {
+      console.log('FB forceSync: bteams callback fired');
+      var data = snap.val();
+      if(data) {
+        for(var team in data) {
+          if(data[team]) {
+            if(!data[team].demoted) data[team].demoted = [];
+            if(data[team].name === undefined) data[team].name = '';
+          }
         }
-      }
-      if(JSON.stringify(data) !== JSON.stringify(state.bteams)) {
         state.bteams = data;
         localStorage.setItem('fc26_bteams', JSON.stringify(data));
         initBteam();
       }
+      checkDone();
+    });
+  } catch(e) {
+    console.error('FB forceSync bteams error:', e);
+    checkDone();
+  }
+
+  // Timeout: if no callback in 5s, show error
+  setTimeout(function() {
+    if(synced < total) {
+      alert('⚠️ 同步超时，Firebase 可能未连接。请检查网络后刷新页面。');
     }
-  });
-  alert('正在从云端同步数据...请稍等');
+  }, 5000);
 };
 
 // ===== BUDGET =====
