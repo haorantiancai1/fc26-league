@@ -1200,20 +1200,25 @@ var _root = null;
 try {
   if(dbRef._delegate && dbRef._delegate._root) {
     _root = dbRef._delegate._root;
-    console.log('Found _root, type:', typeof _root, 'child type:', typeof _root.child);
-    console.log('_root constructor name:', _root.constructor ? _root.constructor.name : 'N/A');
-    // Try to call child to see if it works
-    var _testRef = _root.child('test');
-    console.log('child() works! _testRef:', typeof _testRef, _testRef ? _testRef.constructor.name : 'N/A');
-    _fbRef = function(db, path) { return db._delegate._root.child(path); };
+    console.log('Found _root, constructor:', _root.constructor.name);
+    console.log('_root own keys:', Object.getOwnPropertyNames(_root));
+    console.log('_root prototype keys:', Object.getOwnPropertyNames(Object.getPrototypeOf(_root)));
+    // Check if child is on prototype
+    var _proto = Object.getPrototypeOf(_root);
+    console.log('child in proto?', 'child' in _root);
+    console.log('typeof _root.child:', typeof _root.child);
+    // Try ref() method
+    console.log('typeof _root.ref:', typeof _root.ref);
+    // Try all function properties
+    var _funcs = [];
+    for(var k in _root) { if(typeof _root[k] === 'function') _funcs.push(k); }
+    console.log('_root functions:', _funcs.join(', '));
+    _funcs = [];
+    for(var k in _proto) { if(typeof _proto[k] === 'function') _funcs.push(k); }
+    console.log('_root proto functions:', _funcs.join(', '));
   }
 } catch(e) {
-  console.error('_root.child test failed:', e);
-}
-
-if(!_fbRef && typeof dbRef.child === 'function') {
-  _fbRef = function(db, path) { return db.child(path); };
-  console.log('Fallback: using dbRef.child');
+  console.error('_root diagnosis failed:', e);
 }
 
 if(!_fbRef) {
