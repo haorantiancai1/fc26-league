@@ -12078,6 +12078,17 @@ function initFirebaseSync() {
   // Listen for budgets changes
   _fbListen('budgets', function(data) {
     if(data && JSON.stringify(data) !== JSON.stringify(state.budgets)) {
+      // Ensure every team budget has all required fields (Firebase may lack some)
+      var requiredKeys = ['balance','initialPoints','pendingOps','tradeUsed','bteamUsed','log'];
+      for(var team in data) {
+        if(data[team]) {
+          for(var i = 0; i < requiredKeys.length; i++) {
+            if(data[team][requiredKeys[i]] === undefined) {
+              data[team][requiredKeys[i]] = requiredKeys[i] === 'log' ? [] : (requiredKeys[i] === 'pendingOps' ? [] : 0);
+            }
+          }
+        }
+      }
       state.budgets = data;
       localStorage.setItem('fc26_budgets', JSON.stringify(data));
       console.log('Firebase sync: budgets updated');
@@ -13511,6 +13522,7 @@ function executePendingOp(op) {
     logAction = logAction + ' — ' + op.player_name;
   }
   
+  if(!b.log) b.log = [];
   b.log.unshift({
     action: logAction,
     pts: op.pts,
