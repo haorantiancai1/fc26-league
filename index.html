@@ -1179,22 +1179,52 @@ const firebaseConfig = {
   appId: "1:1054047306704:web:b74c29a7459b96ca7cefd5"
 };
 let dbRef = null;
+let _fbRef = null; // modular ref helper
 
-// Firebase read/write helpers
+// Firebase read/write helpers using modular API
 function _fbSave(path, data) {
-  if(!dbRef) return;
-  dbRef.child(path).set(data).catch(function(e) { console.error('FB write error:', e); });
+  if(!_fbRef) return;
+  _fbRef(dbRef, path).set(data).catch(function(e) { console.error('FB write error:', e); });
 }
 function _fbListen(path, cb) {
-  if(!dbRef) return;
-  dbRef.child(path).on('value', function(snap) { cb(snap.val()); });
+  if(!_fbRef) return;
+  _fbRef(dbRef, path).on('value', function(snap) { cb(snap.val()); });
 }
 
 // Firebase SDK is loaded via <script> tags in <head>
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 dbRef = firebase.database();
-console.log('Firebase initialized, dbRef type:', typeof dbRef.child);
+
+// Extract ref function - compat db object wraps it differently per version
+// Try direct child first, then _delegate
+if(typeof dbRef.child === 'function') {
+  _fbRef = function(db, path) { return db.child(path); };
+} else if(dbRef._delegate && typeof dbRef._delegate.ref === 'function') {
+  _fbRef = function(db, path) { return db._delegate.ref(path); };
+  console.log('Using dbRef._delegate.ref for Firebase operations');
+} else if(typeof firebase.database.ref === 'function') {
+  _fbRef = firebase.database.ref;
+  console.log('Using firebase.database.ref for Firebase operations');
+} else {
+  // Last resort: use the internal SDK
+  try {
+    var _modSdk = firebase.database.__module_getInstance || null;
+    if(_modSdk) {
+      var _realRef = _modSdk.ref;
+      if(typeof _realRef === 'function') {
+        _fbRef = function(db, path) { return _realRef(db, path); };
+        console.log('Using module ref for Firebase operations');
+      }
+    }
+  } catch(e) {}
+}
+
+if(!_fbRef) {
+  console.error('FATAL: Could not find Firebase ref function. dbRef keys:', Object.keys(dbRef || {}));
+  if(dbRef && dbRef._delegate) console.error('_delegate keys:', Object.getOwnPropertyNames(Object.getPrototypeOf(dbRef._delegate)));
+} else {
+  console.log('Firebase initialized successfully, ref function found');
+}
 
 // ===== SOUND EFFECTS =====
 let _audioCtx = null;
@@ -10681,7 +10711,7 @@ function saveState() {
 
 // ===== LOGIN =====
 // Auto-migrate: clear old data if version changed
-const APP_VERSION = 'v19e-firebase-head'; // 2026-04-16: Firebase SDK head绝对路径
+const APP_VERSION = 'v19f-ref-fix'; // 2026-04-16: 多路径ref函数查找
 if(localStorage.getItem('fc26_version') !== APP_VERSION) {
   localStorage.removeItem('fc26_budgets');
   localStorage.removeItem('fc26_bteams');
@@ -12024,14 +12054,14 @@ let _fbSyncReady = false;
 function initFirebaseSync() {
   if(_fbSyncReady) return;
   _fbSyncReady = true;
-  if(!dbRef || typeof dbRef.child !== 'function') {
-    console.warn('Firebase dbRef not available, sync disabled');
+  if(!_fbRef) {
+    console.warn('Firebase ref function not available, sync disabled');
     return;
   }
   console.log('Firebase sync started...');
 
   // On first load, seed Firebase with local data if Firebase is empty
-  dbRef.child('pendingOps').once('value', function(snap) {
+  _fbRef(dbRef, 'pendingOps').once('value', function(snap) {
     if(!snap.exists() || snap.val() === null) {
       console.log('Firebase is empty, seeding with local data...');
       _fbSave('budgets', state.budgets);
