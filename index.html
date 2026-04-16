@@ -769,6 +769,7 @@ tbody td {
       <div class="avatar" id="user-avatar"></div>
       <span id="user-name"></span>
       <span class="logout-btn" onclick="showChangePasswordModal()" style="margin-right:10px;color:var(--text2);">密码</span>
+      <span class="logout-btn" onclick="fbForceSync()" style="margin-right:10px;color:var(--accent);">🔄 同步</span>
       <span class="logout-btn" onclick="doLogout()">退出</span>
     </div>
   </div>
@@ -12129,7 +12130,116 @@ function initFirebaseSync() {
   });
 
   console.log('Firebase sync ready!');
+
+  // Auto-poll Firebase every 30s as fallback (mobile may miss .on() events)
+  setInterval(function() {
+    if(!_fbRef) return;
+    _fbRef(dbRef, 'pendingOps').once('value', function(snap) {
+      var data = snap.val();
+      if(data && JSON.stringify(data) !== JSON.stringify(state.pendingOps)) {
+        console.log('FB poll: pendingOps changed, syncing...');
+        state.pendingOps = data;
+        localStorage.setItem('fc26_pendingOps', JSON.stringify(data));
+        renderPendingOps();
+        updatePendingBadge();
+        renderSettlement();
+        renderQuickAccount();
+        if(currentUser && currentUser.team) renderBudget();
+        filterPlayers();
+      }
+    });
+    _fbRef(dbRef, 'budgets').once('value', function(snap) {
+      var data = snap.val();
+      if(data) {
+        for(var team in data) {
+          if(data[team]) {
+            for(var i = 0; i < _requiredBudgetKeys.length; i++) {
+              if(data[team][_requiredBudgetKeys[i]] === undefined) {
+                data[team][_requiredBudgetKeys[i]] = _requiredBudgetKeys[i] === 'log' ? [] : (_requiredBudgetKeys[i] === 'pendingOps' ? [] : 0);
+              }
+            }
+          }
+        }
+        if(JSON.stringify(data) !== JSON.stringify(state.budgets)) {
+          state.budgets = data;
+          localStorage.setItem('fc26_budgets', JSON.stringify(data));
+          renderBudget(); renderSettlement(); renderQuickAccount();
+        }
+      }
+    });
+    _fbRef(dbRef, 'bteams').once('value', function(snap) {
+      var data = snap.val();
+      if(data) {
+        for(var team in data) {
+          if(data[team]) {
+            if(!data[team].demoted) data[team].demoted = [];
+            if(data[team].name === undefined) data[team].name = '';
+          }
+        }
+        if(JSON.stringify(data) !== JSON.stringify(state.bteams)) {
+          state.bteams = data;
+          localStorage.setItem('fc26_bteams', JSON.stringify(data));
+          initBteam();
+        }
+      }
+    });
+  }, 30000);
 }
+
+// Required budget keys for Firebase data normalization
+var _requiredBudgetKeys = ['balance','initialPoints','pendingOps','tradeUsed','bteamUsed','log'];
+
+// Manual sync from Firebase (callable from UI)
+window.fbForceSync = function() {
+  if(!_fbRef) { alert('Firebase 未连接'); return; }
+  console.log('Manual FB sync triggered');
+  _fbRef(dbRef, 'pendingOps').once('value', function(snap) {
+    var data = snap.val();
+    if(data && JSON.stringify(data) !== JSON.stringify(state.pendingOps)) {
+      state.pendingOps = data;
+      localStorage.setItem('fc26_pendingOps', JSON.stringify(data));
+      renderPendingOps(); updatePendingBadge(); renderSettlement(); renderQuickAccount();
+      if(currentUser && currentUser.team) renderBudget();
+      filterPlayers();
+    }
+  });
+  _fbRef(dbRef, 'budgets').once('value', function(snap) {
+    var data = snap.val();
+    if(data) {
+      for(var team in data) {
+        if(data[team]) {
+          for(var i = 0; i < _requiredBudgetKeys.length; i++) {
+            if(data[team][_requiredBudgetKeys[i]] === undefined) {
+              data[team][_requiredBudgetKeys[i]] = _requiredBudgetKeys[i] === 'log' ? [] : (_requiredBudgetKeys[i] === 'pendingOps' ? [] : 0);
+            }
+          }
+        }
+      }
+      if(JSON.stringify(data) !== JSON.stringify(state.budgets)) {
+        state.budgets = data;
+        localStorage.setItem('fc26_budgets', JSON.stringify(data));
+        renderBudget(); renderSettlement(); renderQuickAccount();
+      }
+    }
+  });
+  _fbRef(dbRef, 'bteams').once('value', function(snap) {
+    var data = snap.val();
+    if(data) {
+      for(var team in data) {
+        if(data[team]) {
+          if(!data[team].demoted) data[team].demoted = [];
+          if(data[team].name === undefined) data[team].name = '';
+        }
+      }
+      if(JSON.stringify(data) !== JSON.stringify(state.bteams)) {
+        state.bteams = data;
+        localStorage.setItem('fc26_bteams', JSON.stringify(data));
+        initBteam();
+      }
+    }
+  });
+  alert('正在从云端同步数据...请稍等');
+};
 
 // ===== BUDGET =====
 function initBudget() {
