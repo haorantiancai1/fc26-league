@@ -10920,14 +10920,14 @@ function filterPlayers() {
   // Update pending ops banner for normal players
   var banner = document.getElementById('db-pending-banner');
   if(banner && currentUser && !currentUser.isHost && currentUser.team) {
-    var myTeam = currentUser.team;
+    var _bannerTeam = currentUser.team;
     var myOps = (state.pendingOps || []).filter(function(o) {
-      return o.team === myTeam || (o.swap_with && o.swap_with === myTeam);
+      return o.team === _bannerTeam || (o.swap_with && o.swap_with === _bannerTeam);
     });
     if(myOps.length > 0) {
       var bannerHtml = '<div style="font-weight:600;color:var(--red);margin-bottom:6px;">⏳ ' + myOps.length + ' 项操作待审核</div>';
       myOps.forEach(function(o) {
-        if(o.type === 'p2p_swap' && o.team !== myTeam) {
+        if(o.type === 'p2p_swap' && o.team !== _bannerTeam) {
           var swapColor = TEAM_COLORS[o.team] || 'var(--accent)';
           var outN = (o.players_out || []).map(function(p){return p.name;}).join('、');
           var inN = (o.players_in || []).map(function(p){return p.name;}).join('、');
