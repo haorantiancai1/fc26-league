@@ -760,7 +760,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '20'; // 当前版本号，每次发版时更新
+  var _cv = '21'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
@@ -12175,18 +12175,18 @@ function initFirebaseSync() {
             var destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.to); });
             if(destTeam) destTeam.players.push(player);
           }
-        }
-        state.playerMoves = data;
-        localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
-        filterPlayers();
-        renderBteam();
-        renderQuickAccount();
-        // 刷新战术板和模拟比赛的球员缓存（转会后数据可能已变化）
-        if(typeof loadTacticsTeam === 'function') loadTacticsTeam();
-        if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); }
-        console.log('FB sync: full replay done');
+      }
+      state.playerMoves = data;
+      localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
+      filterPlayers();
+      renderBteam();
+      renderQuickAccount();
+      // 刷新战术板和模拟比赛的球员缓存（转会后数据可能已变化）
+      if(typeof loadTacticsTeam === 'function') loadTacticsTeam();
+      if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); }
+      console.log('FB sync: full replay done');
     }
-   }
+  }
   });
 
   // Listen for playerUpgrades changes and apply them to TEAMS_DATA
