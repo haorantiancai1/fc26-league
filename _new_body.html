@@ -1,0 +1,328 @@
+
+<header class="header">
+  <div>
+    <h1>⚽ FC26 传奇联赛</h1>
+    <div class="subtitle">中国足球小将「王者归来」</div>
+  </div>
+  <div class="header-right">
+    <div id="user-badge" class="user-badge" style="display:none;">
+      <div class="avatar" id="user-avatar"></div>
+      <span id="user-name"></span>
+      <span class="logout-btn" onclick="doLogout()">退出</span>
+    </div>
+  </div>
+</header>
+
+<!-- Desktop nav (hidden on mobile) -->
+<nav class="nav">
+  <button class="active" onclick="showPage('db')">📊 球员库</button>
+  <button onclick="showPage('budget')" id="nav-budget" style="display:none">⚙️ 球队管理</button>
+  <button onclick="showPage('tactics')">⚽ 战术板</button>
+  <button onclick="showPage('match')">🎮 模拟</button>
+  <button onclick="showPage('awards')" id="nav-awards" style="display:none">🏆 奖项</button>
+  <button onclick="showPage('bteam')">🔻 B队</button>
+  <button onclick="showPage('settle')" id="nav-settle" style="display:none">📋 结算</button>
+  <button onclick="showPage('admin')" id="nav-admin" style="display:none">🔧 管理员</button>
+</nav>
+
+<!-- Login Overlay -->
+<div class="login-overlay" id="login-overlay">
+  <div class="login-box">
+    <h2>⚽ FC26 传奇联赛</h2>
+    <p class="login-sub">中国足球小将「王者归来」管理工具</p>
+    <div class="form-group">
+      <label>账号</label>
+      <input id="login-name" type="text" placeholder="输入你的账号..." autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label>密码</label>
+      <input id="login-pass" type="password" placeholder="输入密码..." autocomplete="current-password">
+    </div>
+    <button class="login-btn" onclick="doLogin()">进入工具</button>
+    <p class="login-hint">忘记密码请联系浩然获取</p>
+  </div>
+</div>
+
+<main class="main">
+
+<!-- ============ PAGE 1: 球员库 ============ -->
+<div id="page-db" class="page active">
+  <div class="stats" id="db-stats"></div>
+  <div class="filters">
+    <input class="search-box" id="search-input" placeholder="🔍 搜索球员..." oninput="filterPlayers()">
+    <select id="filter-pos" onchange="filterPlayers()"><option value="">全部位置</option></select>
+    <select id="filter-team" onchange="filterPlayers()"><option value="">全部球队</option></select>
+    <select id="filter-ovr-min" onchange="filterPlayers()"><option value="">最低能力</option></select>
+    <select id="filter-ovr-max" onchange="filterPlayers()"><option value="">最高能力</option></select>
+  </div>
+  <div class="team-tabs" id="team-tabs"></div>
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>球员</th><th>位置</th><th>能力</th><th>购入</th><th>售AI</th><th>操作</th><th>标签</th>
+        </tr></thead>
+        <tbody id="player-tbody"></tbody>
+      </table>
+    </div>
+    <div id="player-count" style="padding:8px;color:var(--text3);font-size:11px;"></div>
+  </div>
+</div>
+
+<!-- ============ PAGE 2: 战术板 ============ -->
+<div id="page-tactics" class="page">
+  <div class="tactics-container">
+    <div class="tactics-left">
+      <div class="card">
+        <div class="card-title">🏗️ 选择阵型</div>
+        <div class="formation-btns" id="formation-btns"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">👥 球队阵容 <span id="pitch-hint" style="font-size:11px;color:var(--gold);font-weight:400;"></span></div>
+        <div style="margin-bottom:8px;">
+          <select id="tactics-team-select" onchange="loadTacticsTeam()" style="width:100%;padding:8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--text);font-family:inherit;"></select>
+        </div>
+        <div class="squad-list" id="squad-list"></div>
+      </div>
+    </div>
+    <div class="tactics-right">
+      <div class="card">
+        <div class="card-title">⚽ 战术板 <span id="tactics-formation-label" style="color:var(--accent);font-size:13px;"></span></div>
+        <div class="pitch" id="pitch">
+          <div class="pitch-circle-top"></div>
+          <div class="pitch-box-top"></div>
+          <div class="pitch-box-bot"></div>
+          <div id="pitch-players"></div>
+        </div>
+        <div style="margin-top:8px;">
+          <button class="btn btn-sm" onclick="clearPitch()">🔄 重置阵容</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PAGE 3: 比赛模拟 ============ -->
+<div id="page-match" class="page">
+  <div class="match-setup">
+    <div class="match-team card">
+      <div class="card-title">🏠 主队</div>
+      <select id="match-home" onchange="loadMatchTeam('home')" style="width:100%;margin-bottom:8px;padding:8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--text);font-family:inherit;"></select>
+      <div class="match-team-formation">
+        <span>阵型:</span>
+        <select id="match-home-formation" onchange="applyMatchFormation('home')"></select>
+      </div>
+      <div id="match-home-power"></div>
+      <div class="squad-list" id="match-home-squad" style="max-height:300px;"></div>
+    </div>
+    <div class="match-vs">VS</div>
+    <div class="match-team card">
+      <div class="card-title">✈️ 客队</div>
+      <select id="match-away" onchange="loadMatchTeam('away')" style="width:100%;margin-bottom:8px;padding:8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--text);font-family:inherit;"></select>
+      <div class="match-team-formation">
+        <span>阵型:</span>
+        <select id="match-away-formation" onchange="applyMatchFormation('away')"></select>
+      </div>
+      <div id="match-away-power"></div>
+      <div class="squad-list" id="match-away-squad" style="max-height:300px;"></div>
+    </div>
+  </div>
+  <div style="text-align:center;margin:16px 0;">
+    <button class="btn btn-primary" onclick="simulateMatch()" style="padding:12px 40px;font-size:16px;">🚀 开始模拟比赛</button>
+  </div>
+  <div id="match-result-area"></div>
+</div>
+
+<!-- ============ PAGE 4: 球队管理 ============ -->
+<div id="page-budget" class="page" style="max-width:800px;margin:0 auto;">
+  <div class="card">
+    <div class="card-title" id="budget-team-title">⚙️ 球队管理</div>
+    <p style="color:var(--text2);font-size:12px;margin-bottom:0;">管理球队点数、球员买卖、下放召回。所有操作保存后提交给主播审核。</p>
+  </div>
+  <div id="budget-detail"></div>
+</div>
+
+<!-- ============ PAGE 5: 奖项 ============ -->
+<div id="page-awards" class="page">
+  <div class="card">
+    <div class="card-title">🏆 赛事冠军录入</div>
+    <p style="color:var(--text2);font-size:12px;">选择年份、球队、赛事，确认后奖励点数自动汇入。仅主播可操作。</p>
+  </div>
+  <div class="card" id="award-form-card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div>
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px;">赛季年份</label>
+        <select id="award-season" style="width:100%;padding:8px;border-radius:var(--radius-xs);border:1px solid var(--border);background:var(--bg);color:var(--text);"></select>
+      </div>
+      <div>
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px;">获奖球队</label>
+        <select id="award-team" style="width:100%;padding:8px;border-radius:var(--radius-xs);border:1px solid var(--border);background:var(--bg);color:var(--text);"></select>
+      </div>
+    </div>
+    <div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:6px;">
+      <div style="width:100%;font-size:11px;color:var(--text2);margin-bottom:2px;">正式赛事</div>
+      <button class="btn btn-gold btn-sm" onclick="submitAward(30,'欧冠冠军')">🏆 欧冠 +30</button>
+      <button class="btn btn-gold btn-sm" onclick="submitAward(25,'英超冠军')">🏆 英超 +25</button>
+      <button class="btn btn-gold btn-sm" onclick="submitAward(20,'足总杯冠军')">🏆 足总杯 +20</button>
+      <button class="btn btn-gold btn-sm" onclick="submitAward(20,'欧联冠军')">🏆 欧联 +20</button>
+      <button class="btn btn-gold btn-sm" onclick="submitAward(15,'卡拉宝杯冠军')">🏆 卡拉宝 +15</button>
+      <div style="width:100%;font-size:11px;color:var(--accent2);margin-top:6px;margin-bottom:2px;">⭐ 超级巨星杯</div>
+      <button class="btn btn-sm" style="border-color:var(--accent2);color:var(--accent2);" onclick="submitAward(20,'巨星杯冠军')">⭐ 冠军 +20</button>
+      <button class="btn btn-sm" style="border-color:var(--accent2);color:var(--accent2);" onclick="submitAward(15,'巨星杯亚军')">⭐ 亚军 +15</button>
+      <button class="btn btn-sm" style="border-color:var(--accent2);color:var(--accent2);" onclick="submitAward(5,'巨星杯季军')">⭐ 三四名 +5</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title" style="justify-content:space-between;">
+      <span>📋 录入记录</span>
+      <button class="btn btn-sm" onclick="clearAwards()" style="color:var(--red);border-color:var(--red);">🗑️ 清空</button>
+    </div>
+    <div id="awards-history"></div>
+  </div>
+  <div id="award-season-summary"></div>
+</div>
+
+<!-- ============ PAGE 6: B队 ============ -->
+<div id="page-bteam" class="page">
+  <div class="card">
+    <div class="card-title">🔻 B队（中超培养中心）管理</div>
+    <p style="color:var(--text2);font-size:12px;margin-bottom:12px;">
+      下放/召回：每赛季5次额度，每次消耗2点。下放球员仍属A队资产。
+    </p>
+  </div>
+  <div class="bteam-grid" id="bteam-grid"></div>
+</div>
+
+<!-- ============ PAGE 7: 结算清单 ============ -->
+<div id="page-settle" class="page">
+  <div class="card">
+    <div class="card-title">📋 主播结算清单</div>
+    <p style="color:var(--text2);font-size:12px;">审核并执行玩家的操作请求。</p>
+  </div>
+  <div class="card" id="pending-card" style="border-color:var(--red);border-width:2px;">
+    <div class="card-title">⏳ 待审核操作 <span class="pending-badge" id="pending-count">0</span></div>
+    <div id="pending-list"></div>
+    <div style="margin-top:8px;display:flex;gap:8px;">
+      <button class="btn btn-sm" style="background:var(--green);border-color:var(--green);color:#000;" onclick="approveAllPending()">✅ 全部确认</button>
+      <button class="btn btn-red btn-sm" onclick="rejectAllPending()">❌ 全部驳回</button>
+    </div>
+  </div>
+  <div class="card">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+      <button class="btn btn-sm" onclick="renderSettlement('all')">全部</button>
+      <button class="btn btn-sm" onclick="renderSettlement('trade')">仅交易</button>
+      <button class="btn btn-sm" onclick="renderSettlement('bteam')">仅B队</button>
+      <button class="btn btn-sm" onclick="renderSettlement('award')">仅赛事</button>
+      <button class="btn btn-red btn-sm" onclick="clearSettlement()">🗑️ 清空本季</button>
+    </div>
+  </div>
+  <div id="settle-content"></div>
+</div>
+
+<!-- ============ PAGE 8: 管理员面板 ============ -->
+<div id="page-admin" class="page">
+  <div class="card">
+    <div class="card-title">🔧 管理员面板</div>
+    <p style="color:var(--text2);font-size:12px;">仅浩然（主播）可用。修改将实时生效。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎯 修改球员能力值</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+      <input class="search-box" id="admin-player-search" placeholder="🔍 搜索球员名..." oninput="adminSearchPlayer()" style="flex:1;min-width:160px;">
+      <select id="admin-player-team-filter" onchange="adminSearchPlayer()" style="padding:8px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--text);font-family:inherit;">
+        <option value="">全部球队</option>
+      </select>
+    </div>
+    <div id="admin-player-result" style="min-height:40px;color:var(--text2);font-size:12px;">搜索球员进行修改</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💰 调整球队点数</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;">
+      <div class="form-group" style="min-width:100px;margin-bottom:0;">
+        <label>球队</label>
+        <select id="admin-budget-team" style="padding:8px;"></select>
+      </div>
+      <div class="form-group" style="min-width:90px;margin-bottom:0;">
+        <label>操作</label>
+        <select id="admin-budget-action" style="padding:8px;">
+          <option value="set">设为</option>
+          <option value="add">增加</option>
+          <option value="sub">减少</option>
+        </select>
+      </div>
+      <div class="form-group" style="min-width:80px;margin-bottom:0;">
+        <label>点数</label>
+        <input id="admin-budget-pts" type="number" min="0" value="10" style="padding:8px;">
+      </div>
+      <button class="btn btn-primary" style="margin-bottom:4px;padding:10px 16px;" onclick="adminAdjustBudget()">执行</button>
+    </div>
+    <div id="admin-budget-status" style="margin-top:8px;font-size:12px;color:var(--text2);"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔄 移动球员所属球队</div>
+    <div style="margin-bottom:10px;">
+      <input class="search-box" id="admin-move-search" placeholder="🔍 搜索要移动的球员..." oninput="adminSearchMovePlayer()" style="width:100%;">
+    </div>
+    <div id="admin-move-result" style="min-height:40px;color:var(--text2);font-size:12px;">搜索球员进行移动</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📝 操作日志</div>
+    <div id="admin-log" style="max-height:180px;overflow-y:auto;font-size:11px;color:var(--text2);">
+      暂无操作记录
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- Bottom Nav (mobile) -->
+<nav class="bottom-nav">
+  <button class="bottom-nav-item active" onclick="showPage('db')" id="bnav-db">
+    <span class="nav-icon">📊</span>
+    <span>球员库</span>
+  </button>
+  <button class="bottom-nav-item" onclick="showPage('tactics')" id="bnav-tactics">
+    <span class="nav-icon">⚽</span>
+    <span>战术板</span>
+  </button>
+  <button class="bottom-nav-item" onclick="showPage('match')" id="bnav-match">
+    <span class="nav-icon">🎮</span>
+    <span>模拟</span>
+  </button>
+  <button class="bottom-nav-item hidden" onclick="showPage('budget')" id="bnav-budget">
+    <span class="nav-icon">⚙️</span>
+    <span>球队</span>
+  </button>
+  <button class="bottom-nav-item" onclick="showPage('bteam')" id="bnav-bteam">
+    <span class="nav-icon">🔻</span>
+    <span>B队</span>
+  </button>
+  <button class="bottom-nav-item hidden" onclick="showPage('settle')" id="bnav-settle">
+    <span class="nav-icon">📋</span>
+    <span>结算</span>
+    <span class="nav-badge" id="bnav-settle-badge" style="display:none;">0</span>
+  </button>
+  <button class="bottom-nav-item hidden" onclick="showPage('admin')" id="bnav-admin">
+    <span class="nav-icon">🔧</span>
+    <span>管理</span>
+  </button>
+  <button class="bottom-nav-item hidden" onclick="showPage('awards')" id="bnav-awards">
+    <span class="nav-icon">🏆</span>
+    <span>奖项</span>
+  </button>
+</nav>
+
+<!-- Transfer Modal -->
+<div class="modal-overlay" id="transfer-modal">
+  <div class="modal">
+    <h3 id="transfer-title">球员操作</h3>
+    <div id="transfer-body"></div>
+    <div style="text-align:right;margin-top:16px;">
+      <button class="btn" onclick="closeModal()">关闭</button>
+    </div>
+  </div>
+</div>
