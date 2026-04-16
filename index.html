@@ -760,7 +760,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '29'; // 当前版本号，每次发版时更新
+  var _cv = '30'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
@@ -12152,16 +12152,14 @@ function initFirebaseSync() {
   }
   console.log('Firebase sync started...');
 
-  // On first load, seed Firebase with local data if Firebase is empty
-  _fbRef(dbRef, 'pendingOps').once('value', function(snap) {
+  // On first load, seed Firebase with local data ONLY if Firebase is completely empty
+  // (Never seed pendingOps/playerMoves/playerUpgrades - they should only flow FROM Firebase)
+  _fbRef(dbRef, 'budgets').once('value', function(snap) {
     if(!snap.exists() || snap.val() === null) {
-      console.log('Firebase is empty, seeding with local data...');
+      console.log('Firebase is completely empty, seeding budgets/bteams/awards...');
       _fbSave('budgets', state.budgets);
       _fbSave('bteams', state.bteams);
       _fbSave('awards', state.awards);
-      _fbSave('pendingOps', state.pendingOps);
-      _fbSave('playerMoves', state.playerMoves);
-      _fbSave('playerUpgrades', state.playerUpgrades);
     }
   });
 
