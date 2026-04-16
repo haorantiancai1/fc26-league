@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -760,7 +760,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '22'; // 当前版本号，每次发版时更新
+  var _cv = '21'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
@@ -12157,15 +12157,13 @@ function initFirebaseSync() {
     if(!data) return;
     // Firebase may store arrays as objects - normalize
     if(!Array.isArray(data)) { data = Object.values(data); }
+    var _fbHash = JSON.stringify(data);
+    var _localHash = JSON.stringify(state.playerMoves);
     console.log('FB sync: playerMoves received, count=' + data.length + ', local=' + state.playerMoves.length);
-    // Always replay ALL moves from scratch (TEAMS_DATA resets on page reload)
-    if(data.length > 0 && data.length >= state.playerMoves.length) {
-      // Always replay when content differs (not just length)
-      var _fbHash = JSON.stringify(data);
-      var _localHash = JSON.stringify(state.playerMoves);
-      if(data.length > 0 && _fbHash !== _localHash) {
-        console.log('FB sync: full replay of ' + data.length + ' player moves');
-        for(var i = 0; i < data.length; i++) {
+    // Always replay ALL moves when data differs (TEAMS_DATA resets on page reload)
+    if(data.length > 0 && _fbHash !== _localHash) {
+      console.log('FB sync: full replay of ' + data.length + ' player moves (data changed)');
+      for(var i = 0; i < data.length; i++) {
           var m = data[i];
           // Apply move to TEAMS_DATA (without re-recording)
           var srcTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
@@ -12177,33 +12175,31 @@ function initFirebaseSync() {
             var destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.to); });
             if(destTeam) destTeam.players.push(player);
           }
-        }
-        state.playerMoves = data;
-        localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
-        filterPlayers();
-        renderBteam();
-        renderQuickAccount();
-        // 刷新战术板和模拟比赛的球员缓存（转会后数据可能已变化）
-        if(typeof loadTacticsTeam === 'function') loadTacticsTeam();
-        if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); }
-        _needsMovesReplay = false;
-        console.log('FB sync: full replay done');
       }
+      state.playerMoves = data;
+      localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
+      filterPlayers();
+      renderBteam();
+      renderQuickAccount();
+      // 刷新战术板和模拟比赛的球员缓存（转会后数据可能已变化）
+      if(typeof loadTacticsTeam === 'function') loadTacticsTeam();
+      if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); }
+      console.log('FB sync: full replay done');
     }
+  }
   });
 
   // Listen for playerUpgrades changes and apply them to TEAMS_DATA
   _fbListen('playerUpgrades', function(data) {
     if(!data) return;
     if(!Array.isArray(data)) { data = Object.values(data); }
+    var _fbHash = JSON.stringify(data);
+    var _localHash = JSON.stringify(state.playerUpgrades);
     console.log('FB sync: playerUpgrades received, count=' + data.length + ', local=' + state.playerUpgrades.length);
-    // Always replay ALL upgrades on page load (TEAMS_DATA resets on reload)
-    if(data.length > 0) {
-      var _fbHash2 = JSON.stringify(data);
-      var _localHash2 = JSON.stringify(state.playerUpgrades);
-      if(_fbHash2 !== _localHash2) {
-        console.log('FB sync: full replay of ' + data.length + ' player upgrades');
-        for(var i = 0; i < data.length; i++) {
+    // Always replay ALL upgrades when data differs (TEAMS_DATA resets on reload)
+    if(_fbHash !== _localHash) {
+      console.log('FB sync: full replay of ' + data.length + ' player upgrades (data changed)');
+      for(var i = 0; i < data.length; i++) {
           var u = data[i];
           console.log('FB sync: replaying upgrade #' + i, u.name, u.type, '+' + u.qty);
           // Find player and apply upgrade
@@ -12289,37 +12285,32 @@ function initFirebaseSync() {
     });
     _fbRef(dbRef, 'playerMoves').once('value', function(snap) {
       var data = snap.val();
-      if(data) {
-        if(!Array.isArray(data)) { data = Object.values(data); }
-        var _pollHash = JSON.stringify(data);
-        var _localHash = JSON.stringify(state.playerMoves);
-        if(_pollHash !== _localHash) {
-          for(var i = 0; i < data.length; i++) {
-            var m = data[i];
-            var srcTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
-            if(!srcTeam) continue;
-            var pIdx = srcTeam.players.findIndex(function(p) { return p.name === m.name; });
-            if(pIdx < 0) continue;
-            var player = srcTeam.players.splice(pIdx, 1)[0];
-            if(m.to) {
-              var destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.to); });
-              if(destTeam) destTeam.players.push(player);
-            }
+      if(data && Array.isArray(data) && data.length > state.playerMoves.length) {
+        for(var i = state.playerMoves.length; i < data.length; i++) {
+          var m = data[i];
+          var srcTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
+          if(!srcTeam) continue;
+          var pIdx = srcTeam.players.findIndex(function(p) { return p.name === m.name; });
+          if(pIdx < 0) continue;
+          var player = srcTeam.players.splice(pIdx, 1)[0];
+          if(m.to) {
+            var destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.to); });
+            if(destTeam) destTeam.players.push(player);
           }
-          state.playerMoves = data;
-          localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
-          filterPlayers();
         }
+        state.playerMoves = data;
+        localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
+        filterPlayers();
       }
     });
     _fbRef(dbRef, 'playerUpgrades').once('value', function(snap) {
       var data = snap.val();
       if(data) {
         if(!Array.isArray(data)) { data = Object.values(data); }
-        var _pollHash2 = JSON.stringify(data);
-        var _localHash2 = JSON.stringify(state.playerUpgrades);
-        if(_pollHash2 !== _localHash2) {
-          for(var i = 0; i < data.length; i++) {
+        var _fbHash = JSON.stringify(data);
+        var _localHash = JSON.stringify(state.playerUpgrades);
+        if(_fbHash !== _localHash) {
+          for(var i = state.playerUpgrades.length; i < data.length; i++) {
             var u = data[i];
             TEAMS_DATA.forEach(function(t) {
               t.players.forEach(function(p) {
@@ -12436,12 +12427,10 @@ window.fbForceSync = function() {
     _fbRef(dbRef, 'playerMoves').once('value', function(snap) {
       console.log('FB forceSync: playerMoves callback fired');
       var data = snap.val();
-      if(data) {
-        if(!Array.isArray(data)) { data = Object.values(data); }
-        var _fsHash = JSON.stringify(data);
-        var _fsLocal = JSON.stringify(state.playerMoves);
-        if(_fsHash !== _fsLocal) {
-          for(var i = 0; i < data.length; i++) {
+      if(data && Array.isArray(data)) {
+        var localCount = state.playerMoves.length;
+        if(data.length > localCount) {
+          for(var i = localCount; i < data.length; i++) {
             var m = data[i];
             var srcTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
             if(!srcTeam) continue;
@@ -12471,9 +12460,10 @@ window.fbForceSync = function() {
       var data = snap.val();
       if(data) {
         if(!Array.isArray(data)) { data = Object.values(data); }
-        var _fsHash2 = JSON.stringify(data);
-        var _fsLocal2 = JSON.stringify(state.playerUpgrades);
-        if(_fsHash2 !== _fsLocal2) {
+        var _fbHash = JSON.stringify(data);
+        var _localHash = JSON.stringify(state.playerUpgrades);
+        if(_fbHash !== _localHash) {
+          // Full replay: reset TEAMS_DATA upgrades first, then reapply all
           for(var i = 0; i < data.length; i++) {
             var u = data[i];
             TEAMS_DATA.forEach(function(t) {
@@ -14406,13 +14396,12 @@ function adminSetOverall(team, playerKey) {
 
   // Find and update in TEAMS_DATA
   let playerName = '';
-  let oldOvr = 0;
   TEAMS_DATA.forEach(t => {
     if(t.team === fullTeamName(team)) {
       t.players.forEach(p => {
         const key = p.name_en || p.name;
         if(key === playerKey) {
-          oldOvr = p.overall;
+          const oldOvr = p.overall;
           p.overall = newOvr;
           // Recalculate prices
           p.market_price = calcMarketPrice(newOvr);
@@ -14542,3 +14531,4 @@ function adminMovePlayer(fromTeam, playerKey) {
 </script>
 </body>
 </html>
+
