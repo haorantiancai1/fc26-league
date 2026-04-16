@@ -12354,7 +12354,6 @@ function initFirebaseSync() {
             });
             if(!_found) console.warn('[FB poll] player "' + u.name + '" not found in TEAMS_DATA');
           }
-          }
           state.playerUpgrades = data;
           localStorage.setItem('fc26_playerUpgrades', JSON.stringify(data));
           filterPlayers();
@@ -12514,7 +12513,6 @@ window.fbForceSync = function() {
               });
             });
             if(!_found) console.warn('FB forceSync: player "' + u.name + '" not found in TEAMS_DATA');
-          }
           }
           state.playerUpgrades = data;
           localStorage.setItem('fc26_playerUpgrades', JSON.stringify(data));
