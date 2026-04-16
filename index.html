@@ -10684,6 +10684,7 @@ let state = {
   matchAwaySquad: [],
   awards: JSON.parse(localStorage.getItem('fc26_awards') || 'null') || [],
   pendingOps: JSON.parse(localStorage.getItem('fc26_pendingOps') || 'null') || [],
+  playerMoves: JSON.parse(localStorage.getItem('fc26_playerMoves') || 'null') || [],
 };
 
 function saveState() {
@@ -10691,11 +10692,13 @@ function saveState() {
   localStorage.setItem('fc26_bteams', JSON.stringify(state.bteams));
   localStorage.setItem('fc26_awards', JSON.stringify(state.awards));
   localStorage.setItem('fc26_pendingOps', JSON.stringify(state.pendingOps));
+  localStorage.setItem('fc26_playerMoves', JSON.stringify(state.playerMoves));
   // Sync to Firebase (shared across all users)
   _fbSave('budgets', state.budgets);
   _fbSave('bteams', state.bteams);
   _fbSave('awards', state.awards);
   _fbSave('pendingOps', state.pendingOps);
+  _fbSave('playerMoves', state.playerMoves);
 }
 
 // ===== LOGIN =====
@@ -12057,6 +12060,7 @@ function initFirebaseSync() {
       _fbSave('bteams', state.bteams);
       _fbSave('awards', state.awards);
       _fbSave('pendingOps', state.pendingOps);
+      _fbSave('playerMoves', state.playerMoves);
     }
   });
 
@@ -12129,6 +12133,35 @@ function initFirebaseSync() {
     }
   });
 
+  // Listen for playerMoves changes and replay them on TEAMS_DATA
+  _fbListen('playerMoves', function(data) {
+    if(!data) return;
+    // Firebase may store arrays as objects - normalize
+    if(!Array.isArray(data)) { data = Object.values(data); }
+    console.log('FB sync: playerMoves received, count=' + data.length);
+    // Replay moves that haven't been applied locally
+    var localCount = state.playerMoves.length;
+    if(data.length > localCount) {
+      for(var i = localCount; i < data.length; i++) {
+        var m = data[i];
+        // Apply move to TEAMS_DATA (without re-recording)
+        var srcTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
+        if(!srcTeam) continue;
+        var pIdx = srcTeam.players.findIndex(function(p) { return p.name === m.name; });
+        if(pIdx < 0) continue;
+        var player = srcTeam.players.splice(pIdx, 1)[0];
+        if(m.to) {
+          var destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.to); });
+          if(destTeam) destTeam.players.push(player);
+        }
+      }
+      state.playerMoves = data;
+      localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
+      filterPlayers();
+      console.log('FB sync: applied ' + (data.length - localCount) + ' player moves');
+    }
+  });
+
   console.log('Firebase sync ready!');
 
   // Auto-poll Firebase every 30s as fallback (mobile may miss .on() events)
@@ -12183,18 +12216,45 @@ function initFirebaseSync() {
         }
       }
     });
+    _fbRef(dbRef, 'playerMoves').once('value', function(snap) {
+      var data = snap.val();
+      if(data && Array.isArray(data) && data.length > state.playerMoves.length) {
+        for(var i = state.playerMoves.length; i < data.length; i++) {
+          var m = data[i];
+          var srcTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
+          if(!srcTeam) continue;
+          var pIdx = srcTeam.players.findIndex(function(p) { return p.name === m.name; });
+          if(pIdx < 0) continue;
+          var player = srcTeam.players.splice(pIdx, 1)[0];
+          if(m.to) {
+            var destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.to); });
+            if(destTeam) destTeam.players.push(player);
+          }
+        }
+        state.playerMoves = data;
+        localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
+        filterPlayers();
+      }
+    });
   }, 30000);
 }
 
 // Required budget keys for Firebase data normalization
 var _requiredBudgetKeys = ['balance','initialPoints','pendingOps','tradeUsed','bteamUsed','log'];
 
+// Normalize Firebase array (may be stored as object with numeric keys)
+function _normalizeArray(data) {
+  if(!data) return [];
+  if(Array.isArray(data)) return data;
+  return Object.values(data);
+}
+
 // Manual sync from Firebase (callable from UI)
 window.fbForceSync = function() {
   if(!_fbRef) { alert('Firebase 未连接，请刷新页面重试'); return; }
   console.log('Manual FB sync triggered, _fbRef exists:', !!_fbRef);
   var synced = 0;
-  var total = 3;
+  var total = 4;
   function checkDone() {
     synced++;
     if(synced >= total) {
@@ -12266,6 +12326,38 @@ window.fbForceSync = function() {
     console.error('FB forceSync bteams error:', e);
     checkDone();
   }
+
+  try {
+    _fbRef(dbRef, 'playerMoves').once('value', function(snap) {
+      console.log('FB forceSync: playerMoves callback fired');
+      var data = snap.val();
+      if(data && Array.isArray(data)) {
+        var localCount = state.playerMoves.length;
+        if(data.length > localCount) {
+          for(var i = localCount; i < data.length; i++) {
+            var m = data[i];
+            var srcTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
+            if(!srcTeam) continue;
+            var pIdx = srcTeam.players.findIndex(function(p) { return p.name === m.name; });
+            if(pIdx < 0) continue;
+            var player = srcTeam.players.splice(pIdx, 1)[0];
+            if(m.to) {
+              var destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.to); });
+              if(destTeam) destTeam.players.push(player);
+            }
+          }
+          state.playerMoves = data;
+          localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
+          filterPlayers();
+        }
+      }
+      checkDone();
+    });
+  } catch(e) {
+    console.error('FB forceSync playerMoves error:', e);
+    checkDone();
+  }
+
 
   // Timeout: if no callback in 5s, show error
   setTimeout(function() {
@@ -13769,6 +13861,8 @@ function movePlayerInData(playerName, fromTeam, toTeam) {
     const destTeam = TEAMS_DATA.find(t => t.team === fullTeamName(toTeam));
     if(destTeam) destTeam.players.push(player);
   }
+  // Record move for Firebase sync
+  state.playerMoves.push({ name: playerName, from: fromTeam, to: toTeam });
 }
 
 // ===== PLAYER UPGRADE SYSTEM =====
