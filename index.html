@@ -12111,6 +12111,13 @@ function initFirebaseSync() {
   // Listen for bteams changes
   _fbListen('bteams', function(data) {
     if(data && JSON.stringify(data) !== JSON.stringify(state.bteams)) {
+      // Ensure every team bteam has all required fields
+      for(var team in data) {
+        if(data[team]) {
+          if(!data[team].demoted) data[team].demoted = [];
+          if(data[team].name === undefined) data[team].name = '';
+        }
+      }
       state.bteams = data;
       localStorage.setItem('fc26_bteams', JSON.stringify(data));
       console.log('Firebase sync: bteams updated');
@@ -13276,8 +13283,9 @@ function renderBteam() {
   var teamsToShow = currentUser.isHost ? PLAYER_TEAMS : [currentUser.team];
   
   grid.innerHTML = teamsToShow.map(function(team) {
-    var bt = state.bteams[team];
-    var b = state.budgets[team];
+    var bt = state.bteams[team] || { name:'', demoted:[] };
+    if(!bt.demoted) bt.demoted = [];
+    var b = state.budgets[team] || { balance:0, initialPoints:0, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] };
     return '<div class="bteam-card">' +
       '<div class="bteam-card-header">' +
         '<span>\u26BD ' + team + '</span>' +
