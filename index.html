@@ -760,7 +760,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '19'; // 当前版本号，每次发版时更新
+  var _cv = '20'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
@@ -12157,16 +12157,13 @@ function initFirebaseSync() {
     if(!data) return;
     // Firebase may store arrays as objects - normalize
     if(!Array.isArray(data)) { data = Object.values(data); }
+    var _fbHash = JSON.stringify(data);
+    var _localHash = JSON.stringify(state.playerMoves);
     console.log('FB sync: playerMoves received, count=' + data.length + ', local=' + state.playerMoves.length);
-    // Always replay ALL moves from scratch (TEAMS_DATA resets on page reload)
-    if(data.length > 0 && data.length >= state.playerMoves.length) {
-      // Reset TEAMS_DATA to original state first (remove previously applied moves)
-      // We do this by re-applying all moves from scratch
-      // First, move ALL players back to original teams by reversing moves, then replay forward
-      // Simpler approach: on page load, TEAMS_DATA is fresh from HTML, so just replay all
-      if(data.length !== state.playerMoves.length || _needsMovesReplay) {
-        console.log('FB sync: full replay of ' + data.length + ' player moves');
-        for(var i = 0; i < data.length; i++) {
+    // Always replay ALL moves when data differs (TEAMS_DATA resets on page reload)
+    if(data.length > 0 && _fbHash !== _localHash) {
+      console.log('FB sync: full replay of ' + data.length + ' player moves (data changed)');
+      for(var i = 0; i < data.length; i++) {
           var m = data[i];
           // Apply move to TEAMS_DATA (without re-recording)
           var srcTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
@@ -12187,22 +12184,22 @@ function initFirebaseSync() {
         // 刷新战术板和模拟比赛的球员缓存（转会后数据可能已变化）
         if(typeof loadTacticsTeam === 'function') loadTacticsTeam();
         if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); }
-        _needsMovesReplay = false;
         console.log('FB sync: full replay done');
-      }
     }
+   }
   });
 
   // Listen for playerUpgrades changes and apply them to TEAMS_DATA
   _fbListen('playerUpgrades', function(data) {
     if(!data) return;
     if(!Array.isArray(data)) { data = Object.values(data); }
+    var _fbHash = JSON.stringify(data);
+    var _localHash = JSON.stringify(state.playerUpgrades);
     console.log('FB sync: playerUpgrades received, count=' + data.length + ', local=' + state.playerUpgrades.length);
-    // Always replay ALL upgrades on page load (TEAMS_DATA resets on reload)
-    if(data.length > 0 && data.length >= state.playerUpgrades.length) {
-      if(data.length !== state.playerUpgrades.length || _needsUpgradesReplay) {
-        console.log('FB sync: full replay of ' + data.length + ' player upgrades');
-        for(var i = 0; i < data.length; i++) {
+    // Always replay ALL upgrades when data differs (TEAMS_DATA resets on reload)
+    if(_fbHash !== _localHash) {
+      console.log('FB sync: full replay of ' + data.length + ' player upgrades (data changed)');
+      for(var i = 0; i < data.length; i++) {
           var u = data[i];
           console.log('FB sync: replaying upgrade #' + i, u.name, u.type, '+' + u.qty);
           // Find player and apply upgrade
@@ -12310,7 +12307,9 @@ function initFirebaseSync() {
       var data = snap.val();
       if(data) {
         if(!Array.isArray(data)) { data = Object.values(data); }
-        if(data.length > state.playerUpgrades.length) {
+        var _fbHash = JSON.stringify(data);
+        var _localHash = JSON.stringify(state.playerUpgrades);
+        if(_fbHash !== _localHash) {
           for(var i = state.playerUpgrades.length; i < data.length; i++) {
             var u = data[i];
             TEAMS_DATA.forEach(function(t) {
@@ -12461,9 +12460,11 @@ window.fbForceSync = function() {
       var data = snap.val();
       if(data) {
         if(!Array.isArray(data)) { data = Object.values(data); }
-        var localCount = state.playerUpgrades.length;
-        if(data.length > localCount) {
-          for(var i = localCount; i < data.length; i++) {
+        var _fbHash = JSON.stringify(data);
+        var _localHash = JSON.stringify(state.playerUpgrades);
+        if(_fbHash !== _localHash) {
+          // Full replay: reset TEAMS_DATA upgrades first, then reapply all
+          for(var i = 0; i < data.length; i++) {
             var u = data[i];
             TEAMS_DATA.forEach(function(t) {
               t.players.forEach(function(p) {
