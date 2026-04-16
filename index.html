@@ -807,6 +807,7 @@ tbody td {
 
 <!-- ============ PAGE 1: 球员库 ============ -->
 <div id="page-db" class="page active">
+  <div id="db-pending-banner" style="display:none;margin:0 0 10px 0;padding:10px 12px;background:rgba(239,68,68,0.1);border:1px solid var(--red);border-radius:8px;font-size:12px;"></div>
   <div class="stats" id="db-stats"></div>
   <div class="filters">
     <input class="search-box" id="search-input" placeholder="🔍 搜索球员..." oninput="filterPlayers()">
@@ -10916,6 +10917,35 @@ function initDB() {
 }
 
 function filterPlayers() {
+  // Update pending ops banner for normal players
+  var banner = document.getElementById('db-pending-banner');
+  if(banner && currentUser && !currentUser.isHost && currentUser.team) {
+    var myTeam = currentUser.team;
+    var myOps = (state.pendingOps || []).filter(function(o) {
+      return o.team === myTeam || (o.swap_with && o.swap_with === myTeam);
+    });
+    if(myOps.length > 0) {
+      var bannerHtml = '<div style="font-weight:600;color:var(--red);margin-bottom:6px;">⏳ ' + myOps.length + ' 项操作待审核</div>';
+      myOps.forEach(function(o) {
+        if(o.type === 'p2p_swap' && o.team !== myTeam) {
+          var swapColor = TEAM_COLORS[o.team] || 'var(--accent)';
+          var outN = (o.players_out || []).map(function(p){return p.name;}).join('、');
+          var inN = (o.players_in || []).map(function(p){return p.name;}).join('、');
+          bannerHtml += '<div style="font-size:11px;color:var(--text2);padding:2px 0;">🔄 <span style="color:' + swapColor + ';">' + o.team + '</span> 发起互换：对方出 ' + outN + '，想要我方 ' + inN + '</div>';
+        } else {
+          var icon = o.type==='buy'?'📥':o.type==='sell'?'📤':'⬇️';
+          bannerHtml += '<div style="font-size:11px;color:var(--text2);padding:2px 0;">' + icon + ' ' + o.action + ' <span style="font-weight:600;">' + o.pts + '点</span></div>';
+        }
+      });
+      banner.innerHTML = bannerHtml;
+      banner.style.display = 'block';
+    } else {
+      banner.style.display = 'none';
+    }
+  } else if(banner) {
+    banner.style.display = 'none';
+  }
+
   let players = getAllPlayers();
   const search = document.getElementById('search-input').value.toLowerCase();
   const pos = document.getElementById('filter-pos').value;
