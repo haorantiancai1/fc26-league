@@ -1196,18 +1196,30 @@ firebase.initializeApp(firebaseConfig);
 dbRef = firebase.database();
 
 // Extract ref function - compat db object wraps it differently per version
-if(typeof dbRef.child === 'function') {
+var _root = null;
+try {
+  if(dbRef._delegate && dbRef._delegate._root) {
+    _root = dbRef._delegate._root;
+    console.log('Found _root, type:', typeof _root, 'child type:', typeof _root.child);
+    console.log('_root constructor name:', _root.constructor ? _root.constructor.name : 'N/A');
+    // Try to call child to see if it works
+    var _testRef = _root.child('test');
+    console.log('child() works! _testRef:', typeof _testRef, _testRef ? _testRef.constructor.name : 'N/A');
+    _fbRef = function(db, path) { return db._delegate._root.child(path); };
+  }
+} catch(e) {
+  console.error('_root.child test failed:', e);
+}
+
+if(!_fbRef && typeof dbRef.child === 'function') {
   _fbRef = function(db, path) { return db.child(path); };
-  console.log('Using dbRef.child for Firebase operations');
-} else if(dbRef._delegate && dbRef._delegate._root && typeof dbRef._delegate._root.child === 'function') {
-  // compat v9.23 stores the root Reference in _delegate._root
-  _fbRef = function(db, path) { return db._delegate._root.child(path); };
-  console.log('Using dbRef._delegate._root.child for Firebase operations');
-} else if(dbRef._delegate && typeof dbRef._delegate.ref === 'function') {
-  _fbRef = function(db, path) { return db._delegate.ref(path); };
-  console.log('Using dbRef._delegate.ref for Firebase operations');
-} else {
+  console.log('Fallback: using dbRef.child');
+}
+
+if(!_fbRef) {
   console.error('FATAL: Could not find Firebase ref function');
+} else {
+  console.log('Firebase initialized successfully');
 }
 
 if(!_fbRef) {
