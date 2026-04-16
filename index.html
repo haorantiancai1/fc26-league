@@ -10795,6 +10795,80 @@ function doLogin() {
   const firstBnav = document.querySelector('.bottom-nav-item:not(.hidden)');
   if(firstBnav) firstBnav.click();
   else document.querySelector('.nav button').click();
+  // 登录后主动从Firebase同步一次所有数据（不依赖WebSocket实时推送）
+  _fbPullOnLogin();
+}
+
+// 登录后主动拉取Firebase数据并replay
+function _fbPullOnLogin() {
+  if(!_fbRef) return;
+  console.log('[_fbPullOnLogin] pulling data from Firebase...');
+  var paths = ['budgets','bteams','awards','pendingOps','playerMoves','playerUpgrades'];
+  var done = 0;
+  function check() {
+    done++;
+    if(done >= paths.length) {
+      console.log('[_fbPullOnLogin] all data pulled, refreshing UI');
+      filterPlayers();
+      renderQuickAccount();
+      renderBudget();
+      renderPendingOps();
+      updatePendingBadge();
+      if(typeof loadTacticsTeam === 'function') loadTacticsTeam();
+      if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); }
+    }
+  }
+  paths.forEach(function(path) {
+    _fbRef(dbRef, path).once('value', function(snap) {
+      var data = snap.val();
+      if(data !== null) {
+        if(path === 'playerUpgrades' && data) {
+          if(!Array.isArray(data)) data = Object.values(data);
+          console.log('[_fbPullOnLogin] playerUpgrades count=' + data.length);
+          if(data.length > 0) {
+            for(var i = 0; i < data.length; i++) {
+              var u = data[i];
+              var _found = false;
+              TEAMS_DATA.forEach(function(t) {
+                t.players.forEach(function(p) {
+                  if(p.name === u.name) {
+                    _found = true;
+                    if(u.type === 'ovr') {
+                      console.log('[_fbPullOnLogin] replay ' + p.name + ' OVR -> ' + u.new_overall);
+                      p.overall = u.new_overall;
+                      p.sell_price = u.new_sell_price;
+                      p.market_price = u.new_market_price;
+                    } else if(u.type === 'pot') {
+                      p.potential_bump = u.new_potential_bump;
+                    }
+                  }
+                });
+              });
+              if(!_found) console.warn('[_fbPullOnLogin] player "' + u.name + '" not found');
+            }
+          }
+          state.playerUpgrades = data;
+          localStorage.setItem('fc26_playerUpgrades', JSON.stringify(data));
+        } else if(path === 'playerMoves' && data) {
+          if(!Array.isArray(data)) data = Object.values(data);
+          state.playerMoves = data;
+          localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
+        } else if(path === 'pendingOps' && data) {
+          state.pendingOps = data;
+          localStorage.setItem('fc26_pendingOps', JSON.stringify(data));
+        } else if(path === 'budgets' && data) {
+          state.budgets = data;
+          localStorage.setItem('fc26_budgets', JSON.stringify(data));
+        } else if(path === 'bteams' && data) {
+          state.bteams = data;
+          localStorage.setItem('fc26_bteams', JSON.stringify(data));
+        } else if(path === 'awards' && data) {
+          state.awards = data;
+        }
+      }
+      check();
+    });
+  });
 }
 
 function doLogout() {
