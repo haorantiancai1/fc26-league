@@ -760,7 +760,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '30'; // 当前版本号，每次发版时更新
+  var _cv = '31'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
@@ -10814,6 +10814,7 @@ function _fbPullOnLogin() {
       renderBudget();
       renderPendingOps();
       updatePendingBadge();
+      initAwards();
       if(typeof loadTacticsTeam === 'function') loadTacticsTeam();
       if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); }
     }
@@ -10864,6 +10865,8 @@ function _fbPullOnLogin() {
           localStorage.setItem('fc26_bteams', JSON.stringify(data));
         } else if(path === 'awards' && data) {
           state.awards = data;
+          localStorage.setItem('fc26_awards', JSON.stringify(data));
+          initAwards();
         }
       }
       check();
@@ -12166,10 +12169,12 @@ function initFirebaseSync() {
   // Listen for pendingOps changes (most critical - real-time notifications)
   _fbListen('pendingOps', function(data) {
     console.log('FB listen pendingOps fired, data:', JSON.stringify(data));
-    if(data && JSON.stringify(data) !== JSON.stringify(state.pendingOps)) {
-      state.pendingOps = data;
-      localStorage.setItem('fc26_pendingOps', JSON.stringify(data));
-      console.log('Firebase sync: pendingOps updated, count=' + data.length);
+    // Normalize: Firebase may return null for empty
+    var _newOps = (data && Array.isArray(data)) ? data : [];
+    if(JSON.stringify(_newOps) !== JSON.stringify(state.pendingOps)) {
+      state.pendingOps = _newOps;
+      localStorage.setItem('fc26_pendingOps', JSON.stringify(_newOps));
+      console.log('Firebase sync: pendingOps updated, count=' + _newOps.length);
       renderPendingOps();
       updatePendingBadge();
       renderSettlement();
@@ -12202,15 +12207,18 @@ function initFirebaseSync() {
       renderBudget();
       renderSettlement();
       renderQuickAccount();
+      // Awards revoke also updates budgets, so refresh awards too
+      initAwards();
     }
   });
 
   // Listen for awards changes
   _fbListen('awards', function(data) {
-    if(data && JSON.stringify(data) !== JSON.stringify(state.awards)) {
-      state.awards = data;
-      localStorage.setItem('fc26_awards', JSON.stringify(data));
-      console.log('Firebase sync: awards updated');
+    var _newAwards = (data && Array.isArray(data)) ? data : [];
+    if(JSON.stringify(_newAwards) !== JSON.stringify(state.awards)) {
+      state.awards = _newAwards;
+      localStorage.setItem('fc26_awards', JSON.stringify(_newAwards));
+      console.log('Firebase sync: awards updated, count=' + _newAwards.length);
       initAwards();
     }
   });
