@@ -1196,34 +1196,24 @@ firebase.initializeApp(firebaseConfig);
 dbRef = firebase.database();
 
 // Extract ref function - compat db object wraps it differently per version
-// Try direct child first, then _delegate
 if(typeof dbRef.child === 'function') {
   _fbRef = function(db, path) { return db.child(path); };
+  console.log('Using dbRef.child for Firebase operations');
+} else if(dbRef._delegate && dbRef._delegate._root && typeof dbRef._delegate._root.child === 'function') {
+  // compat v9.23 stores the root Reference in _delegate._root
+  _fbRef = function(db, path) { return db._delegate._root.child(path); };
+  console.log('Using dbRef._delegate._root.child for Firebase operations');
 } else if(dbRef._delegate && typeof dbRef._delegate.ref === 'function') {
   _fbRef = function(db, path) { return db._delegate.ref(path); };
   console.log('Using dbRef._delegate.ref for Firebase operations');
-} else if(typeof firebase.database.ref === 'function') {
-  _fbRef = firebase.database.ref;
-  console.log('Using firebase.database.ref for Firebase operations');
 } else {
-  // Last resort: use the internal SDK
-  try {
-    var _modSdk = firebase.database.__module_getInstance || null;
-    if(_modSdk) {
-      var _realRef = _modSdk.ref;
-      if(typeof _realRef === 'function') {
-        _fbRef = function(db, path) { return _realRef(db, path); };
-        console.log('Using module ref for Firebase operations');
-      }
-    }
-  } catch(e) {}
+  console.error('FATAL: Could not find Firebase ref function');
 }
 
 if(!_fbRef) {
-  console.error('FATAL: Could not find Firebase ref function. dbRef keys:', Object.keys(dbRef || {}));
-  if(dbRef && dbRef._delegate) console.error('_delegate keys:', Object.getOwnPropertyNames(Object.getPrototypeOf(dbRef._delegate)));
+  console.error('Firebase sync disabled - no ref function available');
 } else {
-  console.log('Firebase initialized successfully, ref function found');
+  console.log('Firebase initialized successfully');
 }
 
 // ===== SOUND EFFECTS =====
@@ -10711,7 +10701,7 @@ function saveState() {
 
 // ===== LOGIN =====
 // Auto-migrate: clear old data if version changed
-const APP_VERSION = 'v19f-ref-fix'; // 2026-04-16: 多路径ref函数查找
+const APP_VERSION = 'v19g-root-child'; // 2026-04-16: 用_delegate._root.child
 if(localStorage.getItem('fc26_version') !== APP_VERSION) {
   localStorage.removeItem('fc26_budgets');
   localStorage.removeItem('fc26_bteams');
