@@ -760,20 +760,23 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '23'; // 当前版本号，每次发版时更新
+  var _cv = '24'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
       .then(function(v){
-        if(v && v.trim() !== _cv && !document.getElementById('_verBar')){
+        var _nv = (v && v.trim()) || '';
+        if(_nv !== _cv && !document.getElementById('_verBar')){
           var _b = document.createElement('div');
           _b.id = '_verBar';
           _b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:999999;background:#00e676;color:#000;text-align:center;padding:10px 16px;font-size:15px;font-weight:600;cursor:pointer;font-family:Inter,sans-serif;';
-          _b.textContent = '📦 发现新版本（v' + v.trim() + '）！点击此处刷新页面';
+          _b.innerHTML = '📦 发现新版本（v' + _nv + '）！<u style="margin-left:8px;">点击此处刷新页面</u>';
           _b.onclick = function(){
-            // 去掉旧的v参数，加上新的时间戳，强制绕过缓存
-            var _u = location.pathname + '?v=' + v.trim() + '&t=' + Date.now();
-            location.replace(_u);
+            // 立即隐藏提示条
+            _b.style.display = 'none';
+            // 用缓存破坏参数强制获取最新HTML
+            var _sep = location.search ? '&' : '?';
+            location.replace(location.pathname + location.search + _sep + '_t=' + Date.now());
           };
           document.body.appendChild(_b);
         }
@@ -12212,10 +12215,13 @@ function initFirebaseSync() {
           var u = data[i];
           console.log('FB sync: replaying upgrade #' + i, u.name, u.type, '+' + u.qty);
           // Find player and apply upgrade
+          var _foundPlayer = false;
           TEAMS_DATA.forEach(function(t) {
             t.players.forEach(function(p) {
               if(p.name === u.name) {
+                _foundPlayer = true;
                 if(u.type === 'ovr') {
+                  console.log('FB sync: matched ' + p.name + ' in ' + t.team + ', OVR ' + p.overall + ' -> ' + u.new_overall);
                   p.overall = u.new_overall;
                   p.sell_price = u.new_sell_price;
                   p.market_price = u.new_market_price;
@@ -12225,6 +12231,9 @@ function initFirebaseSync() {
               }
             });
           });
+          if(!_foundPlayer) {
+            console.warn('FB sync: could NOT find player "' + u.name + '" in TEAMS_DATA for upgrade #' + i);
+          }
         }
         state.playerUpgrades = data;
         localStorage.setItem('fc26_playerUpgrades', JSON.stringify(data));
@@ -12321,14 +12330,18 @@ function initFirebaseSync() {
       var data = snap.val();
       if(data) {
         if(!Array.isArray(data)) { data = Object.values(data); }
+        console.log('[FB poll] playerUpgrades data:', JSON.stringify(data));
         var _pollHash2 = JSON.stringify(data);
         var _localHash2 = JSON.stringify(state.playerUpgrades);
+        console.log('[FB poll] playerUpgrades hash match:', _pollHash2 === _localHash2);
         if(_pollHash2 !== _localHash2) {
           for(var i = 0; i < data.length; i++) {
             var u = data[i];
+            var _found = false;
             TEAMS_DATA.forEach(function(t) {
               t.players.forEach(function(p) {
                 if(p.name === u.name) {
+                  _found = true;
                   if(u.type === 'ovr') {
                     p.overall = u.new_overall;
                     p.sell_price = u.new_sell_price;
@@ -12339,6 +12352,8 @@ function initFirebaseSync() {
                 }
               });
             });
+            if(!_found) console.warn('[FB poll] player "' + u.name + '" not found in TEAMS_DATA');
+          }
           }
           state.playerUpgrades = data;
           localStorage.setItem('fc26_playerUpgrades', JSON.stringify(data));
@@ -12474,16 +12489,20 @@ window.fbForceSync = function() {
     _fbRef(dbRef, 'playerUpgrades').once('value', function(snap) {
       console.log('FB forceSync: playerUpgrades callback fired');
       var data = snap.val();
+      console.log('FB forceSync: playerUpgrades raw data:', JSON.stringify(data));
       if(data) {
         if(!Array.isArray(data)) { data = Object.values(data); }
         var _fsHash2 = JSON.stringify(data);
         var _fsLocal2 = JSON.stringify(state.playerUpgrades);
+        console.log('FB forceSync: playerUpgrades hash match:', _fsHash2 === _fsLocal2);
         if(_fsHash2 !== _fsLocal2) {
           for(var i = 0; i < data.length; i++) {
             var u = data[i];
+            var _found = false;
             TEAMS_DATA.forEach(function(t) {
               t.players.forEach(function(p) {
                 if(p.name === u.name) {
+                  _found = true;
                   if(u.type === 'ovr') {
                     p.overall = u.new_overall;
                     p.sell_price = u.new_sell_price;
@@ -12494,6 +12513,8 @@ window.fbForceSync = function() {
                 }
               });
             });
+            if(!_found) console.warn('FB forceSync: player "' + u.name + '" not found in TEAMS_DATA');
+          }
           }
           state.playerUpgrades = data;
           localStorage.setItem('fc26_playerUpgrades', JSON.stringify(data));
@@ -14431,15 +14452,19 @@ function adminSetOverall(team, playerKey) {
 
   if(playerName) {
     // Record upgrade for Firebase sync
-    state.playerUpgrades.push({
+    var _upgradeRec = {
       name: playerName, position: '',
       type: 'ovr', qty: newOvr - oldOvr,
       new_overall: newOvr,
       new_sell_price: calcSellPrice(newOvr),
       new_market_price: calcMarketPrice(newOvr),
       new_potential_bump: ''
-    });
+    };
+    state.playerUpgrades.push(_upgradeRec);
+    console.log('[adminSetOverall] upgrade record:', JSON.stringify(_upgradeRec));
+    console.log('[adminSetOverall] total playerUpgrades now:', state.playerUpgrades.length, JSON.stringify(state.playerUpgrades));
     saveState();
+    console.log('[adminSetOverall] saveState() called');
     alert(`✅ ${playerName} 能力值已修改为 ${newOvr}`);
     adminSearchPlayer(); // refresh
   }
