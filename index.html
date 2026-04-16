@@ -12045,6 +12045,8 @@ function simulateMatch() {
 // ===== BUDGET =====
 // ===== FIREBASE REAL-TIME SYNC =====
 let _fbSyncReady = false;
+let _needsMovesReplay = true; // Always replay all moves on page load
+let _needsUpgradesReplay = true; // Always replay all upgrades on page load
 
 function initFirebaseSync() {
   if(_fbSyncReady) return;
@@ -12143,29 +12145,35 @@ function initFirebaseSync() {
     // Firebase may store arrays as objects - normalize
     if(!Array.isArray(data)) { data = Object.values(data); }
     console.log('FB sync: playerMoves received, count=' + data.length + ', local=' + state.playerMoves.length);
-    // Replay moves that haven't been applied locally
-    var localCount = state.playerMoves.length;
-    if(data.length > localCount) {
-      for(var i = localCount; i < data.length; i++) {
-        var m = data[i];
-        console.log('FB sync: replaying move #' + i, m.name, m.from, '->', m.to);
-        // Apply move to TEAMS_DATA (without re-recording)
-        var srcTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
-        if(!srcTeam) { console.warn('FB sync: src team not found for', m.from); continue; }
-        var pIdx = srcTeam.players.findIndex(function(p) { return p.name === m.name; });
-        if(pIdx < 0) { console.warn('FB sync: player not found in', m.from, m.name); continue; }
-        var player = srcTeam.players.splice(pIdx, 1)[0];
-        if(m.to) {
-          var destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.to); });
-          if(destTeam) destTeam.players.push(player);
+    // Always replay ALL moves from scratch (TEAMS_DATA resets on page reload)
+    if(data.length > 0 && data.length >= state.playerMoves.length) {
+      // Reset TEAMS_DATA to original state first (remove previously applied moves)
+      // We do this by re-applying all moves from scratch
+      // First, move ALL players back to original teams by reversing moves, then replay forward
+      // Simpler approach: on page load, TEAMS_DATA is fresh from HTML, so just replay all
+      if(data.length !== state.playerMoves.length || _needsMovesReplay) {
+        console.log('FB sync: full replay of ' + data.length + ' player moves');
+        for(var i = 0; i < data.length; i++) {
+          var m = data[i];
+          // Apply move to TEAMS_DATA (without re-recording)
+          var srcTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
+          if(!srcTeam) { console.warn('FB sync: src team not found for', m.from); continue; }
+          var pIdx = srcTeam.players.findIndex(function(p) { return p.name === m.name; });
+          if(pIdx < 0) { console.warn('FB sync: player not found in', m.from, m.name); continue; }
+          var player = srcTeam.players.splice(pIdx, 1)[0];
+          if(m.to) {
+            var destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.to); });
+            if(destTeam) destTeam.players.push(player);
+          }
         }
+        state.playerMoves = data;
+        localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
+        filterPlayers();
+        renderBteam();
+        renderQuickAccount();
+        _needsMovesReplay = false;
+        console.log('FB sync: full replay done');
       }
-      state.playerMoves = data;
-      localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
-      filterPlayers();
-      renderBteam();
-      renderQuickAccount();
-      console.log('FB sync: applied ' + (data.length - localCount) + ' player moves, TEAMS_DATA updated');
     }
   });
 
@@ -12174,31 +12182,34 @@ function initFirebaseSync() {
     if(!data) return;
     if(!Array.isArray(data)) { data = Object.values(data); }
     console.log('FB sync: playerUpgrades received, count=' + data.length + ', local=' + state.playerUpgrades.length);
-    var localCount = state.playerUpgrades.length;
-    if(data.length > localCount) {
-      for(var i = localCount; i < data.length; i++) {
-        var u = data[i];
-        console.log('FB sync: replaying upgrade #' + i, u.name, u.type, '+' + u.qty);
-        // Find player and apply upgrade
-        TEAMS_DATA.forEach(function(t) {
-          t.players.forEach(function(p) {
-            if(p.name === u.name) {
-              if(u.type === 'ovr') {
-                p.overall = u.new_overall;
-                p.sell_price = u.new_sell_price;
-                p.market_price = u.new_market_price;
-              } else if(u.type === 'pot') {
-                p.potential_bump = u.new_potential_bump;
+    // Always replay ALL upgrades on page load (TEAMS_DATA resets on reload)
+    if(data.length > 0 && data.length >= state.playerUpgrades.length) {
+      if(data.length !== state.playerUpgrades.length || _needsUpgradesReplay) {
+        console.log('FB sync: full replay of ' + data.length + ' player upgrades');
+        for(var i = 0; i < data.length; i++) {
+          var u = data[i];
+          console.log('FB sync: replaying upgrade #' + i, u.name, u.type, '+' + u.qty);
+          // Find player and apply upgrade
+          TEAMS_DATA.forEach(function(t) {
+            t.players.forEach(function(p) {
+              if(p.name === u.name) {
+                if(u.type === 'ovr') {
+                  p.overall = u.new_overall;
+                  p.sell_price = u.new_sell_price;
+                  p.market_price = u.new_market_price;
+                } else if(u.type === 'pot') {
+                  p.potential_bump = u.new_potential_bump;
+                }
               }
-            }
+            });
           });
-        });
+        }
+        state.playerUpgrades = data;
+        localStorage.setItem('fc26_playerUpgrades', JSON.stringify(data));
+        filterPlayers();
+        renderQuickAccount();
+        console.log('FB sync: full upgrade replay done');
       }
-      state.playerUpgrades = data;
-      localStorage.setItem('fc26_playerUpgrades', JSON.stringify(data));
-      filterPlayers();
-      renderQuickAccount();
-      console.log('FB sync: applied ' + (data.length - localCount) + ' player upgrades');
     }
   });
 
