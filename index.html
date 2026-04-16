@@ -1195,42 +1195,21 @@ function _fbListen(path, cb) {
 firebase.initializeApp(firebaseConfig);
 dbRef = firebase.database();
 
-// Extract ref function - compat db object wraps it differently per version
-var _root = null;
+// Compat SDK: firebase.database() returns a Database instance with .ref(path) method
+// .ref(path) returns a Reference, which has .child(), .set(), .on('value', ...) etc.
 try {
-  if(dbRef._delegate && dbRef._delegate._root) {
-    _root = dbRef._delegate._root;
-    console.log('Found _root, constructor:', _root.constructor.name);
-    console.log('_root own keys:', Object.getOwnPropertyNames(_root));
-    console.log('_root prototype keys:', Object.getOwnPropertyNames(Object.getPrototypeOf(_root)));
-    // Check if child is on prototype
-    var _proto = Object.getPrototypeOf(_root);
-    console.log('child in proto?', 'child' in _root);
-    console.log('typeof _root.child:', typeof _root.child);
-    // Try ref() method
-    console.log('typeof _root.ref:', typeof _root.ref);
-    // Try all function properties
-    var _funcs = [];
-    for(var k in _root) { if(typeof _root[k] === 'function') _funcs.push(k); }
-    console.log('_root functions:', _funcs.join(', '));
-    _funcs = [];
-    for(var k in _proto) { if(typeof _proto[k] === 'function') _funcs.push(k); }
-    console.log('_root proto functions:', _funcs.join(', '));
+  console.log('dbRef type:', typeof dbRef, '| dbRef.ref type:', typeof dbRef.ref);
+  if(typeof dbRef.ref === 'function') {
+    _fbRef = function(db, path) { return db.ref(path); };
+    console.log('Firebase initialized successfully (compat .ref mode)');
+  } else if(typeof dbRef.child === 'function') {
+    _fbRef = function(db, path) { return db.child(path); };
+    console.log('Firebase initialized successfully (compat .child mode)');
+  } else {
+    console.error('FATAL: dbRef has no .ref or .child method. Keys:', Object.getOwnPropertyNames(dbRef));
   }
 } catch(e) {
-  console.error('_root diagnosis failed:', e);
-}
-
-if(!_fbRef) {
-  console.error('FATAL: Could not find Firebase ref function');
-} else {
-  console.log('Firebase initialized successfully');
-}
-
-if(!_fbRef) {
-  console.error('Firebase sync disabled - no ref function available');
-} else {
-  console.log('Firebase initialized successfully');
+  console.error('Firebase init failed:', e);
 }
 
 // ===== SOUND EFFECTS =====
