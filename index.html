@@ -12142,17 +12142,18 @@ function initFirebaseSync() {
     if(!data) return;
     // Firebase may store arrays as objects - normalize
     if(!Array.isArray(data)) { data = Object.values(data); }
-    console.log('FB sync: playerMoves received, count=' + data.length);
+    console.log('FB sync: playerMoves received, count=' + data.length + ', local=' + state.playerMoves.length);
     // Replay moves that haven't been applied locally
     var localCount = state.playerMoves.length;
     if(data.length > localCount) {
       for(var i = localCount; i < data.length; i++) {
         var m = data[i];
+        console.log('FB sync: replaying move #' + i, m.name, m.from, '->', m.to);
         // Apply move to TEAMS_DATA (without re-recording)
         var srcTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
-        if(!srcTeam) continue;
+        if(!srcTeam) { console.warn('FB sync: src team not found for', m.from); continue; }
         var pIdx = srcTeam.players.findIndex(function(p) { return p.name === m.name; });
-        if(pIdx < 0) continue;
+        if(pIdx < 0) { console.warn('FB sync: player not found in', m.from, m.name); continue; }
         var player = srcTeam.players.splice(pIdx, 1)[0];
         if(m.to) {
           var destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.to); });
@@ -12162,7 +12163,9 @@ function initFirebaseSync() {
       state.playerMoves = data;
       localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
       filterPlayers();
-      console.log('FB sync: applied ' + (data.length - localCount) + ' player moves');
+      renderBteam();
+      renderQuickAccount();
+      console.log('FB sync: applied ' + (data.length - localCount) + ' player moves, TEAMS_DATA updated');
     }
   });
 
@@ -12170,11 +12173,12 @@ function initFirebaseSync() {
   _fbListen('playerUpgrades', function(data) {
     if(!data) return;
     if(!Array.isArray(data)) { data = Object.values(data); }
-    console.log('FB sync: playerUpgrades received, count=' + data.length);
+    console.log('FB sync: playerUpgrades received, count=' + data.length + ', local=' + state.playerUpgrades.length);
     var localCount = state.playerUpgrades.length;
     if(data.length > localCount) {
       for(var i = localCount; i < data.length; i++) {
         var u = data[i];
+        console.log('FB sync: replaying upgrade #' + i, u.name, u.type, '+' + u.qty);
         // Find player and apply upgrade
         TEAMS_DATA.forEach(function(t) {
           t.players.forEach(function(p) {
@@ -12193,6 +12197,7 @@ function initFirebaseSync() {
       state.playerUpgrades = data;
       localStorage.setItem('fc26_playerUpgrades', JSON.stringify(data));
       filterPlayers();
+      renderQuickAccount();
       console.log('FB sync: applied ' + (data.length - localCount) + ' player upgrades');
     }
   });
