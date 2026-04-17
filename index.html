@@ -11689,6 +11689,113 @@ const VAR_EVENTS = [
 let _matchTimer = null;
 let _matchActive = false;
 
+// ===== PlayStyle BADGE SYSTEM =====
+// 事件类型 → 可触发徽章列表（每个徽章有 name, icon, 适用位置）
+var PLAYSTYLE_BADGES = {
+  goal: [
+    { name:'Finesse Shot', icon:'🎯', pos:['ST','CF','RW','LW','CAM'] },
+    { name:'Low Driven Shot', icon:'💥', pos:['ST','CF'] },
+    { name:'Power Shot', icon:'⚡', pos:['ST','CF','CAM','CM'] },
+    { name:'Acrobatic', icon:'🤸', pos:['ST','CF','RW','LW'] },
+    { name:'Precision Header', icon:'🦅', pos:['ST','CF','CB'] },
+    { name:'Chipshot', icon:'🎈', pos:['ST','CF'] },
+    { name:'Gamechanger', icon:'🎮', pos:['ST','CF','RW','LW','CAM'] }
+  ],
+  shot_saved: [
+    { name:'Footwork', icon:'🧤', pos:['GK'] },
+    { name:'Far Reach', icon:'🦎', pos:['GK'] },
+    { name:'Deflector', icon:'🛡️', pos:['GK'] },
+    { name:'Rush Out', icon:'🏃', pos:['GK'] },
+    { name:'Power Shot', icon:'⚡', pos:['ST','CF','CAM','CM'] },
+    { name:'Finesse Shot', icon:'🎯', pos:['ST','CF','RW','LW','CAM'] }
+  ],
+  shot_wide: [
+    { name:'Power Shot', icon:'⚡', pos:['ST','CF','CAM','CM'] },
+    { name:'Gamechanger', icon:'🎮', pos:['ST','CF','RW','LW','CAM'] },
+    { name:'Acrobatic', icon:'🤸', pos:['ST','CF','RW','LW'] }
+  ],
+  shot_post: [
+    { name:'Power Shot', icon:'⚡', pos:['ST','CF','CAM','CM'] },
+    { name:'Finesse Shot', icon:'🎯', pos:['ST','CF','RW','LW','CAM'] },
+    { name:'Gamechanger', icon:'🎮', pos:['ST','CF','RW','LW','CAM'] }
+  ],
+  chance: [
+    { name:'Technical', icon:'🏀', pos:['RW','LW','CAM','CM'] },
+    { name:'Rapid', icon:'💨', pos:['RW','LW','ST','CF'] },
+    { name:'Press Proven', icon:'💪', pos:['CM','ST','CF'] },
+    { name:'Quick Step', icon:'👟', pos:['RW','LW','ST','RB','LB'] },
+    { name:'Trickster', icon:'🎪', pos:['RW','LW','ST','CF'] },
+    { name:'Incisive Pass', icon:'🎯', pos:['CAM','CM'] }
+  ],
+  corner: [
+    { name:'Dead Ball', icon:'⚽', pos:['RW','LW','CAM','CM'] },
+    { name:'Whipped Pass', icon:'📏', pos:['RB','LB','RW','LW'] },
+    { name:'Aerial Fortress', icon:'🏰', pos:['CB'] },
+    { name:'Precision Header', icon:'🦅', pos:['ST','CF','CB'] }
+  ],
+  freekick: [
+    { name:'Dead Ball', icon:'⚽', pos:['CAM','CM','RW','LW'] },
+    { name:'Power Shot', icon:'⚡', pos:['ST','CF','CAM','CM'] }
+  ],
+  foul: [
+    { name:'Bruiser', icon:'🦴', pos:['CB','CDM'] },
+    { name:'Enforcer', icon:'👮', pos:['CM','ST','CF'] },
+    { name:'Slide Tackle', icon:'🛝', pos:['CB','RB','LB'] },
+    { name:'Anticipate', icon:'👁️', pos:['CB','RB','LB'] }
+  ],
+  yellow: [
+    { name:'Bruiser', icon:'🦴', pos:['CB','CDM'] },
+    { name:'Slide Tackle', icon:'🛝', pos:['CB','RB','LB'] },
+    { name:'Enforcer', icon:'👮', pos:['CM','ST','CF'] }
+  ],
+  red: [
+    { name:'Bruiser', icon:'🦴', pos:['CB','CDM'] },
+    { name:'Slide Tackle', icon:'🛝', pos:['CB','RB','LB'] }
+  ],
+  offside: [
+    { name:'Quick Step', icon:'👟', pos:['RW','LW','ST'] },
+    { name:'Rapid', icon:'💨', pos:['RW','LW','ST','CF'] }
+  ],
+  possession: [
+    { name:'Tiki Taka', icon:'🔄', pos:['CM','CDM'] },
+    { name:'Pinged Pass', icon:'⚡', pos:['CM','CB','RB','LB'] },
+    { name:'Inventive', icon:'🎨', pos:['CAM','CM'] },
+    { name:'First Touch', icon:'✋', pos:['ST','CF','RW','LW','CAM','CM'] },
+    { name:'Press Proven', icon:'💪', pos:['CM','ST','CF'] }
+  ],
+  sub: [
+    { name:'Relentless', icon:'🔋', pos:['CM','RB','LB'] },
+    { name:'Long Throw', icon:'🤾', pos:['RB','LB','CB'] }
+  ]
+};
+
+// 不同事件类型的触发概率（goal和chance最高，普通事件较低）
+var BADGE_TRIGGER_RATE = { goal:0.55, shot_saved:0.25, shot_wide:0.15, shot_post:0.20, chance:0.40, corner:0.25, freekick:0.30, foul:0.20, yellow:0.25, red:0.35, offside:0.15, possession:0.20, sub:0.10 };
+
+// 为事件分配徽章（纯追加，不改变事件本身）
+function assignPlaystyleBadges(events, homeSquad, awaySquad) {
+  events.forEach(function(ev) {
+    if(ev.type === 'whistle' || ev.type === 'injury_time' || ev.type === 'var' || ev.type === 'weather' || ev.type === 'sub' && !PLAYSTYLE_BADGES.sub) return;
+    var badges = PLAYSTYLE_BADGES[ev.type];
+    if(!badges) return;
+    var rate = BADGE_TRIGGER_RATE[ev.type] || 0.15;
+    if(Math.random() > rate) return;
+    // 找到事件关联的球员位置
+    var playerPos = null;
+    if(ev.player && ev.ovr) {
+      var side = ev.side;
+      var squad = side === 'home' ? homeSquad : awaySquad;
+      var found = squad.find(function(p){ return p.name === ev.player; });
+      if(found) playerPos = found.position;
+    }
+    // 筛选位置匹配的徽章
+    var matched = badges.filter(function(b){ return !playerPos || b.pos.indexOf(playerPos) >= 0; });
+    if(matched.length === 0) matched = badges; // fallback
+    var badge = matched[Math.floor(Math.random() * matched.length)];
+    ev.playstyle = badge.icon + ' ' + badge.name;
+  });
+}
+
 function pickRandom(arr) { return arr[Math.floor(Math.random()*arr.length)]; }
 function pickPlayer(squad, posList, exclude) {
   var pool = posList ? squad.filter(function(p){ return posList.includes(p.position); }) : squad;
@@ -11893,6 +12000,9 @@ function generateMatchEvents(homeName, awayName, homeSquad, awaySquad, homeForm,
   events.push({ min:45, type:'injury_time', side:'neutral', text:'伤停补时 ' + injuryTime1 + ' 分钟' });
   events.push({ min:90, type:'injury_time', side:'neutral', text:'伤停补时 ' + injuryTime2 + ' 分钟' });
 
+  // Assign PlayStyle badges to events
+  assignPlaystyleBadges(events, homeSquad, awaySquad);
+
   events.sort(function(a,b){ return a.min - b.min; });
   return events;
 }
@@ -11903,25 +12013,37 @@ function eventToHTML(e) {
   if(e.type === 'red') cls += ' red';
   if(e.type === 'injury') cls += ' injury';
 
-  if(e.type === 'whistle') return '<div class="match-ev neutral"><span class="ev-icon">⏱️</span><span class="ev-text">' + e.text + '</span></div>';
-  if(e.type === 'injury_time') return '<div class="match-ev neutral"><span class="ev-icon">⏰</span><span class="ev-text">' + e.text + '</span></div>';
-  if(e.type === 'goal') return '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">⚽</span><span class=\"ev-text\"><strong>" + e.player + '</strong> 进球！ <span class="ev-detail">OVR ' + e.ovr + '</span></span></div>';
-  if(e.type === 'yellow') return '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🟨</span><span class=\"ev-text\">" + e.player + ' 黄牌 <span class="ev-detail">OVR ' + e.ovr + '</span></span></div>';
-  if(e.type === 'red') return '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🔴</span><span class=\"ev-text\"><strong>" + e.player + '</strong> 红牌罚下！ <span class="ev-detail">OVR ' + e.ovr + '</span></span></div>';
-  if(e.type === 'shot_saved') return '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🧤</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
-  if(e.type === 'shot_wide') return '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">💨</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
-  if(e.type === 'shot_post') return '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🥅</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
-  if(e.type === 'corner') return '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🚩</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
-  if(e.type === 'foul') return '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">💥</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
-  if(e.type === 'freekick') return '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🏐</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
-  if(e.type === 'offside') return '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🚫</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
-  if(e.type === 'sub') return '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🔄</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
-  if(e.type === 'injury') return '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🤕</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
-  if(e.type === 'var') return '<div class="match-ev neutral"><span class="ev-icon">📺</span><span class="ev-text">' + (e.text||'') + '</span></div>';
-  if(e.type === 'weather') return '<div class="match-ev neutral"><span class="ev-icon">🌦️</span><span class="ev-text">' + (e.text||'') + '</span></div>';
-  if(e.type === 'chance') return '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🔥</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
-  if(e.type === 'possession') return '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">📊</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
-  return '';
+  // PlayStyle badge tag
+  var badgeTag = '';
+  if(e.playstyle) {
+    badgeTag = ' <span style="display:inline-block;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1a2e;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle;letter-spacing:0.3px;">' + e.playstyle + '</span>';
+  }
+
+  var html = '';
+  if(e.type === 'whistle') html = '<div class="match-ev neutral"><span class="ev-icon">⏱️</span><span class="ev-text">' + e.text + '</span></div>';
+  else if(e.type === 'injury_time') html = '<div class="match-ev neutral"><span class="ev-icon">⏰</span><span class="ev-text">' + e.text + '</span></div>';
+  else if(e.type === 'goal') html = '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">⚽</span><span class=\"ev-text\"><strong>" + e.player + '</strong> 进球！ <span class="ev-detail">OVR ' + e.ovr + '</span></span></div>';
+  else if(e.type === 'yellow') html = '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🟨</span><span class=\"ev-text\">" + e.player + ' 黄牌 <span class="ev-detail">OVR ' + e.ovr + '</span></span></div>';
+  else if(e.type === 'red') html = '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🔴</span><span class=\"ev-text\"><strong>" + e.player + '</strong> 红牌罚下！ <span class="ev-detail">OVR ' + e.ovr + '</span></span></div>';
+  else if(e.type === 'shot_saved') html = '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🧤</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
+  else if(e.type === 'shot_wide') html = '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">💨</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
+  else if(e.type === 'shot_post') html = '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🥅</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
+  else if(e.type === 'corner') html = '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🚩</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
+  else if(e.type === 'foul') html = '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">💥</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
+  else if(e.type === 'freekick') html = '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🏐</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
+  else if(e.type === 'offside') html = '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🚫</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
+  else if(e.type === 'sub') html = '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🔄</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
+  else if(e.type === 'injury') html = '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🤕</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
+  else if(e.type === 'var') html = '<div class="match-ev neutral"><span class="ev-icon">📺</span><span class="ev-text">' + (e.text||'') + '</span></div>';
+  else if(e.type === 'weather') html = '<div class="match-ev neutral"><span class="ev-icon">🌦️</span><span class="ev-text">' + (e.text||'') + '</span></div>';
+  else if(e.type === 'chance') html = '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🔥</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
+  else if(e.type === 'possession') html = '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">📊</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
+
+  // Insert badge tag before </div> if exists
+  if(badgeTag && html) {
+    html = html.replace('</div>', badgeTag + '</div>');
+  }
+  return html || '';
 }
 
 function simulateMatch() {
