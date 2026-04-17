@@ -760,7 +760,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '49'; // 当前版本号，每次发版时更新
+  var _cv = '50'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
@@ -1234,8 +1234,13 @@ function _fbListen(path, cb) {
 }
 
 // Firebase SDK is loaded via <script> tags in <head>
-firebase.initializeApp(firebaseConfig);
-dbRef = firebase.database();
+try {
+  firebase.initializeApp(firebaseConfig);
+  dbRef = firebase.database();
+} catch(e) {
+  console.error('Firebase SDK init failed:', e);
+  dbRef = null;
+}
 
 // Compat SDK: firebase.database() returns a Database instance with .ref(path) method
 // .ref(path) returns a Reference, which has .child(), .set(), .on('value', ...) etc.
