@@ -14288,11 +14288,11 @@ function renderSettlement(filter) {
 
     html += '<div class="settle-card"><div class="settle-team"><span class="dot" style="background:' + (TEAM_COLORS[team]||'var(--accent)') + '"></span>' + team + '</div>';
 
-    html += '<div class="' + _cardId + '-items' + (_showAll ? '' : '" style="max-height:999px;overflow:hidden;') + '">';
+    html += '<div class="' + _cardId + '-items"' + (_showAll ? '' : ' style="max-height:999px;overflow:hidden;"') + '>';
 
     items.forEach(function(item, _idx) {
       if(!_showAll && _idx >= 5) html += '<div class="' + _cardId + '-extra" style="display:none;">';
-      const _pts = String(item.pts || 0);
+      var _pts = String(item.pts || 0);
       const isPlus = _pts.startsWith('+');
       const cls = isPlus ? 'plus' : 'minus';
       let icon = '\uD83D\uDCB0';
@@ -14327,7 +14327,7 @@ function renderSettlement(filter) {
 
     if(!_showAll) {
       var _hiddenCount = items.length - 5;
-      html += '<div style="text-align:center;padding:4px 0 2px;"><span class="' + _cardId + '-toggle" style="font-size:11px;color:var(--accent);cursor:pointer;text-decoration:underline;" onclick="(function(){var el=this;var cards=document.querySelectorAll(\'.' + _cardId + '-extra\');var showing=el.dataset.open===\'1\';cards.forEach(function(c){c.style.display=showing?\'none\':\'block\';});el.dataset.open=showing?\'0\':\'1\';el.textContent=showing?\'\u25BC \u67E5\u770B\u66F4\u65E9\u7684\u8BB0\u5F55(' + _hiddenCount + '\u6761)\':\'\u25B2 \u6536\u8D77\';})()">\u25BC \u67E5\u770B\u66F4\u65E9\u7684\u8BB0\u5F55(' + _hiddenCount + '\u6761)</span></div>';
+      html += '<div style="text-align:center;padding:4px 0 2px;"><span class="' + _cardId + '-toggle" style="font-size:11px;color:var(--accent);cursor:pointer;text-decoration:underline;" onclick="var el=event.currentTarget;var cards=document.querySelectorAll(\'.' + _cardId + '-extra\');var showing=el.getAttribute(\'data-open\')===\'1\';cards.forEach(function(c){c.style.display=showing?\'none\':\'block\';});el.setAttribute(\'data-open\',showing?\'0\':\'1\');el.textContent=showing?\'\u25BC \u67E5\u770B\u66F4\u65E9\u7684\u8BB0\u5F55(' + _hiddenCount + '\u6761)\':\'\u25B2 \u6536\u8D77\';">\u25BC \u67E5\u770B\u66F4\u65E9\u7684\u8BB0\u5F55(' + _hiddenCount + '\u6761)</span></div>';
     }
 
     // B队下放球员清单
