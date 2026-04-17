@@ -760,7 +760,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '41'; // 当前版本号，每次发版时更新
+  var _cv = '42'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
@@ -12229,9 +12229,9 @@ function generateMatchEvents(homeName, awayName, homeSquad, awaySquad, homeForm,
     // 如果限定位置没选到，fallback 到随机
     if(!fpick) fpick = pickPlayer(fsquad);
     var ftext = funEv.text;
-    if(fpick) ftext = ftext.replace('{player}', fpick.name);
-    else ftext = ftext.replace('{player}', '某球员');
-    ftext = ftext.replace('{team}', fteam);
+    if(fpick) ftext = ftext.replace(/{player}/g, fpick.name);
+    else ftext = ftext.replace(/{player}/g, '某球员');
+    ftext = ftext.replace(/{team}/g, fteam);
     events.push({ min:fm, type:'fun', side:'neutral', team:'', text:ftext, funIcon:funEv.icon });
   }
 
