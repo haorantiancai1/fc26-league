@@ -760,7 +760,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '43'; // 当前版本号，每次发版时更新
+  var _cv = '44'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
@@ -12699,7 +12699,7 @@ function simulateMatch() {
     var _summary = generatePostMatchSummary(homeName, awayName, liveHomeGoals, liveAwayGoals, events, homeSquad, awaySquad);
     var _sumBox = document.createElement('div');
     _sumBox.style.cssText = 'margin-top:12px;padding:12px;background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(6,182,212,0.08));border-radius:10px;border:1px solid rgba(16,185,129,0.2);';
-    var _sumHTML = '<div style="font-size:14px;font-weight:700;color:var(--green);margin-bottom:8px;">🎬 赛后采访</div>';
+    var _sumHTML = '<div style="font-size:14px;font-weight:700;color:var(--green);margin-bottom:8px;">🎬 赛后</div>';
     _summary.lines.forEach(function(line) {
       _sumHTML += '<div style="font-size:12px;color:var(--text);padding:4px 0;line-height:1.6;">' + line + '</div>';
     });
