@@ -11693,79 +11693,79 @@ let _matchActive = false;
 // 事件类型 → 可触发徽章列表（每个徽章有 name, icon, 适用位置）
 var PLAYSTYLE_BADGES = {
   goal: [
-    { name:'Finesse Shot', icon:'🎯', pos:['ST','CF','RW','LW','CAM'] },
-    { name:'Low Driven Shot', icon:'💥', pos:['ST','CF'] },
-    { name:'Power Shot', icon:'⚡', pos:['ST','CF','CAM','CM'] },
-    { name:'Acrobatic', icon:'🤸', pos:['ST','CF','RW','LW'] },
-    { name:'Precision Header', icon:'🦅', pos:['ST','CF','CB'] },
-    { name:'Chipshot', icon:'🎈', pos:['ST','CF'] },
-    { name:'Gamechanger', icon:'🎮', pos:['ST','CF','RW','LW','CAM'] }
+    { name:'搓射', icon:'🎯', pos:['ST','CF','RW','LW','CAM'] },
+    { name:'低射', icon:'💥', pos:['ST','CF'] },
+    { name:'大力射门', icon:'⚡', pos:['ST','CF','CAM','CM'] },
+    { name:'杂技射门', icon:'🤸', pos:['ST','CF','RW','LW'] },
+    { name:'精准头球', icon:'🦅', pos:['ST','CF','CB'] },
+    { name:'挑射', icon:'🎈', pos:['ST','CF'] },
+    { name:'关键先生', icon:'🎮', pos:['ST','CF','RW','LW','CAM'] }
   ],
   shot_saved: [
-    { name:'Footwork', icon:'🧤', pos:['GK'] },
-    { name:'Far Reach', icon:'🦎', pos:['GK'] },
-    { name:'Deflector', icon:'🛡️', pos:['GK'] },
-    { name:'Rush Out', icon:'🏃', pos:['GK'] },
-    { name:'Power Shot', icon:'⚡', pos:['ST','CF','CAM','CM'] },
-    { name:'Finesse Shot', icon:'🎯', pos:['ST','CF','RW','LW','CAM'] }
+    { name:'脚下功夫', icon:'🧤', pos:['GK'] },
+    { name:'远距扑救', icon:'🦎', pos:['GK'] },
+    { name:'挡出威胁', icon:'🛡️', pos:['GK'] },
+    { name:'出击拦截', icon:'🏃', pos:['GK'] },
+    { name:'大力射门', icon:'⚡', pos:['ST','CF','CAM','CM'] },
+    { name:'搓射', icon:'🎯', pos:['ST','CF','RW','LW','CAM'] }
   ],
   shot_wide: [
-    { name:'Power Shot', icon:'⚡', pos:['ST','CF','CAM','CM'] },
-    { name:'Gamechanger', icon:'🎮', pos:['ST','CF','RW','LW','CAM'] },
-    { name:'Acrobatic', icon:'🤸', pos:['ST','CF','RW','LW'] }
+    { name:'大力射门', icon:'⚡', pos:['ST','CF','CAM','CM'] },
+    { name:'关键先生', icon:'🎮', pos:['ST','CF','RW','LW','CAM'] },
+    { name:'杂技射门', icon:'🤸', pos:['ST','CF','RW','LW'] }
   ],
   shot_post: [
-    { name:'Power Shot', icon:'⚡', pos:['ST','CF','CAM','CM'] },
-    { name:'Finesse Shot', icon:'🎯', pos:['ST','CF','RW','LW','CAM'] },
-    { name:'Gamechanger', icon:'🎮', pos:['ST','CF','RW','LW','CAM'] }
+    { name:'大力射门', icon:'⚡', pos:['ST','CF','CAM','CM'] },
+    { name:'搓射', icon:'🎯', pos:['ST','CF','RW','LW','CAM'] },
+    { name:'关键先生', icon:'🎮', pos:['ST','CF','RW','LW','CAM'] }
   ],
   chance: [
-    { name:'Technical', icon:'🏀', pos:['RW','LW','CAM','CM'] },
-    { name:'Rapid', icon:'💨', pos:['RW','LW','ST','CF'] },
-    { name:'Press Proven', icon:'💪', pos:['CM','ST','CF'] },
-    { name:'Quick Step', icon:'👟', pos:['RW','LW','ST','RB','LB'] },
-    { name:'Trickster', icon:'🎪', pos:['RW','LW','ST','CF'] },
-    { name:'Incisive Pass', icon:'🎯', pos:['CAM','CM'] }
+    { name:'技术流', icon:'🏀', pos:['RW','LW','CAM','CM'] },
+    { name:'疾速突破', icon:'💨', pos:['RW','LW','ST','CF'] },
+    { name:'对抗达人', icon:'💪', pos:['CM','ST','CF'] },
+    { name:'快速启动', icon:'👟', pos:['RW','LW','ST','RB','LB'] },
+    { name:'花式大师', icon:'🎪', pos:['RW','LW','ST','CF'] },
+    { name:'直塞妙传', icon:'🎯', pos:['CAM','CM'] }
   ],
   corner: [
-    { name:'Dead Ball', icon:'⚽', pos:['RW','LW','CAM','CM'] },
-    { name:'Whipped Pass', icon:'📏', pos:['RB','LB','RW','LW'] },
-    { name:'Aerial Fortress', icon:'🏰', pos:['CB'] },
-    { name:'Precision Header', icon:'🦅', pos:['ST','CF','CB'] }
+    { name:'定位球专家', icon:'⚽', pos:['RW','LW','CAM','CM'] },
+    { name:'传中高手', icon:'📏', pos:['RB','LB','RW','LW'] },
+    { name:'空中堡垒', icon:'🏰', pos:['CB'] },
+    { name:'精准头球', icon:'🦅', pos:['ST','CF','CB'] }
   ],
   freekick: [
-    { name:'Dead Ball', icon:'⚽', pos:['CAM','CM','RW','LW'] },
-    { name:'Power Shot', icon:'⚡', pos:['ST','CF','CAM','CM'] }
+    { name:'定位球专家', icon:'⚽', pos:['CAM','CM','RW','LW'] },
+    { name:'大力射门', icon:'⚡', pos:['ST','CF','CAM','CM'] }
   ],
   foul: [
-    { name:'Bruiser', icon:'🦴', pos:['CB','CDM'] },
-    { name:'Enforcer', icon:'👮', pos:['CM','ST','CF'] },
-    { name:'Slide Tackle', icon:'🛝', pos:['CB','RB','LB'] },
-    { name:'Anticipate', icon:'👁️', pos:['CB','RB','LB'] }
+    { name:'铁血后卫', icon:'🦴', pos:['CB','CDM'] },
+    { name:'球场硬汉', icon:'👮', pos:['CM','ST','CF'] },
+    { name:'滑铲专家', icon:'🛝', pos:['CB','RB','LB'] },
+    { name:'预判大师', icon:'👁️', pos:['CB','RB','LB'] }
   ],
   yellow: [
-    { name:'Bruiser', icon:'🦴', pos:['CB','CDM'] },
-    { name:'Slide Tackle', icon:'🛝', pos:['CB','RB','LB'] },
-    { name:'Enforcer', icon:'👮', pos:['CM','ST','CF'] }
+    { name:'铁血后卫', icon:'🦴', pos:['CB','CDM'] },
+    { name:'滑铲专家', icon:'🛝', pos:['CB','RB','LB'] },
+    { name:'球场硬汉', icon:'👮', pos:['CM','ST','CF'] }
   ],
   red: [
-    { name:'Bruiser', icon:'🦴', pos:['CB','CDM'] },
-    { name:'Slide Tackle', icon:'🛝', pos:['CB','RB','LB'] }
+    { name:'铁血后卫', icon:'🦴', pos:['CB','CDM'] },
+    { name:'滑铲专家', icon:'🛝', pos:['CB','RB','LB'] }
   ],
   offside: [
-    { name:'Quick Step', icon:'👟', pos:['RW','LW','ST'] },
-    { name:'Rapid', icon:'💨', pos:['RW','LW','ST','CF'] }
+    { name:'快速启动', icon:'👟', pos:['RW','LW','ST'] },
+    { name:'疾速突破', icon:'💨', pos:['RW','LW','ST','CF'] }
   ],
   possession: [
-    { name:'Tiki Taka', icon:'🔄', pos:['CM','CDM'] },
-    { name:'Pinged Pass', icon:'⚡', pos:['CM','CB','RB','LB'] },
-    { name:'Inventive', icon:'🎨', pos:['CAM','CM'] },
-    { name:'First Touch', icon:'✋', pos:['ST','CF','RW','LW','CAM','CM'] },
-    { name:'Press Proven', icon:'💪', pos:['CM','ST','CF'] }
+    { name:'传控大师', icon:'🔄', pos:['CM','CDM'] },
+    { name:'长传精准', icon:'⚡', pos:['CM','CB','RB','LB'] },
+    { name:'创意核心', icon:'🎨', pos:['CAM','CM'] },
+    { name:'停球大师', icon:'✋', pos:['ST','CF','RW','LW','CAM','CM'] },
+    { name:'对抗达人', icon:'💪', pos:['CM','ST','CF'] }
   ],
   sub: [
-    { name:'Relentless', icon:'🔋', pos:['CM','RB','LB'] },
-    { name:'Long Throw', icon:'🤾', pos:['RB','LB','CB'] }
+    { name:'永动机', icon:'🔋', pos:['CM','RB','LB'] },
+    { name:'大力手抛球', icon:'🤾', pos:['RB','LB','CB'] }
   ]
 };
 
