@@ -760,7 +760,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '48'; // 当前版本号，每次发版时更新
+  var _cv = '49'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
@@ -10865,6 +10865,20 @@ function _fbPullOnLogin() {
           if(!Array.isArray(data)) data = Object.values(data);
           state.playerMoves = data;
           localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
+          // 强制replay所有playerMoves到TEAMS_DATA（每次页面刷新TEAMS_DATA都是初始状态）
+          console.log('[_fbPullOnLogin] replaying ' + data.length + ' playerMoves on TEAMS_DATA');
+          for(var _pmi = 0; _pmi < data.length; _pmi++) {
+            var _mv = data[_pmi];
+            var _srcT = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(_mv.from); });
+            if(!_srcT) { console.warn('[replay] src not found:', _mv.from); continue; }
+            var _pi = _srcT.players.findIndex(function(p) { return p.name === _mv.name; });
+            if(_pi < 0) { console.warn('[replay] player not found:', _mv.name, 'in', _mv.from); continue; }
+            var _pl = _srcT.players.splice(_pi, 1)[0];
+            if(_mv.to) {
+              var _dstT = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(_mv.to); });
+              if(_dstT) _dstT.players.push(_pl);
+            }
+          }
         } else if(path === 'pendingOps' && data) {
           state.pendingOps = data;
           localStorage.setItem('fc26_pendingOps', JSON.stringify(data));
@@ -12879,28 +12893,23 @@ function initFirebaseSync() {
     // Firebase may store arrays as objects - normalize
     if(!Array.isArray(data)) { data = Object.values(data); }
     console.log('FB sync: playerMoves received, count=' + data.length + ', local=' + state.playerMoves.length);
-    // Always replay ALL moves from scratch (TEAMS_DATA resets on page reload)
-    if(data.length > 0 && data.length >= state.playerMoves.length) {
-      // Always replay when content differs (not just length)
-      var _fbHash = JSON.stringify(data);
-      var _localHash = JSON.stringify(state.playerMoves);
-      if(data.length > 0 && _fbHash !== _localHash) {
-        console.log('FB sync: full replay of ' + data.length + ' player moves');
-        for(var i = 0; i < data.length; i++) {
-          var m = data[i];
-          // Apply move to TEAMS_DATA (without re-recording)
-          var srcTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
-          if(!srcTeam) { console.warn('FB sync: src team not found for', m.from); continue; }
-          var pIdx = srcTeam.players.findIndex(function(p) { return p.name === m.name; });
-          if(pIdx < 0) { console.warn('FB sync: player not found in', m.from, m.name); continue; }
-          var player = srcTeam.players.splice(pIdx, 1)[0];
-          if(m.to) {
-            var destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.to); });
-            if(destTeam) destTeam.players.push(player);
-          }
+    // 只处理新增的moves（_fbPullOnLogin已完整replay过）
+    if(data.length > 0 && data.length > state.playerMoves.length) {
+      console.log('FB sync: applying ' + (data.length - state.playerMoves.length) + ' new player moves');
+      for(var i = state.playerMoves.length; i < data.length; i++) {
+        var m = data[i];
+        var srcTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
+        if(!srcTeam) { console.warn('FB sync: src team not found for', m.from); continue; }
+        var pIdx = srcTeam.players.findIndex(function(p) { return p.name === m.name; });
+        if(pIdx < 0) { console.warn('FB sync: player not found in', m.from, m.name); continue; }
+        var player = srcTeam.players.splice(pIdx, 1)[0];
+        if(m.to) {
+          var destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.to); });
+          if(destTeam) destTeam.players.push(player);
         }
-        state.playerMoves = data;
-        localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
+      }
+      state.playerMoves = data;
+      localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
         filterPlayers();
         renderBteam();
         renderQuickAccount();
@@ -12908,7 +12917,7 @@ function initFirebaseSync() {
         if(typeof loadTacticsTeam === 'function') loadTacticsTeam();
         if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); }
         _needsMovesReplay = false;
-        console.log('FB sync: full replay done');
+        console.log('FB sync: incremental replay done');
       }
     }
   });
@@ -13074,9 +13083,8 @@ function initFirebaseSync() {
       }
     });
   }, 30000);
-}
 
-// Required budget keys for Firebase data normalization
+  // Required budget keys for Firebase data normalization
 var _requiredBudgetKeys = ['balance','initialPoints','pendingOps','tradeUsed','bteamUsed','log'];
 
 // Normalize Firebase array (may be stored as object with numeric keys)
