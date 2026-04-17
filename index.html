@@ -760,7 +760,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '52'; // 当前版本号，每次发版时更新
+  var _cv = '53'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
@@ -15227,6 +15227,10 @@ document.addEventListener('DOMContentLoaded', () => {
   renderPendingOps();
   updatePendingBadge();
   initFirebaseSync();
+  // 页面刷新时如果已登录，也要replay Firebase数据（TEAMS_DATA已重置为初始值）
+  if(currentUser) {
+    setTimeout(function(){ _fbPullOnLogin(); }, 1000);
+  }
 });
 
 // ===== ADMIN PANEL =====
