@@ -12915,15 +12915,14 @@ function initFirebaseSync() {
       }
       state.playerMoves = data;
       localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
-        filterPlayers();
-        renderBteam();
-        renderQuickAccount();
-        // 刷新战术板和模拟比赛的球员缓存（转会后数据可能已变化）
-        if(typeof loadTacticsTeam === 'function') loadTacticsTeam();
-        if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); }
-        _needsMovesReplay = false;
-        console.log('FB sync: incremental replay done');
-      }
+      filterPlayers();
+      renderBteam();
+      renderQuickAccount();
+      // 刷新战术板和模拟比赛的球员缓存（转会后数据可能已变化）
+      if(typeof loadTacticsTeam === 'function') loadTacticsTeam();
+      if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); }
+      _needsMovesReplay = false;
+      console.log('FB sync: incremental replay done');
     }
   });
 
@@ -13088,8 +13087,9 @@ function initFirebaseSync() {
       }
     });
   }, 30000);
+}
 
-  // Required budget keys for Firebase data normalization
+// Required budget keys for Firebase data normalization
 var _requiredBudgetKeys = ['balance','initialPoints','pendingOps','tradeUsed','bteamUsed','log'];
 
 // Normalize Firebase array (may be stored as object with numeric keys)
