@@ -760,7 +760,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '47'; // 当前版本号，每次发版时更新
+  var _cv = '48'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
@@ -12653,7 +12653,7 @@ function simulateMatch() {
     '</div>' +
   '</div>';
 
-  // === Pre-match intro: 3 lines, 1 per second ===
+  // === Pre-match intro: 3 lines, ~11s total ===
   var _preIntros = generatePreMatchIntros(homeName, awayName);
   var _preBox = document.createElement('div');
   _preBox.id = 'pre-intro-container';
@@ -12666,12 +12666,12 @@ function simulateMatch() {
     var line = _preIntros[_preIdx];
     var div = document.createElement('div');
     div.className = 'match-ev neutral';
-    div.style.cssText = 'background:linear-gradient(90deg,rgba(251,191,36,0.06),rgba(245,158,11,0.06));border-left:3px solid #fbbf24;border-radius:6px;padding:8px 10px;margin:4px 0;opacity:0;transition:opacity 0.4s;';
-    div.innerHTML = '<span class="ev-icon" style="font-size:14px;">' + line.icon + '</span><span class="ev-text" style="color:#fbbf24;font-size:12px;font-style:italic;">' + line.text + '</span>';
+    div.style.cssText = 'background:linear-gradient(90deg,rgba(251,191,36,0.15),rgba(245,158,11,0.12));border-left:4px solid #fbbf24;border-radius:8px;padding:10px 12px;margin:5px 0;opacity:0;transition:opacity 0.5s;';
+    div.innerHTML = '<span class="ev-icon" style="font-size:20px;">' + line.icon + '</span><span class="ev-text" style="color:#fbbf24;font-size:15px;font-weight:700;font-style:italic;">' + line.text + '</span>';
     _preBox.appendChild(div);
     setTimeout(function(){ div.style.opacity = '1'; }, 50);
     _preIdx++;
-    setTimeout(showNextIntro, 3000);
+    setTimeout(showNextIntro, 3500);
   }
   setTimeout(showNextIntro, 300);
   // Start! (called after intros)
