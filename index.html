@@ -14280,9 +14280,18 @@ function renderSettlement(filter) {
 
     if(items.length === 0) return;
 
+    // 最新记录在最上面
+    items.reverse();
+
+    var _showAll = items.length <= 5;
+    var _cardId = 'settle-' + team.replace(/[^a-zA-Z\u4e00-\u9fff]/g, '');
+
     html += '<div class="settle-card"><div class="settle-team"><span class="dot" style="background:' + (TEAM_COLORS[team]||'var(--accent)') + '"></span>' + team + '</div>';
 
-    items.forEach(item => {
+    html += '<div class="' + _cardId + '-items' + (_showAll ? '' : '" style="max-height:999px;overflow:hidden;') + '">';
+
+    items.forEach(function(item, _idx) {
+      if(!_showAll && _idx >= 5) html += '<div class="' + _cardId + '-extra" style="display:none;">';
       const _pts = String(item.pts || 0);
       const isPlus = _pts.startsWith('+');
       const cls = isPlus ? 'plus' : 'minus';
@@ -14311,7 +14320,15 @@ function renderSettlement(filter) {
         '</span>' +
         '<span class="si-pts ' + cls + '">' + item.pts + '</span>' +
       '</div>';
+      if(!_showAll && _idx >= 5) html += '</div>';
     });
+
+    html += '</div>';
+
+    if(!_showAll) {
+      var _hiddenCount = items.length - 5;
+      html += '<div style="text-align:center;padding:4px 0 2px;"><span class="' + _cardId + '-toggle" style="font-size:11px;color:var(--accent);cursor:pointer;text-decoration:underline;" onclick="(function(){var el=this;var cards=document.querySelectorAll(\'.' + _cardId + '-extra\');var showing=el.dataset.open===\'1\';cards.forEach(function(c){c.style.display=showing?\'none\':\'block\';});el.dataset.open=showing?\'0\':\'1\';el.textContent=showing?\'\u25BC \u67E5\u770B\u66F4\u65E9\u7684\u8BB0\u5F55(' + _hiddenCount + '\u6761)\':\'\u25B2 \u6536\u8D77\';})()">\u25BC \u67E5\u770B\u66F4\u65E9\u7684\u8BB0\u5F55(' + _hiddenCount + '\u6761)</span></div>';
+    }
 
     // B队下放球员清单
     if((filter === 'all' || filter === 'bteam') && bt && bt.demoted && bt.demoted.length > 0) {
