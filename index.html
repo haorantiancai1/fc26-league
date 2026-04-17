@@ -1058,6 +1058,10 @@ tbody td {
       <button class="btn btn-sm" onclick="renderSettlement('upgrade')">仅升级</button>
       <button class="btn btn-red btn-sm" onclick="clearSettlement()">🗑️ 清空本季</button>
     </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+      <button class="btn btn-sm" onclick="archiveSeason()" style="background:var(--accent2);border-color:var(--accent2);color:#fff;">📦 归档本赛季</button>
+      <button class="btn btn-sm" onclick="showSeasonHistory()">📖 查看历史赛季</button>
+    </div>
   </div>
   <div id="settle-content"></div>
 </div>
@@ -14365,6 +14369,200 @@ function clearSettlement() {
   renderSettlement();
   renderPendingOps();
   updatePendingBadge();
+}
+
+// ===== SEASON ARCHIVE =====
+// 归档当前赛季数据到 Firebase seasonHistory/赛季名/
+var _seasonHistoryCache = null; // 缓存已归档赛季列表
+
+function archiveSeason() {
+  if(!currentUser || !currentUser.isHost) { alert('仅主播可操作！'); return; }
+  // 检查是否有记录可归档
+  var _hasLog = false;
+  PLAYER_TEAMS.forEach(function(team) {
+    if(state.budgets[team] && state.budgets[team].log && state.budgets[team].log.length > 0) _hasLog = true;
+  });
+  if(!_hasLog) { alert('当前赛季暂无操作记录，无需归档。'); return; }
+
+  var _seasonName = prompt('请输入赛季名称（如 2025-2026）：', '');
+  if(!_seasonName || !_seasonName.trim()) return;
+  _seasonName = _seasonName.trim();
+
+  if(!confirm('确认归档本赛季数据为「' + _seasonName + '」？\n\n归档后将自动清空本季记录，新赛季从零开始。\n历史数据可在「查看历史赛季」中随时查看。')) return;
+
+  if(!_fbRef) { alert('Firebase 未连接，无法归档！'); return; }
+
+  // 构建归档快照
+  var _snapshot = {
+    budgets: JSON.parse(JSON.stringify(state.budgets)),
+    bteams: JSON.parse(JSON.stringify(state.bteams)),
+    awards: JSON.parse(JSON.stringify(state.awards)),
+    archivedAt: new Date().toISOString()
+  };
+
+  _fbRef(dbRef, 'seasonHistory/' + _seasonName).set(_snapshot).then(function() {
+    console.log('Season archived:', _seasonName);
+    // 归档成功后清空本季
+    PLAYER_TEAMS.forEach(function(team) {
+      state.budgets[team].initialPoints = state.budgets[team].balance;
+      state.budgets[team].log = [];
+      state.budgets[team].tradeUsed = 0;
+      state.budgets[team].bteamUsed = 0;
+    });
+    state.pendingOps = [];
+    saveState();
+    renderBudget();
+    renderSettlement();
+    renderPendingOps();
+    updatePendingBadge();
+    // 清除历史缓存以便刷新列表
+    _seasonHistoryCache = null;
+    alert('归档成功！赛季「' + _seasonName + '」已保存。');
+  }).catch(function(e) {
+    console.error('Archive error:', e);
+    alert('归档失败：' + e.message);
+  });
+}
+
+// 获取已归档赛季列表
+function getSeasonList(callback) {
+  if(!_fbRef) { callback([]); return; }
+  // 有缓存直接返回
+  if(_seasonHistoryCache) { callback(_seasonHistoryCache); return; }
+  _fbRef(dbRef, 'seasonHistory').once('value', function(snap) {
+    var data = snap.val();
+    var _list = [];
+    if(data) {
+      Object.keys(data).forEach(function(key) {
+        _list.push({
+          name: key,
+          archivedAt: data[key].archivedAt || ''
+        });
+      });
+      // 按赛季名倒序（最新的在前）
+      _list.sort(function(a, b) { return b.name.localeCompare(a.name); });
+    }
+    _seasonHistoryCache = _list;
+    callback(_list);
+  });
+}
+
+// 显示历史赛季选择器
+function showSeasonHistory() {
+  if(!currentUser || !currentUser.isHost) { alert('仅主播可操作！'); return; }
+  if(!_fbRef) { alert('Firebase 未连接！'); return; }
+
+  var _container = document.getElementById('settle-content');
+  _container.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--text2);">加载中...</div>';
+
+  getSeasonList(function(_list) {
+    if(_list.length === 0) {
+      _container.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--text2);">暂无历史赛季数据</div>';
+      return;
+    }
+
+    var _html = '<div style="margin-bottom:12px;">';
+    _html += '<button class="btn btn-sm" onclick="renderSettlement()" style="margin-bottom:8px;">返回当前赛季</button>';
+    _html += '<div style="font-size:13px;color:var(--text2);margin-bottom:8px;">选择一个历史赛季查看：</div>';
+    _list.forEach(function(s) {
+      var _dateStr = s.archivedAt ? new Date(s.archivedAt).toLocaleString('zh-CN') : '';
+      _html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;margin:6px 0;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;" onclick="loadSeasonDetail(\'' + s.name.replace(/'/g, "\\'") + '\')">';
+      _html += '<div><span style="color:var(--accent);font-weight:600;">' + s.name + '</span></div>';
+      _html += '<div style="font-size:11px;color:var(--text3);">' + _dateStr + '</div>';
+      _html += '</div>';
+    });
+    _html += '</div>';
+    _container.innerHTML = _html;
+  });
+}
+
+// 加载并渲染某个历史赛季的结算记录
+function loadSeasonDetail(seasonName) {
+  if(!_fbRef) return;
+  var _container = document.getElementById('settle-content');
+  _container.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--text2);">加载中...</div>';
+
+  _fbRef(dbRef, 'seasonHistory/' + seasonName).once('value', function(snap) {
+    var data = snap.val();
+    if(!data) { _container.innerHTML = '<div style="text-align:center;padding:30px 0;color:var(--text2);">未找到该赛季数据</div>'; return; }
+
+    var _budgets = data.budgets || {};
+    var _bteams = data.bteams || {};
+
+    // 用 renderSettlementFromData 渲染（传入历史数据而非 state）
+    renderSettlementFromData(_budgets, _bteams, seasonName);
+  });
+}
+
+// 渲染历史赛季结算记录（和 renderSettlement 逻辑一致，但数据来源是参数而非 state）
+function renderSettlementFromData(budgets, bteams, seasonLabel) {
+  var container = document.getElementById('settle-content');
+  var html = '';
+
+  html += '<div style="margin-bottom:12px;">';
+  html += '<button class="btn btn-sm" onclick="showSeasonHistory()" style="margin-bottom:8px;">返回历史列表</button>';
+  html += '<button class="btn btn-sm" onclick="renderSettlement()" style="margin-bottom:8px;">返回当前赛季</button>';
+  html += '<div style="font-size:14px;font-weight:600;color:var(--gold);margin-bottom:4px;">赛季：' + seasonLabel + '</div>';
+  html += '</div>';
+
+  PLAYER_TEAMS.forEach(function(team) {
+    var b = budgets[team];
+    var bt = bteams && bteams[team];
+    if(!b || !b.log || b.log.length === 0) return;
+
+    var items = b.log.slice().reverse();
+
+    html += '<div style="margin-bottom:10px;padding:10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);">';
+    html += '<div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;font-weight:600;font-size:13px;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + (TEAM_COLORS[team]||'var(--accent)') + ';"></span>' + team + '</div>';
+
+    items.forEach(function(item) {
+      var _pts = String(item.pts || 0);
+      var isPlus = _pts.startsWith('+');
+      var cls = isPlus ? 'color:var(--green)' : 'color:var(--red)';
+      var icon = '\uD83D\uDCB0';
+      if(item.action.indexOf('冠军') >= 0) icon = '\uD83C\uDFC6';
+      else if(item.action.indexOf('季军') >= 0 || item.action.indexOf('亚军') >= 0) icon = '\uD83C\uDFC5';
+      else if(item.action.indexOf('下放') >= 0) icon = '\u2B07\uFE0F';
+      else if(item.action.indexOf('召回') >= 0) icon = '\u2B06\uFE0F';
+      else if(item.action.indexOf('购入') >= 0) icon = '\uD83D\uDCE5';
+      else if(item.action.indexOf('出售') >= 0 || item.action.indexOf('售出') >= 0) icon = '\uD83D\uDCE4';
+      else if(item.action.indexOf('交易') >= 0) icon = '\uD83D\uDD04';
+      else if(item.action.indexOf('能力') >= 0 || item.action.indexOf('潜力') >= 0) icon = '\u26A1';
+      else if(item.action.indexOf('管理员') >= 0) icon = '\uD83D\uDEE1\uFE0F';
+
+      var detailParts = [];
+      if(item.player_name) detailParts.push('\uD83C\uDFC3 ' + item.player_name);
+      if(item.dest) detailParts.push('\u27A1\uFE0F ' + item.dest);
+
+      html += '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;">';
+      html += '<span>' + icon + '</span>';
+      html += '<span style="flex:1;">';
+      html += '<div>' + item.action + '</div>';
+      if(detailParts.length > 0) html += '<div style="font-size:11px;color:var(--accent);margin-top:1px;">' + detailParts.join('  ') + '</div>';
+      if(item.time) html += '<div style="font-size:10px;color:var(--text3);margin-top:1px;">' + item.time + '</div>';
+      html += '</span>';
+      html += '<span style="font-weight:600;' + cls + ';">' + _pts + '</span>';
+      html += '</div>';
+    });
+
+    // B队在册球员
+    if(bt && bt.demoted && bt.demoted.length > 0) {
+      html += '<div style="margin-top:8px;padding:8px;background:var(--bg);border-radius:6px;font-size:11px;color:var(--text2);">';
+      html += '<strong style="color:var(--text);">B队(' + (bt.name || '未设置') + ')在册球员：</strong><br>';
+      bt.demoted.forEach(function(p) {
+        html += '<span style="color:var(--accent);">' + p.position + '</span> ' + p.name + ' <span style="color:var(--gold);">' + p.overall + '</span> ';
+      });
+      html += '</div>';
+    }
+
+    html += '</div>';
+  });
+
+  if(!html || html.indexOf('settle-item') === -1 && html.indexOf('si-pts') === -1 && PLAYER_TEAMS.some(function(t) { return budgets[t] && budgets[t].log && budgets[t].log.length > 0; }) === false) {
+    html += '<div style="text-align:center;padding:30px 0;color:var(--text2);">该赛季暂无操作记录</div>';
+  }
+
+  container.innerHTML = html;
 }
 
 function initTeamBalance(team, pts) {
