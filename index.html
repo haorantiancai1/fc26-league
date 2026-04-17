@@ -649,11 +649,11 @@ tbody td {
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
 @keyframes goalFlash { 0% { background: var(--gold); color: #000; transform: scale(1.03); } 100% { background: var(--bg2); color: var(--text); transform: scale(1); } }
 .match-live-score {
-  display: flex; align-items: center; justify-content: center; gap: 16px;
-  padding: 12px 0; font-size: 28px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 10px 0; font-size: 24px; font-weight: 800; flex-wrap: wrap;
 }
-.match-live-score .team-name { font-size: 14px; font-weight: 600; }
-.match-live-score .goals { font-size: 32px; min-width: 30px; text-align: center; }
+.match-live-score .team-name { font-size: 13px; font-weight: 600; }
+.match-live-score .goals { font-size: 28px; min-width: 24px; text-align: center; }
 .match-live-minute {
   text-align: center; font-size: 13px; color: var(--text2); margin-bottom: 8px;
 }
@@ -666,10 +666,11 @@ tbody td {
 }
 .match-live-events { max-height: 400px; overflow-y: auto; }
 .match-ev {
-  display: flex; align-items: flex-start; gap: 8px; padding: 7px 10px; margin: 3px 0;
-  border-radius: var(--radius-xs); font-size: 12px; line-height: 1.5;
+  display: flex; align-items: flex-start; gap: 6px; padding: 5px 8px; margin: 2px 0;
+  border-radius: var(--radius-xs); font-size: 11px; line-height: 1.4;
   border-left: 3px solid var(--border); background: var(--bg2);
   animation: slideIn 0.3s ease;
+  word-break: break-word; overflow-wrap: break-word;
 }
 .match-ev.home { border-left-color: var(--accent); }
 .match-ev.away { border-left-color: var(--accent2); }
@@ -677,9 +678,9 @@ tbody td {
 .match-ev.goal { background: rgba(234,179,8,0.12); border-left-color: var(--gold); font-weight: 600; animation: goalFlash 0.8s ease; }
 .match-ev.red { border-left-color: #ef4444; background: rgba(239,68,68,0.1); }
 .match-ev.injury { border-left-color: #f97316; background: rgba(249,115,22,0.08); }
-.match-ev .ev-time { color: var(--gold); font-weight: 700; min-width: 32px; font-size: 11px; }
-.match-ev .ev-icon { min-width: 20px; text-align: center; font-size: 13px; }
-.match-ev .ev-text { flex: 1; color: var(--text); word-break: break-word; }
+.match-ev .ev-time { color: var(--gold); font-weight: 700; min-width: 28px; font-size: 10px; }
+.match-ev .ev-icon { min-width: 18px; text-align: center; font-size: 12px; }
+.match-ev .ev-text { flex: 1; color: var(--text); min-width: 0; word-break: break-word; }
 .match-ev .ev-detail { color: var(--text2); font-size: 11px; }
 .match-stats-grid {
   display: grid; grid-template-columns: 1fr auto 1fr; gap: 4px 12px;
@@ -760,7 +761,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '55'; // 当前版本号，每次发版时更新
+  var _cv = '56'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
