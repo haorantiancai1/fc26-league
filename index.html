@@ -11661,6 +11661,51 @@ function getMatchSquad(side) {
 }
 
 // ===== MATCH SIMULATION ENGINE v2 =====
+// ===== 趣味球场事件池（搞笑/综艺感） =====
+const FUN_EVENTS = [
+  { icon:'💑', text:'{player} 被看台上一名美女球迷晃了眼，一脚射门踢到了角旗杆上' },
+  { icon:'🕊️', text:'一只鸽子被 {player} 的射门打落了下来！队医紧急进场为鸽子做心肺复苏……{player} 今天脚感真是连鸟都不放过' },
+  { icon:'🧍', text:'一名全身上下只有打马赛克才能在电视上看的球迷冲进了场内，比赛暂停3分钟。安保人员追了半场才把他"请"出去' },
+  { icon:'🏀', text:'{player} 下意识做了一个篮球运球动作，裁判表示这不是NBA' },
+  { icon:'🐕', text:'一条金毛犬溜进了球场，球员们花了两分钟才把它哄走。{player} 偷偷摸了摸它的头' },
+  { icon:'📱', text:'看台上一位球迷的手机从口袋掉下去了，弹到了场边！{player} 好心帮他捡了起来' },
+  { icon:'😤', text:'{player} 和裁判发生了"亲切友好的交流"，裁判掏出黄牌以示尊重' },
+  { icon:'🧊', text:'场边工作人员一整箱冰镇饮料翻倒了，{team} 的替补席瞬间变成水上乐园' },
+  { icon:'👕', text:'{player} 的球衣被对方后卫扯破了，露出了一身腱子肉，女观众席爆发出一阵尖叫' },
+  { icon:'💤', text:'转播镜头捕捉到 {team} 的替补席上有人在打瞌睡……主教练假装没看见' },
+  { icon:'🎂', text:'今天恰好是 {player} 的生日！球迷自发唱起了生日歌，{player} 红着脸鞠了一躬' },
+  { icon:'🎪', text:'{player} 试图来一个花式停球，结果球从腿间漏了过去。解说员：这就是过人的艺术——自己过自己' },
+  { icon:'🚁', text:'一架无人机飞过了球场上空，{player} 出于本能躲了一下，差点被球砸到' },
+  { icon:'👔', text:'主教练在场边暴跳如雷，把西装外套摔在了地上，然后默默捡起来拍了拍灰穿回去' },
+  { icon:'🐝', text:'一只蜜蜂纠缠 {player} 整整30秒，{player} 被迫停下脚步疯狂挥手驱赶' },
+  { icon:'🍿', text:'看台上一名球迷的爆米花掉到了前排观众头上，引发了小范围的"食物大战"' },
+  { icon:'🎬', text:'{player} 射门后摆出了一个自认为很帅的庆祝姿势……结果球被门将轻松扑出，场面一度非常尴尬' },
+  { icon:'🤝', text:'两名球员撞在一起后双双倒地，互相拉起来后拥抱了一下，场面温馨' },
+  { icon:'🎶', text:'{team} 的球迷集体唱起了改编歌曲嘲讽对手，音量大到转播都录不清楚解说员在说什么' },
+  { icon:'⚽', text:'比赛用球突然漏气了！工作人员手忙脚乱地换了新球，{player} 趁机喝了一口水' },
+  { icon:'🧑‍⚕️', text:'队医进场时自己也摔了一跤！{player} 赶紧去扶他，全场球迷为这温馨一幕鼓掌' },
+  { icon:'📸', text:'{player} 射门后对着镜头比心，结果发现镜头拍的是另一边……' },
+  { icon:'🦊', text:'{player} 在场上发现了一只野猫！比赛暂停了一分钟让小猫安全离开球场' },
+  { icon:'💨', text:'{player} 放了一个响屁，旁边的队友一脸嫌弃地跑开了，转播特写完美捕捉了这个瞬间' },
+  { icon:'🗑️', text:'一袋垃圾被风吹进了球场！工作人员赶紧追着垃圾跑，画面堪比追逐戏' },
+  { icon:'👶', text:'看台上一个小球迷把哭闹声传遍了全场，解说员说：这是今天场上最响亮的声音' },
+  { icon:'⚡', text:'球场的灯光突然闪烁了一下，球员们集体愣住了。灯光恢复后比赛继续，好像什么都没发生' },
+  { icon:'🎤', text:'转播收录到了主教练在教练席上的咆哮："{player} 你给我跑起来！！！"全场安静了0.5秒' },
+  { icon:'🎪', text:'{player} 尝试了一脚倒挂金钩……人翻过去了，球还在原地。解说员：勇气可嘉' },
+  { icon:'🧲', text:'球门网破了一个洞！工作人员紧急用扎带修补，{team} 的球迷在身后大喊"质量不行啊！"' },
+  { icon:'🌊', text:'有人打开了消防栓！场边瞬间变成水上乐园，裁判无奈暂停比赛' },
+  { icon:'🎈', text:'球迷向场内投掷了一个巨大的充气娃娃，裁判哭笑不得地把人偶扛到了场边' },
+  { icon:'🤖', text:'VAR 回放时大屏幕卡住了，反复播放 {player} 诡异的表情特写，全场笑成一片' },
+  { icon:'🦋', text:'一只蝴蝶落在了 {player} 的头上，{player} 一动不动站了10秒。解说员：这就是人与自然和谐共处' },
+  { icon:'🧻', text:'{player} 在争顶时被对方拉扯球衣，裁判表示：这很正常。{player}：？？？' },
+  { icon:'📺', text:'转播镜头捕捉到 {team} 的老板在看台上睡着了，嘴巴张得能塞进一个足球' },
+  { icon:'🎵', text:'{player} 的手机掉出来了！原来是女朋友发来的消息。队友围上来起哄，{player} 脸都红了' },
+  { icon:'🦷', text:'{player} 在拼抢中假牙被打掉了！一边捂嘴一边找假牙，比赛被迫暂停。解说员忍笑成功' },
+  { icon:'🖱️', text:'看台上有球迷举着"换教练"的标语，镜头一转主教练正在看手机，假装没看见' },
+  { icon:'🧑‍🤝‍🧑', text:'对方球迷区和主队球迷区开始隔空对骂，保安们一脸生无可恋' }
+];
+
+// ===== 比赛事件模板 =====
 const MATCH_EVENTS_POOL = {
   shot_wide: { icon:'💨', templates:['{player} 远射偏出！','{player} 射门打飞了','{player} 的射门擦柱而出','{player} 凌空抽射打高了','{player} 的一脚射门高出横梁'] },
   shot_saved: { icon:'🧤', templates:['{player} 的射门被 {keeper} 扑出！','{keeper} 神勇扑救！{player} 的射门被化解','{player} 单刀被 {keeper} 挡出','{keeper} 飞身侧扑化解险情','{player} 的劲射被 {keeper} 双拳击出','{keeper} 倒地扑救！精彩！'] },
@@ -12163,6 +12208,26 @@ function generateMatchEvents(homeName, awayName, homeSquad, awaySquad, homeForm,
     events.push({ min:m, type:'possession', side:side, team:team, text: tmpl.replace('{team}', team) });
   }
 
+  // Fun events (2-4 random hilarious events)
+  var funCount = 2 + Math.floor(Math.random()*3);
+  var usedFunIdx = [];
+  for(var i = 0; i < funCount; i++) {
+    var fi; do { fi = Math.floor(Math.random()*FUN_EVENTS.length); } while(usedFunIdx.indexOf(fi) >= 0);
+    usedFunIdx.push(fi);
+    var funEv = FUN_EVENTS[fi];
+    var fm = randMin();
+    var fside = pickSide();
+    var fteam = getTeam(fside);
+    var fsquad = getSquad(fside);
+    var fpick = pickPlayer(fsquad);
+    var ftext = funEv.text;
+    // Replace {player} and {team} if available
+    if(fpick) ftext = ftext.replace('{player}', fpick.name);
+    else ftext = ftext.replace('{player}', '某球员');
+    ftext = ftext.replace('{team}', fteam);
+    events.push({ min:fm, type:'fun', side:'neutral', team:'', text:ftext, funIcon:funEv.icon });
+  }
+
   // Whistle markers
   events.push({ min:45, type:'whistle', side:'neutral', text:'⏱️ 上半场结束' });
   events.push({ min:90, type:'whistle', side:'neutral', text:'⏱️ 全场结束' });
@@ -12211,6 +12276,7 @@ function eventToHTML(e) {
   else if(e.type === 'weather') html = '<div class="match-ev neutral"><span class="ev-icon">🌦️</span><span class="ev-text">' + (e.text||'') + '</span></div>';
   else if(e.type === 'chance') html = '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">🔥</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
   else if(e.type === 'possession') html = '<div class="match-ev ' + cls + '"><span class="ev-time">' + e.min + "'</span><span class=\"ev-icon\">📊</span><span class=\"ev-text\">" + (e.text||'') + '</span></div>';
+  else if(e.type === 'fun') html = '<div class="match-ev neutral" style="background:linear-gradient(90deg,rgba(168,85,247,0.08),rgba(236,72,153,0.08));border-left:3px solid #a855f7;border-radius:6px;padding:8px 10px;margin:4px 0;"><span class="ev-time" style="color:#a855f7;">' + e.min + "'</span><span class=\"ev-icon\">" + (e.funIcon||'🤣') + '</span><span class="ev-text" style="color:#c084fc;">' + (e.text||'') + '</span></div>';
 
   // Insert badge tag before </div> if exists
   if(badgeTag && html) {
