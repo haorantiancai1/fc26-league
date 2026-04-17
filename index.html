@@ -678,8 +678,8 @@ tbody td {
 .match-ev.goal { background: rgba(234,179,8,0.12); border-left-color: var(--gold); font-weight: 600; animation: goalFlash 0.8s ease; }
 .match-ev.red { border-left-color: #ef4444; background: rgba(239,68,68,0.1); }
 .match-ev.injury { border-left-color: #f97316; background: rgba(249,115,22,0.08); }
-.match-ev .ev-time { color: var(--gold); font-weight: 700; min-width: 28px; font-size: 10px; }
-.match-ev .ev-icon { min-width: 18px; text-align: center; font-size: 12px; }
+.match-ev .ev-time { color: var(--gold); font-weight: 700; min-width: 30px; font-size: 11px; }
+.match-ev .ev-icon { min-width: 18px; text-align: center; font-size: 13px; }
 .match-ev .ev-text { flex: 1; color: var(--text); min-width: 0; word-break: break-word; }
 .match-ev .ev-detail { color: var(--text2); font-size: 11px; }
 .match-stats-grid {
@@ -761,7 +761,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '56'; // 当前版本号，每次发版时更新
+  var _cv = '57'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
@@ -12503,7 +12503,7 @@ function eventToHTML(e) {
   // PlayStyle badge tag
   var badgeTag = '';
   if(e.playstyle) {
-    badgeTag = ' <span style="display:block;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1a2e;font-size:10px;font-weight:700;padding:3px 6px;border-radius:10px;margin-top:4px;letter-spacing:0.3px;word-break:break-word;">' + e.playstyle + '</span>';
+    badgeTag = ' <span style="display:block;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1a2e;font-size:9px;font-weight:600;padding:2px 5px;border-radius:10px;margin-top:3px;letter-spacing:0;word-break:break-all;line-height:1.3;">' + e.playstyle + '</span>';
   }
 
   var html = '';
