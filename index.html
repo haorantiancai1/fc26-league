@@ -11815,12 +11815,15 @@ function assignPlaystyleBadges(events, homeSquad, awaySquad) {
     if(!badges) return;
     var rate = BADGE_TRIGGER_RATE[ev.type] || 0.15;
     if(Math.random() > rate) return;
+    // 提取球员名（优先 player 字段，其次 detail 字段）
+    var _pname = ev.player || ev.detail || null;
+    if(_pname && _pname.indexOf(' vs ') >= 0) _pname = _pname.split(' vs ')[0]; // shot_saved: " striker vs keeper"
     // 找到事件关联的球员位置
     var playerPos = null;
-    if(ev.player && ev.ovr) {
+    if(_pname) {
       var side = ev.side;
       var squad = side === 'home' ? homeSquad : awaySquad;
-      var found = squad.find(function(p){ return p.name === ev.player; });
+      var found = squad.find(function(p){ return p.name === _pname; });
       if(found) playerPos = found.position;
     }
     // 筛选位置匹配的徽章
@@ -11830,10 +11833,10 @@ function assignPlaystyleBadges(events, homeSquad, awaySquad) {
     // 根据事件信息生成播报文案
     var _vPool = BADGE_VERBS[badge.name] || { p:['展现了绝技！'], t:['精彩！'], n:['精彩！'] };
     var _verb, _subject;
-    if(ev.player && ev.player !== '未知球员') {
+    if(_pname && _pname !== '未知球员') {
       // 有具体球员名
       _verb = _vPool.p[Math.floor(Math.random() * _vPool.p.length)];
-      _subject = ev.player;
+      _subject = _pname;
     } else if(ev.team) {
       // 只有球队名
       _verb = _vPool.t[Math.floor(Math.random() * _vPool.t.length)];
