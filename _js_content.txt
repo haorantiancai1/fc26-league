@@ -1,0 +1,2235 @@
+<script>
+// ===== EMBEDDED DATA =====
+let TEAMS_DATA;
+try {
+  TEAMS_DATA = [{"rank":1,"team":"曼彻斯特城","team_en":"Manchester City","points":72,"is_player_team":true,"players":[{"name":"多纳鲁马","name_en":"G Donnarumma","position":"GK","overall":90,"market_price":24,"sell_price":8},{"name":"特拉福德","name_en":"J Trafford","position":"GK","overall":78,"market_price":5,"sell_price":2},{"name":"贝蒂内利","name_en":"M Bettinelli","position":"GK","overall":70,"market_price":3,"sell_price":1},{"name":"余庭帅","name_en":"YU TINGSHUAI","position":"RB","overall":91,"is_player":true,"market_price":26,"sell_price":8},{"name":"努内斯","name_en":"M Nunes","position":"RB","overall":81,"market_price":10,"sell_price":3},{"name":"卡博雷","name_en":"I Kaboré","position":"RB","overall":74,"market_price":3,"sell_price":1},{"name":"刘易斯","name_en":"R Lewis","position":"RB","overall":78,"market_price":5,"sell_price":2},{"name":"汉堡","name_en":"Hon Wai","position":"LB","overall":95,"is_player":true,"market_price":34,"sell_price":11},{"name":"奥赖利","name_en":"N O'Reilly","position":"LB","overall":80,"market_price":10,"sell_price":3},{"name":"努里","name_en":"A Aït-Nouri","position":"LB","overall":82,"market_price":10,"sell_price":3},{"name":"迪亚斯","name_en":"R Dias","position":"CB","overall":86,"market_price":20,"sell_price":6},{"name":"格伊","name_en":"M Guéhi","position":"CB","overall":83,"market_price":10,"sell_price":3},{"name":"格瓦迪奥尔","name_en":"J Gvardiol","position":"CB","overall":86,"market_price":20,"sell_price":6},{"name":"胡萨诺夫","name_en":"A Khusanov","position":"CB","overall":80,"market_price":10,"sell_price":3},{"name":"阿莱恩","name_en":"M Alleyne","position":"CB","overall":69,"market_price":3,"sell_price":1},{"name":"亚历山大","name_en":"Alexander","position":"CDM","overall":95,"is_player":true,"market_price":34,"sell_price":11},{"name":"罗德里","name_en":"R Rodri","position":"CDM","overall":89,"market_price":22,"sell_price":7},{"name":"冈萨雷斯","name_en":"N González","position":"CDM","overall":82,"market_price":10,"sell_price":3},{"name":"科瓦契奇","name_en":"K Kovačić","position":"CM","overall":82,"market_price":10,"sell_price":3},{"name":"席尔瓦","name_en":"B Silva","position":"CM","overall":83,"market_price":10,"sell_price":3},{"name":"D. Mukasa","name_en":"D Mukasa","position":"CM","overall":68,"market_price":3,"sell_price":1},{"name":"尼潘","name_en":"S Nypan","position":"CM","overall":72,"market_price":3,"sell_price":1},{"name":"福登","name_en":"P Foden","position":"CAM","overall":86,"market_price":20,"sell_price":6},{"name":"洁世一","name_en":"Isagi","position":"LM","overall":92,"is_player":true,"market_price":28,"sell_price":9},{"name":"切尔基","name_en":"R Cherki","position":"RW","overall":84,"market_price":10,"sell_price":3},{"name":"萨维尼奥","name_en":"V Savinho","position":"RW","overall":83,"market_price":10,"sell_price":3},{"name":"多库","name_en":"J Doku","position":"LW","overall":84,"market_price":10,"sell_price":3},{"name":"马尔穆什","name_en":"O Marmoush","position":"LW","overall":83,"market_price":10,"sell_price":3},{"name":"尚佳星","name_en":"K SHANG","position":"ST","overall":95,"is_player":true,"market_price":34,"sell_price":11},{"name":"哈兰德","name_en":"E Haaland","position":"ST","overall":91,"market_price":26,"sell_price":8}]},{"rank":2,"team":"利物浦","team_en":"Liverpool FC","points":68,"is_player_team":true,"players":[{"name":"魏清泉","name_en":"WEI QINGQUAN","position":"GK","overall":93,"is_player":true,"market_price":30,"sell_price":10},{"name":"阿利松","name_en":"Alisson","position":"GK","overall":88,"market_price":20,"sell_price":6},{"name":"马马尔达什维利","name_en":"G Mamardashvili","position":"GK","overall":83,"market_price":10,"sell_price":3},{"name":"伍德曼","name_en":"F Woodman","position":"GK","overall":71,"market_price":3,"sell_price":1},{"name":"佩奇","name_en":"H Pécsi","position":"GK","overall":70,"market_price":3,"sell_price":1},{"name":"戴维斯","name_en":"H Davies","position":"GK","overall":69,"market_price":3,"sell_price":1},{"name":"余庭帅","name_en":"F Frimpong","position":"RB","overall":83,"market_price":10,"sell_price":3},{"name":"布拉德利","name_en":"C Bradley","position":"RB","overall":80,"market_price":10,"sell_price":3},{"name":"拉姆齐","name_en":"C Ramsay","position":"RB","overall":74,"market_price":3,"sell_price":1},{"name":"卡林顿","name_en":"Carrington","position":"LB","overall":91,"is_player":true,"market_price":26,"sell_price":8},{"name":"凯尔克兹","name_en":"M Kerkez","position":"LB","overall":83,"market_price":10,"sell_price":3},{"name":"罗伯逊","name_en":"A Robertson","position":"LB","overall":81,"market_price":10,"sell_price":3},{"name":"贝克","name_en":"O Beck","position":"LB","overall":74,"market_price":3,"sell_price":1},{"name":"李绥之","name_en":"LI SUIZHI","position":"CB","overall":93,"is_player":true,"market_price":30,"sell_price":10},{"name":"范戴克","name_en":"V Dijk","position":"CB","overall":88,"market_price":20,"sell_price":6},{"name":"科纳特","name_en":"I Konaté","position":"CB","overall":84,"market_price":10,"sell_price":3},{"name":"戈麦斯","name_en":"J Gomez","position":"CB","overall":81,"market_price":10,"sell_price":3},{"name":"威廉姆斯","name_en":"R Williams","position":"CB","overall":72,"market_price":3,"sell_price":1},{"name":"莱奥尼","name_en":"G Leoni","position":"CB","overall":70,"market_price":3,"sell_price":1},{"name":"格拉芬贝赫","name_en":"R Gravenberch","position":"CDM","overall":87,"market_price":20,"sell_price":6},{"name":"远藤航","name_en":"W Endo","position":"CDM","overall":82,"market_price":10,"sell_price":3},{"name":"巴伊切蒂奇","name_en":"S Bajcetic","position":"CDM","overall":81,"market_price":10,"sell_price":3},{"name":"麦康奈尔","name_en":"J McConnell","position":"CDM","overall":77,"market_price":5,"sell_price":2},{"name":"琼斯","name_en":"C Jones","position":"CM","overall":83,"market_price":10,"sell_price":3},{"name":"尼翁西","name_en":"T Nyoni","position":"CM","overall":71,"market_price":3,"sell_price":1},{"name":"古利特","name_en":"R Gullit","position":"CAM","overall":93,"is_legend":true,"market_price":30,"sell_price":10},{"name":"维尔茨","name_en":"F Wirtz","position":"CAM","overall":90,"market_price":24,"sell_price":8},{"name":"加克波","name_en":"C Gakpo","position":"LM","overall":86,"market_price":20,"sell_price":6},{"name":"恩古莫哈","name_en":"R Ngumoh","position":"LM","overall":69,"market_price":3,"sell_price":1},{"name":"高立青","name_en":"LEO.G","position":"RW","overall":89,"is_player":true,"market_price":22,"sell_price":7},{"name":"萨拉赫","name_en":"M Salah","position":"RM","overall":88,"market_price":20,"sell_price":6},{"name":"基耶萨","name_en":"F Chiesa","position":"RM","overall":82,"market_price":10,"sell_price":3},{"name":"罗纳尔迪尼奥","name_en":"R Ronaldinho","position":"LW","overall":96,"is_legend":true,"market_price":36,"sell_price":12},{"name":"德克兰福德","name_en":"Declan Ford","position":"ST","overall":91,"is_player":true,"market_price":26,"sell_price":8},{"name":"伊萨克","name_en":"A Isak","position":"ST","overall":89,"market_price":22,"sell_price":7},{"name":"埃基蒂克","name_en":"H Ekitike","position":"ST","overall":84,"market_price":10,"sell_price":3}]},{"rank":3,"team":"曼彻斯特联","team_en":"Manchester United","points":65,"is_player_team":true,"players":[{"name":"拉门斯","name_en":"S Lammens","position":"GK","overall":81,"market_price":10,"sell_price":3},{"name":"希顿","name_en":"T Heaton","position":"GK","overall":67,"market_price":3,"sell_price":1},{"name":"达洛特","name_en":"D Dalot","position":"RB","overall":79,"market_price":5,"sell_price":2},{"name":"马奎尔","name_en":"H Maguire","position":"CB","overall":80,"market_price":10,"sell_price":3},{"name":"马丁内斯","name_en":"L Martín","position":"CB","overall":81,"market_price":10,"sell_price":3},{"name":"肖","name_en":"L Shaw","position":"CB","overall":79,"market_price":5,"sell_price":2},{"name":"德里赫特","name_en":"M de Ligt","position":"CB","overall":82,"market_price":10,"sell_price":3},{"name":"黑文","name_en":"A Heaven","position":"CB","overall":74,"market_price":3,"sell_price":1},{"name":"弗雷德里克森","name_en":"T Fred","position":"CB","overall":67,"market_price":3,"sell_price":1},{"name":"阿尔约弗里","name_en":"S Aljof","position":"CB","overall":61,"market_price":3,"sell_price":1},{"name":"奥贡尼耶","name_en":"H Ogunneye","position":"RB","overall":63,"market_price":3,"sell_price":1},{"name":"黑微狗","name_en":"H.Wego","position":"CB","overall":88,"is_player":true,"market_price":20,"sell_price":6},{"name":"赖斯","name_en":"D Rice","position":"CDM","overall":88,"market_price":20,"sell_price":6},{"name":"卡塞米罗","name_en":"C Casemiro","position":"CDM","overall":81,"market_price":10,"sell_price":3},{"name":"费尔南德斯","name_en":"B Fernandes","position":"CM","overall":87,"market_price":20,"sell_price":6},{"name":"马伊努","name_en":"K Mainoo","position":"CM","overall":78,"market_price":5,"sell_price":2},{"name":"J. Fletcher","name_en":"J Fletcher","position":"CM","overall":66,"market_price":3,"sell_price":1},{"name":"阿马德","name_en":"N Amad","position":"CAM","overall":80,"market_price":10,"sell_price":3},{"name":"库尼亚","name_en":"M Cunha","position":"CAM","overall":84,"market_price":10,"sell_price":3},{"name":"阿凡提·买买提","name_en":"apandim","position":"LW","overall":91,"is_player":true,"market_price":26,"sell_price":8},{"name":"吴恩菲尔德","name_en":"Wu Anzhuo","position":"CAM","overall":90,"is_player":true,"market_price":24,"sell_price":8},{"name":"哈赛","name_en":"Hasaiyo","position":"RW","overall":90,"is_player":true,"market_price":24,"sell_price":8},{"name":"姆贝乌莫","name_en":"B Mbeumo","position":"RW","overall":86,"market_price":20,"sell_price":6},{"name":"S. Lacey","name_en":"S Lacey","position":"RW","overall":70,"market_price":3,"sell_price":1},{"name":"B. Mantato","name_en":"B Mantato","position":"RW","overall":66,"market_price":3,"sell_price":1},{"name":"马兹拉维","name_en":"N Mazraoui","position":"RB","overall":80,"market_price":10,"sell_price":3},{"name":"王富建","name_en":"FJTY","position":"ST","overall":90,"is_player":true,"market_price":24,"sell_price":8},{"name":"塞什科","name_en":"Š Šeško","position":"ST","overall":81,"market_price":10,"sell_price":3},{"name":"齐尔克泽","name_en":"J Zirkzee","position":"ST","overall":78,"market_price":5,"sell_price":2},{"name":"奥比","name_en":"C Obi","position":"ST","overall":67,"market_price":3,"sell_price":1},{"name":"穆尔豪斯","name_en":"J Moorhouse","position":"CAM","overall":63,"market_price":3,"sell_price":1}]},{"rank":4,"team":"切尔西","team_en":"Chelsea FC","points":61,"is_player_team":true,"players":[{"name":"桑切斯","name_en":"R Sánchez","position":"GK","overall":81,"market_price":10,"sell_price":3},{"name":"约恩森","name_en":"J Jörgensen","position":"GK","overall":78,"market_price":5,"sell_price":2},{"name":"斯洛尼纳","name_en":"G Slonina","position":"GK","overall":70,"market_price":3,"sell_price":1},{"name":"洛","name_en":"T Lowe","position":"GK","overall":66,"market_price":3,"sell_price":1},{"name":"詹姆斯","name_en":"R James","position":"RB","overall":83,"market_price":10,"sell_price":3},{"name":"古斯托","name_en":"M Gusto","position":"RB","overall":80,"market_price":10,"sell_price":3},{"name":"老清","name_en":"LAO.QING","position":"LB","overall":71,"is_player":true,"market_price":3,"sell_price":1},{"name":"库库雷利亚","name_en":"M Cucurella","position":"LB","overall":86,"market_price":20,"sell_price":6},{"name":"哈托","name_en":"J Hato","position":"LB","overall":79,"market_price":5,"sell_price":2},{"name":"威利","name_en":"C Wiley","position":"LB","overall":70,"market_price":3,"sell_price":1},{"name":"王大锤","name_en":"WANG DACHUI","position":"CB","overall":81,"is_player":true,"market_price":10,"sell_price":3},{"name":"阿切安庞","name_en":"J Acheampong","position":"CB","overall":74,"market_price":3,"sell_price":1},{"name":"阿达拉比奥尤","name_en":"T Adarabioyo","position":"CB","overall":78,"market_price":5,"sell_price":2},{"name":"查洛巴","name_en":"T Chalobah","position":"CB","overall":80,"market_price":10,"sell_price":3},{"name":"巴迪亚西勒","name_en":"B Badiashile","position":"CB","overall":76,"market_price":5,"sell_price":2},{"name":"福法纳","name_en":"W Fofana","position":"CB","overall":79,"market_price":5,"sell_price":2},{"name":"科尔威尔","name_en":"L Colwill","position":"CB","overall":81,"market_price":10,"sell_price":3},{"name":"迪奥曼德","name_en":"O Diomande","position":"CB","overall":80,"market_price":10,"sell_price":3},{"name":"萨尔","name_en":"S Sarr","position":"CB","overall":77,"market_price":5,"sell_price":2},{"name":"凯塞多","name_en":"M Caicedo","position":"CDM","overall":88,"market_price":20,"sell_price":6},{"name":"拉维亚","name_en":"R Lavia","position":"CDM","overall":79,"market_price":5,"sell_price":2},{"name":"埃苏戈","name_en":"D Essugo","position":"CDM","overall":76,"market_price":5,"sell_price":2},{"name":"费尔南德斯","name_en":"E Fernández","position":"CM","overall":86,"market_price":20,"sell_price":6},{"name":"桑托斯","name_en":"A Santos","position":"CM","overall":81,"market_price":10,"sell_price":3},{"name":"戴尔","name_en":"K Dyer","position":"CM","overall":66,"market_price":3,"sell_price":1},{"name":"王钰栋","name_en":"W Yudong","position":"CAM","overall":90,"is_player":true,"market_price":24,"sell_price":8},{"name":"迪迪","name_en":"D DICK","position":"LM","overall":88,"is_player":true,"market_price":20,"sell_price":6},{"name":"吉滕斯","name_en":"J Gittens","position":"LM","overall":80,"market_price":10,"sell_price":3},{"name":"内托","name_en":"P Neto","position":"RM","overall":83,"market_price":10,"sell_price":3},{"name":"阎小王","name_en":"YAN WANG","position":"ST","overall":84,"is_player":true,"market_price":10,"sell_price":3},{"name":"佩德罗","name_en":"J Pedro","position":"ST","overall":80,"market_price":10,"sell_price":3},{"name":"德拉普","name_en":"L Delap","position":"ST","overall":79,"market_price":5,"sell_price":2},{"name":"吉乌","name_en":"M Guiu","position":"ST","overall":73,"market_price":3,"sell_price":1}]},{"rank":5,"team":"阿森纳","team_en":"Arsenal","points":61,"is_player_team":false,"players":[{"name":"拉亚","name_en":"David Raya","position":"GK","overall":87,"market_price":20,"sell_price":6},{"name":"凯帕","name_en":"Kepa","position":"GK","overall":79,"market_price":5,"sell_price":2},{"name":"萨卡","name_en":"Bukayo Saka","position":"RW","overall":88,"market_price":20,"sell_price":6},{"name":"加布里埃尔","name_en":"Gabriel","position":"CB","overall":88,"market_price":20,"sell_price":6},{"name":"萨利巴","name_en":"William Saliba","position":"CB","overall":87,"market_price":20,"sell_price":6},{"name":"厄德高","name_en":"Martin Ødegaard","position":"CM","overall":87,"market_price":20,"sell_price":6},{"name":"吉约克雷斯","name_en":"Viktor Gyökeres","position":"ST","overall":87,"market_price":20,"sell_price":6},{"name":"梅里诺","name_en":"Mikel Merino","position":"CM","overall":83,"market_price":10,"sell_price":3},{"name":"祖比门迪","name_en":"Zubimendi","position":"CDM","overall":83,"market_price":10,"sell_price":3},{"name":"辛卡皮","name_en":"Piero Hincapie","position":"CB","overall":83,"market_price":10,"sell_price":3},{"name":"特罗萨德","name_en":"L. Trossard","position":"LW","overall":83,"market_price":10,"sell_price":3},{"name":"本·怀特","name_en":"Benjamin White","position":"RB","overall":83,"market_price":10,"sell_price":3},{"name":"若日尼奥","name_en":"Jorginho","position":"CDM","overall":82,"market_price":10,"sell_price":3},{"name":"帕蒂","name_en":"Thomas Partey","position":"CDM","overall":82,"market_price":10,"sell_price":3},{"name":"热苏斯","name_en":"Gabriel Jesus","position":"ST","overall":82,"market_price":10,"sell_price":3},{"name":"马丁内利","name_en":"Gabriel Martinelli","position":"LW","overall":81,"market_price":10,"sell_price":3},{"name":"刘易斯-斯凯利","name_en":"M. Lewis-Skelly","position":"LB","overall":78,"market_price":5,"sell_price":2},{"name":"卡拉菲奥里","name_en":"R. Calafiori","position":"LB","overall":78,"market_price":5,"sell_price":2},{"name":"莫斯克拉","name_en":"Mosquera","position":"CB","overall":77,"market_price":5,"sell_price":2},{"name":"恩瓦内里","name_en":"Ethan Nwaneri","position":"RW","overall":76,"market_price":5,"sell_price":2}]},{"rank":6,"team":"热刺","team_en":"Tottenham Hotspur","points":59,"is_player_team":false,"players":[{"name":"哈维·西蒙斯","name_en":"Xavi Simons","position":"CAM","overall":84,"market_price":10,"sell_price":3},{"name":"麦迪逊","name_en":"James Maddison","position":"CM","overall":84,"market_price":10,"sell_price":3},{"name":"帕利尼亚","name_en":"João Palhinha","position":"CDM","overall":83,"market_price":10,"sell_price":3},{"name":"范德芬","name_en":"Micky van de Ven","position":"CB","overall":82,"market_price":10,"sell_price":3},{"name":"库卢塞夫斯基","name_en":"Dejan Kulusevski","position":"RM","overall":82,"market_price":10,"sell_price":3},{"name":"本坦库尔","name_en":"Rodrigo Bentancur","position":"CM","overall":81,"market_price":10,"sell_price":3},{"name":"科洛·穆阿尼","name_en":"Randal Kolo Muani","position":"ST","overall":81,"market_price":10,"sell_price":3},{"name":"维尔纳","name_en":"Timo Werner","position":"LM","overall":80,"market_price":10,"sell_price":3},{"name":"乌多吉","name_en":"Destiny Udogie","position":"LB","overall":80,"market_price":10,"sell_price":3},{"name":"库杜斯","name_en":"Mohammed Kudus","position":"RW","overall":80,"market_price":10,"sell_price":3},{"name":"萨尔","name_en":"Pape Matar Sarr","position":"CM","overall":79,"market_price":5,"sell_price":2},{"name":"布伦南·约翰逊","name_en":"Brennan Johnson","position":"RW","overall":79,"market_price":5,"sell_price":2},{"name":"丹索","name_en":"Kevin Danso","position":"CB","overall":79,"market_price":5,"sell_price":2},{"name":"比苏马","name_en":"Yves Bissouma","position":"CDM","overall":78,"market_price":5,"sell_price":2},{"name":"理查利森","name_en":"Richarlison","position":"ST","overall":78,"market_price":5,"sell_price":2},{"name":"斯彭斯","name_en":"Djed Spence","position":"RB","overall":78,"market_price":5,"sell_price":2},{"name":"贝里瓦尔","name_en":"Lucas Bergvall","position":"CM","overall":77,"market_price":5,"sell_price":2},{"name":"特尔","name_en":"Mathys Tel","position":"ST","overall":77,"market_price":5,"sell_price":2},{"name":"格雷","name_en":"Archie Gray","position":"CDM","overall":75,"market_price":5,"sell_price":2},{"name":"金斯基","name_en":"Antonin Kinsky","position":"GK","overall":75,"market_price":5,"sell_price":2},{"name":"本·戴维斯","name_en":"Ben Davies","position":"CB","overall":75,"market_price":5,"sell_price":2},{"name":"奥多贝尔","name_en":"Wilson Odobert","position":"LW","overall":75,"market_price":5,"sell_price":2},{"name":"德拉古辛","name_en":"Radu Dragusin","position":"CB","overall":75,"market_price":5,"sell_price":2},{"name":"高井幸大","name_en":"Kota Takai","position":"CB","overall":72,"market_price":3,"sell_price":1},{"name":"奥斯汀","name_en":"Brandon Austin","position":"GK","overall":67,"market_price":3,"sell_price":1},{"name":"斯卡利特","name_en":"Dane Scarlett","position":"ST","overall":65,"market_price":3,"sell_price":1}]},{"rank":7,"team":"纽卡斯尔联","team_en":"Newcastle United","points":58,"is_player_team":false,"players":[{"name":"吉马良斯","name_en":"Bruno Guimaraes","position":"CM","overall":86,"market_price":20,"sell_price":6},{"name":"托纳利","name_en":"Sandro Tonali","position":"CDM","overall":86,"market_price":20,"sell_price":6},{"name":"乔林顿","name_en":"Joelinton","position":"CM","overall":82,"market_price":10,"sell_price":3},{"name":"舍尔","name_en":"Fabian Schar","position":"CB","overall":82,"market_price":10,"sell_price":3},{"name":"戈登","name_en":"Anthony Gordon","position":"LW","overall":82,"market_price":10,"sell_price":3},{"name":"博特曼","name_en":"Sven Botman","position":"CB","overall":82,"market_price":10,"sell_price":3},{"name":"雅各布·墨菲","name_en":"Jacob Murphy","position":"RW","overall":81,"market_price":10,"sell_price":3},{"name":"波普","name_en":"Nick Pope","position":"GK","overall":81,"market_price":10,"sell_price":3},{"name":"埃兰加","name_en":"Anthony Elanga","position":"RW","overall":81,"market_price":10,"sell_price":3},{"name":"沃尔特马德","name_en":"Nick Woltemade","position":"ST","overall":79,"market_price":5,"sell_price":2},{"name":"伯恩","name_en":"Dan Burn","position":"CB","overall":79,"market_price":5,"sell_price":2},{"name":"蒂亚乌","name_en":"Malick Thiaw","position":"CB","overall":78,"market_price":5,"sell_price":2},{"name":"拉姆塞","name_en":"Jacob Ramsey","position":"LM","overall":78,"market_price":5,"sell_price":2},{"name":"拉姆斯代尔","name_en":"Aaron Ramsdale","position":"GK","overall":77,"market_price":5,"sell_price":2},{"name":"威洛克","name_en":"Joe Willock","position":"CM","overall":76,"market_price":5,"sell_price":2},{"name":"克拉夫特","name_en":"Emil Krafth","position":"CB","overall":73,"market_price":3,"sell_price":1},{"name":"拉塞尔斯","name_en":"J. Lascelles","position":"CB","overall":73,"market_price":3,"sell_price":1},{"name":"米利","name_en":"Lewis Miley","position":"CM","overall":72,"market_price":3,"sell_price":1},{"name":"拉迪","name_en":"John Ruddy","position":"GK","overall":68,"market_price":3,"sell_price":1},{"name":"奥苏拉","name_en":"William Osula","position":"ST","overall":68,"market_price":3,"sell_price":1},{"name":"吉莱斯皮","name_en":"Mark Gillespie","position":"GK","overall":65,"market_price":3,"sell_price":1},{"name":"库奥尔","name_en":"Garang Kuol","position":"LW","overall":64,"market_price":3,"sell_price":1},{"name":"墨菲","name_en":"Alex Murphy","position":"CB","overall":64,"market_price":3,"sell_price":1}]},{"rank":8,"team":"阿斯顿维拉","team_en":"Aston Villa","points":56,"is_player_team":false,"players":[{"name":"马丁内斯","name_en":"E. Martínez","position":"GK","overall":85,"market_price":20,"sell_price":6},{"name":"蒂勒曼斯","name_en":"Youri Tielemans","position":"CM","overall":85,"market_price":20,"sell_price":6},{"name":"沃特金斯","name_en":"Ollie Watkins","position":"ST","overall":84,"market_price":10,"sell_price":3},{"name":"卡马拉","name_en":"Boubacar Kamara","position":"CDM","overall":82,"market_price":10,"sell_price":3},{"name":"托雷斯","name_en":"Pau Torres","position":"CB","overall":82,"market_price":10,"sell_price":3},{"name":"麦金","name_en":"John McGinn","position":"CM","overall":82,"market_price":10,"sell_price":3},{"name":"马特森","name_en":"Ian Maatsen","position":"LB","overall":79,"market_price":5,"sell_price":2},{"name":"奥纳纳","name_en":"Amadou Onana","position":"CDM","overall":79,"market_price":5,"sell_price":2},{"name":"卡什","name_en":"Matty Cash","position":"RB","overall":79,"market_price":5,"sell_price":2},{"name":"盖桑","name_en":"Evann Guessand","position":"RW","overall":79,"market_price":5,"sell_price":2},{"name":"马伦","name_en":"Donyell Malen","position":"RM","overall":79,"market_price":5,"sell_price":2},{"name":"比佐特","name_en":"Marco Bizot","position":"GK","overall":78,"market_price":5,"sell_price":2},{"name":"埃利奥特","name_en":"Harvey Elliott","position":"CAM","overall":78,"market_price":5,"sell_price":2},{"name":"明斯","name_en":"Tyrone Mings","position":"CB","overall":78,"market_price":5,"sell_price":2},{"name":"布恩迪亚","name_en":"E. Buendía","position":"CAM","overall":77,"market_price":5,"sell_price":2},{"name":"巴克利","name_en":"Ross Barkley","position":"CM","overall":77,"market_price":5,"sell_price":2},{"name":"加西亚","name_en":"Andres Garcia","position":"RB","overall":73,"market_price":3,"sell_price":1},{"name":"博加德","name_en":"Lamare Bogarde","position":"CDM","overall":71,"market_price":3,"sell_price":1}]},{"rank":9,"team":"水晶宫","team_en":"Crystal Palace","points":49,"is_player_team":false,"players":[{"name":"埃兹","name_en":"Eberechi Eze","position":"CAM","overall":81,"market_price":10,"sell_price":3},{"name":"亨德森","name_en":"Dean Henderson","position":"GK","overall":81,"market_price":10,"sell_price":3},{"name":"穆尼奥斯","name_en":"Daniel Munoz","position":"RB","overall":80,"market_price":10,"sell_price":3},{"name":"沃尔顿","name_en":"Adam Wharton","position":"CDM","overall":79,"market_price":5,"sell_price":2},{"name":"贝尼特斯","name_en":"Walter Benitez","position":"GK","overall":79,"market_price":5,"sell_price":2},{"name":"萨尔","name_en":"Ismaila Sarr","position":"CAM","overall":79,"market_price":5,"sell_price":2},{"name":"拉克鲁瓦","name_en":"Maxence Lacroix","position":"CB","overall":79,"market_price":5,"sell_price":2},{"name":"米切尔","name_en":"Tyrick Mitchell","position":"LB","overall":78,"market_price":5,"sell_price":2},{"name":"莱尔马","name_en":"Jefferson Lerma","position":"CDM","overall":77,"market_price":5,"sell_price":2},{"name":"镰田大地","name_en":"Daichi Kamada","position":"CM","overall":77,"market_price":5,"sell_price":2},{"name":"杜库雷","name_en":"Cheick Doucoure","position":"CDM","overall":77,"market_price":5,"sell_price":2},{"name":"休斯","name_en":"Will Hughes","position":"CDM","overall":77,"market_price":5,"sell_price":2},{"name":"理查兹","name_en":"Chris Richards","position":"CB","overall":77,"market_price":5,"sell_price":2},{"name":"乌切","name_en":"Chrisantus Uche","position":"ST","overall":76,"market_price":5,"sell_price":2},{"name":"恩凯蒂亚","name_en":"Eddie Nketiah","position":"ST","overall":74,"market_price":3,"sell_price":1},{"name":"索萨","name_en":"Borna Sosa","position":"LB","overall":73,"market_price":3,"sell_price":1},{"name":"拉基-萨基","name_en":"J. Rak-Sakyi","position":"RW","overall":72,"market_price":3,"sell_price":1},{"name":"里亚德","name_en":"Chadi Riad","position":"CB","overall":72,"market_price":3,"sell_price":1},{"name":"德文尼","name_en":"Justin Devenny","position":"CM","overall":71,"market_price":3,"sell_price":1},{"name":"坎沃特","name_en":"Jaydee Canvot","position":"CB","overall":70,"market_price":3,"sell_price":1},{"name":"阿哈马达","name_en":"N. Ahamada","position":"CM","overall":68,"market_price":3,"sell_price":1},{"name":"马修斯","name_en":"Remi Matthews","position":"GK","overall":63,"market_price":3,"sell_price":1},{"name":"科尔哈","name_en":"Caleb Kporha","position":"RB","overall":62,"market_price":3,"sell_price":1}]},{"rank":10,"team":"诺丁汉森林","team_en":"Nottingham Forest","points":47,"is_player_team":false,"players":[{"name":"塞尔斯","name_en":"Matz Sels","position":"GK","overall":83,"market_price":10,"sell_price":3},{"name":"穆里略","name_en":"Murillo","position":"CB","overall":83,"market_price":10,"sell_price":3},{"name":"米伦科维奇","name_en":"N. Milenković","position":"CB","overall":83,"market_price":10,"sell_price":3},{"name":"安德森","name_en":"Elliot Anderson","position":"CDM","overall":80,"market_price":10,"sell_price":3},{"name":"艾纳","name_en":"Ola Aina","position":"RB","overall":80,"market_price":10,"sell_price":3},{"name":"道格拉斯·路易斯","name_en":"Douglas Luiz","position":"CM","overall":80,"market_price":10,"sell_price":3},{"name":"恩多耶","name_en":"Dan Ndoye","position":"LM","overall":79,"market_price":5,"sell_price":2},{"name":"多明格斯","name_en":"N. Domínguez","position":"CDM","overall":79,"market_price":5,"sell_price":2},{"name":"哈德森-奥多伊","name_en":"C. Hudson-Odoi","position":"LM","overall":78,"market_price":5,"sell_price":2},{"name":"内科·威廉姆斯","name_en":"Neco Williams","position":"LB","overall":78,"market_price":5,"sell_price":2},{"name":"巴克瓦","name_en":"Dilane Bakwa","position":"RM","overall":78,"market_price":5,"sell_price":2},{"name":"卡利穆恩多","name_en":"A. Kalimuendo","position":"ST","overall":78,"market_price":5,"sell_price":2},{"name":"津琴科","name_en":"O. Zinchenko","position":"LB","overall":77,"market_price":5,"sell_price":2},{"name":"桑加雷","name_en":"Ibrahim Sangare","position":"CDM","overall":77,"market_price":5,"sell_price":2},{"name":"耶茨","name_en":"Ryan Yates","position":"CDM","overall":77,"market_price":5,"sell_price":2},{"name":"伊戈尔·热苏斯","name_en":"Igor Jesus","position":"ST","overall":77,"market_price":5,"sell_price":2},{"name":"伍德","name_en":"Chris Wood","position":"ST","overall":76,"market_price":5,"sell_price":2},{"name":"哈钦森","name_en":"O. Hutchinson","position":"CAM","overall":75,"market_price":5,"sell_price":2},{"name":"若塔·席尔瓦","name_en":"Jota Silva","position":"RM","overall":75,"market_price":5,"sell_price":2},{"name":"阿沃尼伊","name_en":"Taiwo Awoniyi","position":"ST","overall":75,"market_price":5,"sell_price":2},{"name":"库尼亚","name_en":"Jair Cunha","position":"CB","overall":74,"market_price":3,"sell_price":1},{"name":"博利","name_en":"Willy Boly","position":"CB","overall":73,"market_price":3,"sell_price":1},{"name":"冈恩","name_en":"Angus Gunn","position":"GK","overall":72,"market_price":3,"sell_price":1},{"name":"萨沃纳","name_en":"Nicolo Savona","position":"RB","overall":71,"market_price":3,"sell_price":1},{"name":"阿博特","name_en":"Zach Abbott","position":"CB","overall":60,"market_price":3,"sell_price":1}]},{"rank":11,"team":"埃弗顿","team_en":"Everton","points":45,"is_player_team":false,"players":[{"name":"皮克福德","name_en":"Jordan Pickford","position":"GK","overall":84,"market_price":10,"sell_price":3},{"name":"塔尔科夫斯基","name_en":"James Tarkowski","position":"CB","overall":80,"market_price":10,"sell_price":3},{"name":"恩迪亚耶","name_en":"Iliman Ndiaye","position":"LM","overall":79,"market_price":5,"sell_price":2},{"name":"盖耶","name_en":"Idrissa Gueye","position":"CDM","overall":79,"market_price":5,"sell_price":2},{"name":"布兰斯韦特","name_en":"J. Branthwaite","position":"CB","overall":79,"market_price":5,"sell_price":2},{"name":"麦克尼尔","name_en":"Dwight McNeil","position":"LM","overall":78,"market_price":5,"sell_price":2},{"name":"米科连科","name_en":"V. Mykolenko","position":"LB","overall":78,"market_price":5,"sell_price":2},{"name":"杜斯伯里-霍尔","name_en":"K. Dewsbury-Hall","position":"CM","overall":77,"market_price":5,"sell_price":2},{"name":"巴里","name_en":"Thierno Barry","position":"ST","overall":77,"market_price":5,"sell_price":2},{"name":"加纳","name_en":"James Garner","position":"CDM","overall":76,"market_price":5,"sell_price":2},{"name":"奥布莱恩","name_en":"J. O'Brien","position":"CB","overall":76,"market_price":5,"sell_price":2},{"name":"阿尔卡拉斯","name_en":"Carlos Alcaraz","position":"CAM","overall":75,"market_price":5,"sell_price":2},{"name":"罗尔","name_en":"Merlin Rohl","position":"CAM","overall":74,"market_price":3,"sell_price":1},{"name":"伊罗格布纳姆","name_en":"Tim Iroegbunam","position":"CDM","overall":74,"market_price":3,"sell_price":1},{"name":"迪布林","name_en":"Tyler Dibling","position":"RM","overall":74,"market_price":3,"sell_price":1},{"name":"基恩","name_en":"Michael Keane","position":"CB","overall":73,"market_price":3,"sell_price":1},{"name":"特拉弗斯","name_en":"Mark Travers","position":"GK","overall":72,"market_price":3,"sell_price":1},{"name":"帕特森","name_en":"N. Patterson","position":"RB","overall":71,"market_price":3,"sell_price":1},{"name":"科尔曼","name_en":"Seamus Coleman","position":"RB","overall":70,"market_price":3,"sell_price":1},{"name":"阿兹努","name_en":"Adam Aznou","position":"LB","overall":66,"market_price":3,"sell_price":1}]},{"rank":12,"team":"布莱顿","team_en":"Brighton & Hove Albion","points":43,"is_player_team":false,"players":[{"name":"德屈佩尔","name_en":"Maxim De Cuyper","position":"LB","overall":80,"market_price":10,"sell_price":3},{"name":"卡多格卢","name_en":"Ferdi Kadoglu","position":"RB","overall":79,"market_price":5,"sell_price":2},{"name":"博斯卡利","name_en":"Olivier Boscagli","position":"CB","overall":79,"market_price":5,"sell_price":2},{"name":"费布鲁亨","name_en":"Bart Verbruggen","position":"GK","overall":78,"market_price":5,"sell_price":2},{"name":"维弗","name_en":"Mats Wieffer","position":"CDM","overall":78,"market_price":5,"sell_price":2},{"name":"韦尔贝克","name_en":"Danny Welbeck","position":"ST","overall":78,"market_price":5,"sell_price":2},{"name":"费尔特曼","name_en":"Joel Veltman","position":"RB","overall":78,"market_price":5,"sell_price":2},{"name":"鲁特","name_en":"Georginio Rutter","position":"CAM","overall":77,"market_price":5,"sell_price":2},{"name":"明特","name_en":"Yankuba Minteh","position":"RM","overall":77,"market_price":5,"sell_price":2},{"name":"邓克","name_en":"Lewis Dunk","position":"CB","overall":77,"market_price":5,"sell_price":2},{"name":"范海克","name_en":"Jan Paul van Hecke","position":"CB","overall":76,"market_price":5,"sell_price":2},{"name":"欣谢尔伍德","name_en":"Jack Hinshelwood","position":"CDM","overall":75,"market_price":5,"sell_price":2},{"name":"阿亚里","name_en":"Yasin Ayari","position":"CM","overall":75,"market_price":5,"sell_price":2},{"name":"马奇","name_en":"Solly March","position":"RM","overall":75,"market_price":5,"sell_price":2},{"name":"韦伯斯特","name_en":"Adam Webster","position":"CB","overall":75,"market_price":5,"sell_price":2},{"name":"格鲁达","name_en":"Brajan Gruda","position":"CAM","overall":74,"market_price":3,"sell_price":1},{"name":"戈麦斯","name_en":"Diego Gomez","position":"CM","overall":73,"market_price":3,"sell_price":1},{"name":"斯蒂尔","name_en":"Jason Steele","position":"GK","overall":73,"market_price":3,"sell_price":1},{"name":"米尔纳","name_en":"James Milner","position":"CM","overall":73,"market_price":3,"sell_price":1},{"name":"沃特森","name_en":"Tom Watson","position":"LM","overall":68,"market_price":3,"sell_price":1},{"name":"特恩斯","name_en":"Ed Turns","position":"CB","overall":64,"market_price":3,"sell_price":1},{"name":"麦吉尔","name_en":"Tom McGill","position":"GK","overall":62,"market_price":3,"sell_price":1}]},{"rank":13,"team":"AFC伯恩茅斯","team_en":"AFC Bournemouth","points":39,"is_player_team":false,"players":[{"name":"佩特罗维奇","name_en":"Đ. Petrović","position":"GK","overall":80,"market_price":10,"sell_price":3},{"name":"内托","name_en":"Neto","position":"GK","overall":76,"market_price":5,"sell_price":2},{"name":"保尔森","name_en":"A. Paulsen","position":"GK","overall":71,"market_price":3,"sell_price":1},{"name":"丹尼斯","name_en":"W. Dennis","position":"GK","overall":67,"market_price":3,"sell_price":1},{"name":"麦肯纳","name_en":"C. McKenna","position":"GK","overall":57,"market_price":3,"sell_price":1},{"name":"亚当·史密斯","name_en":"A. Smith","position":"RB","overall":73,"market_price":3,"sell_price":1},{"name":"阿劳霍","name_en":"J. Araujo","position":"RB","overall":74,"market_price":3,"sell_price":1},{"name":"特鲁费尔","name_en":"A. Truffert","position":"LB","overall":77,"market_price":5,"sell_price":2},{"name":"索勒","name_en":"J. Soler","position":"LB","overall":68,"market_price":3,"sell_price":1},{"name":"扎巴尔尼","name_en":"I. Zabarnyi","position":"CB","overall":79,"market_price":5,"sell_price":2},{"name":"塞内西","name_en":"M. Senesi","position":"CB","overall":78,"market_price":5,"sell_price":2},{"name":"希尔","name_en":"J. Hill","position":"CB","overall":71,"market_price":3,"sell_price":1},{"name":"梅帕姆","name_en":"C. Mepham","position":"CB","overall":73,"market_price":3,"sell_price":1},{"name":"贝文","name_en":"O. Bevan","position":"CB","overall":62,"market_price":3,"sell_price":1},{"name":"阿金姆博尼","name_en":"M. Akinmboni","position":"CB","overall":55,"market_price":3,"sell_price":1},{"name":"库克","name_en":"L. Cook","position":"CDM","overall":79,"market_price":5,"sell_price":2},{"name":"亚当斯","name_en":"T. Adams","position":"CDM","overall":79,"market_price":5,"sell_price":2},{"name":"克里斯蒂","name_en":"R. Christie","position":"CDM","overall":79,"market_price":5,"sell_price":2},{"name":"比林","name_en":"P. Billing","position":"CM","overall":75,"market_price":5,"sell_price":2},{"name":"亚历克斯·斯科特","name_en":"A. Scott","position":"CAM","overall":74,"market_price":3,"sell_price":1},{"name":"克鲁伊维特","name_en":"J. Kluivert","position":"CAM","overall":79,"market_price":5,"sell_price":2},{"name":"塞梅尼奥","name_en":"A. Semenyo","position":"RM","overall":80,"market_price":10,"sell_price":3},{"name":"特拉弗斯","name_en":"M. Tavernier","position":"LM","overall":76,"market_price":5,"sell_price":2},{"name":"瓦塔拉","name_en":"D. Ouattara","position":"LM","overall":77,"market_price":5,"sell_price":2},{"name":"西尼斯特拉","name_en":"L. Sinisterra","position":"LM","overall":75,"market_price":5,"sell_price":2},{"name":"特拉奥雷","name_en":"H. Traoré","position":"LM","overall":77,"market_price":5,"sell_price":2},{"name":"布鲁克斯","name_en":"D. Brooks","position":"RM","overall":75,"market_price":5,"sell_price":2},{"name":"法夫尔","name_en":"R. Faivre","position":"RM","overall":76,"market_price":5,"sell_price":2},{"name":"埃瓦尼尔森","name_en":"Evanilson","position":"ST","overall":80,"market_price":10,"sell_price":3},{"name":"于纳尔","name_en":"E. Ünal","position":"ST","overall":77,"market_price":5,"sell_price":2},{"name":"克鲁皮","name_en":"E. Kroupi","position":"ST","overall":74,"market_price":3,"sell_price":1},{"name":"阿隆斯","name_en":"M. Aarons","position":"RB","overall":72,"market_price":3,"sell_price":1},{"name":"杰比森","name_en":"D. Jebbison","position":"ST","overall":65,"market_price":3,"sell_price":1}]},{"rank":14,"team":"布伦特福德","team_en":"Brentford","points":33,"is_player_team":false,"players":[{"name":"姆贝乌莫","name_en":"Bryan Mbeumo","position":"RW","overall":80,"market_price":10,"sell_price":3},{"name":"亨德森","name_en":"Jordan Henderson","position":"CDM","overall":79,"market_price":5,"sell_price":2},{"name":"凯莱赫","name_en":"Caoimhin Kelleher","position":"GK","overall":79,"market_price":5,"sell_price":2},{"name":"柯林斯","name_en":"Nathan Collins","position":"CB","overall":79,"market_price":5,"sell_price":2},{"name":"沙德","name_en":"Kevin Schade","position":"LM","overall":78,"market_price":5,"sell_price":2},{"name":"延森","name_en":"Mathias Jensen","position":"CM","overall":77,"market_price":5,"sell_price":2},{"name":"瓦塔拉","name_en":"Dango Ouattara","position":"LM","overall":77,"market_price":5,"sell_price":2},{"name":"范登伯格","name_en":"Sepp van den Berg","position":"CB","overall":77,"market_price":5,"sell_price":2},{"name":"平诺克","name_en":"Ethan Pinnock","position":"CB","overall":77,"market_price":5,"sell_price":2},{"name":"刘易斯-波特","name_en":"Keane Lewis-Potter","position":"LB","overall":76,"market_price":5,"sell_price":2},{"name":"雅内尔特","name_en":"Vitaly Janelt","position":"CM","overall":76,"market_price":5,"sell_price":2},{"name":"亨利","name_en":"Rico Henry","position":"LB","overall":76,"market_price":5,"sell_price":2},{"name":"阿耶","name_en":"Kristoffer Ajer","position":"RB","overall":75,"market_price":5,"sell_price":2},{"name":"尼尔森","name_en":"Reiss Nelson","position":"RM","overall":75,"market_price":5,"sell_price":2},{"name":"伊戈尔·蒂亚戈","name_en":"Igor Thiago","position":"ST","overall":75,"market_price":5,"sell_price":2},{"name":"奥涅卡","name_en":"Frank Onyeka","position":"CM","overall":74,"market_price":3,"sell_price":1},{"name":"希基","name_en":"Aaron Hickey","position":"RB","overall":74,"market_price":3,"sell_price":1},{"name":"卡瓦略","name_en":"Fabio Carvalho","position":"CAM","overall":74,"market_price":3,"sell_price":1},{"name":"米拉姆博","name_en":"Antoni Milambo","position":"CM","overall":73,"market_price":3,"sell_price":1},{"name":"凯奥德","name_en":"Michael Kayode","position":"RB","overall":73,"market_price":3,"sell_price":1},{"name":"瓦尔德马松","name_en":"Hakon Valdimarsson","position":"GK","overall":68,"market_price":3,"sell_price":1},{"name":"皮尔-哈里斯","name_en":"M. Peart-Harris","position":"RM","overall":67,"market_price":3,"sell_price":1},{"name":"马戈马","name_en":"Paris Maghoma","position":"CM","overall":66,"market_price":3,"sell_price":1},{"name":"考克斯","name_en":"Matthew Cox","position":"GK","overall":65,"market_price":3,"sell_price":1},{"name":"巴尔科姆","name_en":"Ellery Balcombe","position":"GK","overall":63,"market_price":3,"sell_price":1},{"name":"多诺万","name_en":"Romelle Donovan","position":"RM","overall":61,"market_price":3,"sell_price":1}]},{"rank":15,"team":"西汉姆联","team_en":"West Ham United","points":33,"is_player_team":false,"players":[{"name":"鲍恩","name_en":"Jarrod Bowen","position":"RM","overall":82,"market_price":10,"sell_price":3},{"name":"帕奎塔","name_en":"Lucas Paqueta","position":"CM","overall":80,"market_price":10,"sell_price":3},{"name":"菲尔克鲁格","name_en":"Niclas Fullkrug","position":"ST","overall":79,"market_price":5,"sell_price":2},{"name":"绍切克","name_en":"Tomas Soucek","position":"CDM","overall":78,"market_price":5,"sell_price":2},{"name":"托迪博","name_en":"J. Todibo","position":"CB","overall":78,"market_price":5,"sell_price":2},{"name":"威尔逊","name_en":"Callum Wilson","position":"ST","overall":78,"market_price":5,"sell_price":2},{"name":"阿雷奥拉","name_en":"Alphonse Areola","position":"GK","overall":77,"market_price":5,"sell_price":2},{"name":"沃德-普劳斯","name_en":"J. Ward-Prowse","position":"CM","overall":77,"market_price":5,"sell_price":2},{"name":"罗德里格斯","name_en":"Guido Rodriguez","position":"CDM","overall":77,"market_price":5,"sell_price":2},{"name":"基尔曼","name_en":"M. Kilman","position":"CB","overall":77,"market_price":5,"sell_price":2},{"name":"赫尔曼森","name_en":"Mads Hermansen","position":"GK","overall":76,"market_price":5,"sell_price":2},{"name":"费尔南德斯","name_en":"Mateus Fernandes","position":"CAM","overall":76,"market_price":5,"sell_price":2},{"name":"沃克-彼得斯","name_en":"K. Walker-Peters","position":"RB","overall":75,"market_price":5,"sell_price":2},{"name":"马加萨","name_en":"S. Magassa","position":"CDM","overall":73,"market_price":3,"sell_price":1},{"name":"路易斯·吉列尔梅","name_en":"Luis Guilherme","position":"RM","overall":71,"market_price":3,"sell_price":1},{"name":"欧文","name_en":"Andy Irving","position":"CM","overall":70,"market_price":3,"sell_price":1},{"name":"波茨","name_en":"Freddie Potts","position":"CDM","overall":70,"market_price":3,"sell_price":1},{"name":"厄西","name_en":"George Earthy","position":"CAM","overall":67,"market_price":3,"sell_price":1},{"name":"马歇尔","name_en":"Callum Marshall","position":"ST","overall":66,"market_price":3,"sell_price":1},{"name":"摩尔","name_en":"Sean Moore","position":"LM","overall":59,"market_price":3,"sell_price":1},{"name":"奥福德","name_en":"Lewis Orford","position":"CDM","overall":58,"market_price":3,"sell_price":1}]},{"rank":16,"team":"利兹联","team_en":"Leeds United","points":31,"is_player_team":false,"players":[{"name":"佩里","name_en":"Lucas Perri","position":"GK","overall":81,"market_price":10,"sell_price":3},{"name":"施塔赫","name_en":"Anton Stach","position":"CDM","overall":79,"market_price":5,"sell_price":2},{"name":"古德蒙德松","name_en":"G. Gudmundsson","position":"LB","overall":77,"market_price":5,"sell_price":2},{"name":"田中碧","name_en":"Ao Tanaka","position":"CDM","overall":76,"market_price":5,"sell_price":2},{"name":"丹尼尔·詹姆斯","name_en":"Daniel James","position":"RM","overall":76,"market_price":5,"sell_price":2},{"name":"奥卡福尔","name_en":"Noah Okafor","position":"ST","overall":76,"market_price":5,"sell_price":2},{"name":"恩梅查","name_en":"Lukas Nmecha","position":"ST","overall":76,"market_price":5,"sell_price":2},{"name":"安帕杜","name_en":"Ethan Ampadu","position":"CB","overall":75,"market_price":5,"sell_price":2},{"name":"博格尔","name_en":"Jayden Bogle","position":"RB","overall":75,"market_price":5,"sell_price":2},{"name":"朗斯塔夫","name_en":"Sean Longstaff","position":"CM","overall":75,"market_price":5,"sell_price":2},{"name":"皮罗","name_en":"Joel Piroe","position":"ST","overall":75,"market_price":5,"sell_price":2},{"name":"阿伦森","name_en":"B. Aaronson","position":"CAM","overall":74,"market_price":3,"sell_price":1},{"name":"贾斯汀","name_en":"James Justin","position":"RB","overall":74,"market_price":3,"sell_price":1},{"name":"哈里森","name_en":"Jack Harrison","position":"RM","overall":74,"market_price":3,"sell_price":1},{"name":"格鲁夫","name_en":"Ilia Gruev","position":"CDM","overall":74,"market_price":3,"sell_price":1},{"name":"格诺托","name_en":"Wilfried Gnonto","position":"RM","overall":74,"market_price":3,"sell_price":1},{"name":"卡尔弗特-刘易斯","name_en":"D. Calvert-Lewin","position":"ST","overall":74,"market_price":3,"sell_price":1},{"name":"博尔瑙","name_en":"S. Bornauw","position":"CB","overall":74,"market_price":3,"sell_price":1},{"name":"达洛","name_en":"Karl Darlow","position":"GK","overall":72,"market_price":3,"sell_price":1},{"name":"拜拉姆","name_en":"Sam Byram","position":"LB","overall":72,"market_price":3,"sell_price":1},{"name":"梅斯利耶","name_en":"Illan Meslier","position":"GK","overall":72,"market_price":3,"sell_price":1},{"name":"凯恩斯","name_en":"Alex Cairns","position":"GK","overall":63,"market_price":3,"sell_price":1}]},{"rank":17,"team":"桑德兰","team_en":"Sunderland","points":29,"is_player_team":false,"players":[{"name":"扎卡","name_en":"Granit Xhaka","position":"CDM","overall":85,"market_price":20,"sell_price":6},{"name":"莱因尔多","name_en":"Reinildo","position":"LB","overall":79,"market_price":5,"sell_price":2},{"name":"穆基莱","name_en":"Nordi Mukiele","position":"RB","overall":79,"market_price":5,"sell_price":2},{"name":"海特勒伊达","name_en":"L. Geertruida","position":"CB","overall":78,"market_price":5,"sell_price":2},{"name":"阿尔德雷特","name_en":"Omar Alderete","position":"CB","overall":78,"market_price":5,"sell_price":2},{"name":"迪亚拉","name_en":"Habib Diarra","position":"CM","overall":77,"market_price":5,"sell_price":2},{"name":"特劳雷","name_en":"Bertrand Traore","position":"RW","overall":75,"market_price":5,"sell_price":2},{"name":"萨迪基","name_en":"Noah Sadiki","position":"CM","overall":74,"market_price":3,"sell_price":1},{"name":"休姆","name_en":"Trai Hume","position":"RB","overall":74,"market_price":3,"sell_price":1},{"name":"鲁夫斯","name_en":"Robin Roefs","position":"GK","overall":74,"market_price":3,"sell_price":1},{"name":"尼尔","name_en":"Dan Neil","position":"CDM","overall":73,"market_price":3,"sell_price":1},{"name":"塔尔比","name_en":"Chemsdine Talbi","position":"RM","overall":73,"market_price":3,"sell_price":1},{"name":"帕特森","name_en":"A. Patterson","position":"GK","overall":73,"market_price":3,"sell_price":1},{"name":"巴拉德","name_en":"Daniel Ballard","position":"CB","overall":73,"market_price":3,"sell_price":1},{"name":"西尔金","name_en":"Dennis Cirkin","position":"LB","overall":72,"market_price":3,"sell_price":1},{"name":"伊西多尔","name_en":"Wilson Isidor","position":"ST","overall":72,"market_price":3,"sell_price":1},{"name":"梅恩达","name_en":"Eliezer Mayenda","position":"ST","overall":71,"market_price":3,"sell_price":1},{"name":"蒙德尔","name_en":"Romaine Mundle","position":"LM","overall":71,"market_price":3,"sell_price":1},{"name":"奥尼恩","name_en":"L. O'Nien","position":"CB","overall":70,"market_price":3,"sell_price":1},{"name":"贝林厄姆","name_en":"Jobe Bellingham","position":"CM","overall":70,"market_price":3,"sell_price":1},{"name":"姆贝莱","name_en":"T. Pembélé","position":"RB","overall":70,"market_price":3,"sell_price":1},{"name":"里格","name_en":"Chris Rigg","position":"CAM","overall":70,"market_price":3,"sell_price":1},{"name":"波维达","name_en":"Ian Poveda","position":"RM","overall":69,"market_price":3,"sell_price":1},{"name":"耶尔德","name_en":"Leo Hjelde","position":"LB","overall":66,"market_price":3,"sell_price":1},{"name":"巴","name_en":"Abdoullah Ba","position":"RM","overall":66,"market_price":3,"sell_price":1},{"name":"摩尔","name_en":"Simon Moore","position":"GK","overall":66,"market_price":3,"sell_price":1},{"name":"阿莱塞","name_en":"Ajibola Alese","position":"LB","overall":66,"market_price":3,"sell_price":1},{"name":"安德森","name_en":"Joe Anderson","position":"CB","overall":63,"market_price":3,"sell_price":1},{"name":"琼斯","name_en":"Harrison Jones","position":"CAM","overall":59,"market_price":3,"sell_price":1},{"name":"恩努库","name_en":"B. Nna Noukeu","position":"GK","overall":57,"market_price":3,"sell_price":1}]},{"rank":18,"team":"富勒姆","team_en":"Fulham","points":26,"is_player_team":false,"players":[{"name":"莱诺","name_en":"Bernd Leno","position":"GK","overall":80,"market_price":10,"sell_price":3},{"name":"贝格","name_en":"Sander Berge","position":"CDM","overall":79,"market_price":5,"sell_price":2},{"name":"卢基奇","name_en":"Sasa Lukic","position":"CDM","overall":78,"market_price":5,"sell_price":2},{"name":"巴塞伊","name_en":"Calvin Bassey","position":"CB","overall":78,"market_price":5,"sell_price":2},{"name":"安德森","name_en":"J. Andersen","position":"CB","overall":78,"market_price":5,"sell_price":2},{"name":"史密斯·罗","name_en":"E. Smith Rowe","position":"CAM","overall":77,"market_price":5,"sell_price":2},{"name":"希门尼斯","name_en":"Raul Jimenez","position":"ST","overall":77,"market_price":5,"sell_price":2},{"name":"泰特","name_en":"Kenny Tete","position":"RB","overall":76,"market_price":5,"sell_price":2},{"name":"特劳雷","name_en":"Adama Traore","position":"RM","overall":76,"market_price":5,"sell_price":2},{"name":"卡斯塔涅","name_en":"T. Castagne","position":"RB","overall":76,"market_price":5,"sell_price":2},{"name":"威尔逊","name_en":"Harry Wilson","position":"RM","overall":76,"market_price":5,"sell_price":2},{"name":"塞塞尼翁","name_en":"Ryan Sessegnon","position":"LB","overall":75,"market_price":5,"sell_price":2},{"name":"穆尼斯","name_en":"Rodrigo Muniz","position":"ST","overall":75,"market_price":5,"sell_price":2},{"name":"勒孔特","name_en":"B. Lecomte","position":"GK","overall":74,"market_price":3,"sell_price":1},{"name":"凯尔尼","name_en":"Tom Cairney","position":"CM","overall":74,"market_price":3,"sell_price":1},{"name":"昆卡","name_en":"Jorge Cuenca","position":"CB","overall":74,"market_price":3,"sell_price":1},{"name":"里德","name_en":"Harrison Reed","position":"CDM","overall":72,"market_price":3,"sell_price":1},{"name":"金","name_en":"Josh King","position":"CM","overall":68,"market_price":3,"sell_price":1},{"name":"库西·阿萨雷","name_en":"Jonah Kusi Asare","position":"ST","overall":60,"market_price":3,"sell_price":1}]},{"rank":19,"team":"狼队","team_en":"Wolverhampton Wanderers","points":25,"is_player_team":false,"players":[{"name":"库尼亚","name_en":"Matheus Cunha","position":"ST","overall":79,"market_price":5,"sell_price":2},{"name":"阿伊特-努里","name_en":"Rayan Ait-Nouri","position":"LB","overall":79,"market_price":5,"sell_price":2},{"name":"阿巴杜","name_en":"E. Agbadou","position":"CB","overall":79,"market_price":5,"sell_price":2},{"name":"阿罗科达雷","name_en":"T. Arokodare","position":"ST","overall":79,"market_price":5,"sell_price":2},{"name":"克雷伊奇","name_en":"Ladislav Krejci","position":"CB","overall":78,"market_price":5,"sell_price":2},{"name":"阿里亚斯","name_en":"Jhon Arias","position":"RW","overall":78,"market_price":5,"sell_price":2},{"name":"戈麦斯","name_en":"Joao Gomes","position":"CDM","overall":78,"market_price":5,"sell_price":2},{"name":"特林达德","name_en":"Andre Trindade","position":"CDM","overall":78,"market_price":5,"sell_price":2},{"name":"拉森","name_en":"J. Larsen","position":"ST","overall":78,"market_price":5,"sell_price":2},{"name":"若泽·萨","name_en":"Jose Sa","position":"GK","overall":77,"market_price":5,"sell_price":2},{"name":"穆内西","name_en":"M. Munetsi","position":"CM","overall":76,"market_price":5,"sell_price":2},{"name":"约翰斯通","name_en":"Sam Johnstone","position":"GK","overall":76,"market_price":5,"sell_price":2},{"name":"贝勒加德","name_en":"J. Bellegarde","position":"CAM","overall":75,"market_price":5,"sell_price":2},{"name":"黄喜灿","name_en":"Hee Chan Hwang","position":"ST","overall":75,"market_price":5,"sell_price":2},{"name":"托蒂","name_en":"Toti","position":"CB","overall":75,"market_price":5,"sell_price":2},{"name":"查乔亚","name_en":"J. Tchatchoua","position":"RB","overall":74,"market_price":3,"sell_price":1},{"name":"多尔蒂","name_en":"Matt Doherty","position":"CB","overall":74,"market_price":3,"sell_price":1},{"name":"布埃诺","name_en":"Hugo Bueno","position":"LB","overall":74,"market_price":3,"sell_price":1},{"name":"胡弗","name_en":"Ki-Jana Hoever","position":"RB","overall":74,"market_price":3,"sell_price":1},{"name":"沃尔夫","name_en":"D. Wolfe","position":"LB","overall":73,"market_price":3,"sell_price":1},{"name":"洛佩斯","name_en":"Fer Lopez","position":"RW","overall":73,"market_price":3,"sell_price":1},{"name":"戈麦斯","name_en":"Rodrigo Gomes","position":"RW","overall":72,"market_price":3,"sell_price":1},{"name":"本特利","name_en":"Daniel Bentley","position":"GK","overall":71,"market_price":3,"sell_price":1},{"name":"莫斯克拉","name_en":"Yerson Mosquera","position":"CB","overall":70,"market_price":3,"sell_price":1},{"name":"冈萨雷斯","name_en":"Enso Gonzalez","position":"LW","overall":63,"market_price":3,"sell_price":1},{"name":"马内","name_en":"Mateus Mane","position":"ST","overall":60,"market_price":3,"sell_price":1}]},{"rank":20,"team":"伯恩利","team_en":"Burnley","points":22,"is_player_team":false,"players":[{"name":"哈特曼","name_en":"Q. Hartman","position":"LB","overall":77,"market_price":5,"sell_price":2},{"name":"杜布拉夫卡","name_en":"Martin Dubravka","position":"GK","overall":77,"market_price":5,"sell_price":2},{"name":"卡伦","name_en":"Josh Cullen","position":"CDM","overall":76,"market_price":5,"sell_price":2},{"name":"罗伯茨","name_en":"Connor Roberts","position":"RB","overall":75,"market_price":5,"sell_price":2},{"name":"阿姆杜尼","name_en":"Zeki Amdouni","position":"ST","overall":75,"market_price":5,"sell_price":2},{"name":"梅吉布里","name_en":"Hannibal Mejbri","position":"CM","overall":74,"market_price":3,"sell_price":1},{"name":"拉森","name_en":"J. Bruun Larsen","position":"LM","overall":74,"market_price":3,"sell_price":1},{"name":"皮雷斯","name_en":"Lucas Pires","position":"LB","overall":74,"market_price":3,"sell_price":1},{"name":"安东尼","name_en":"Jaidon Anthony","position":"LM","overall":74,"market_price":3,"sell_price":1},{"name":"贝耶","name_en":"Jordan Beyer","position":"CB","overall":74,"market_price":3,"sell_price":1},{"name":"劳伦特","name_en":"Josh Laurent","position":"CDM","overall":73,"market_price":3,"sell_price":1},{"name":"弗莱明","name_en":"Zian Flemming","position":"ST","overall":73,"market_price":3,"sell_price":1},{"name":"乌戈丘库","name_en":"L. Ugochukwu","position":"CDM","overall":73,"market_price":3,"sell_price":1},{"name":"汉弗莱斯","name_en":"B. Humphreys","position":"LB","overall":73,"market_price":3,"sell_price":1},{"name":"图安泽贝","name_en":"Axel Tuanzebe","position":"RB","overall":73,"market_price":3,"sell_price":1},{"name":"特雷索尔","name_en":"Mike Tresor","position":"LM","overall":73,"market_price":3,"sell_price":1},{"name":"沃罗尔","name_en":"Joe Worrall","position":"CB","overall":73,"market_price":3,"sell_price":1},{"name":"福斯特","name_en":"Lyle Foster","position":"ST","overall":72,"market_price":3,"sell_price":1},{"name":"布罗贾","name_en":"Armando Broja","position":"ST","overall":72,"market_price":3,"sell_price":1},{"name":"埃克达尔","name_en":"Hjalmar Ekdal","position":"CB","overall":72,"market_price":3,"sell_price":1},{"name":"德尔克鲁瓦","name_en":"Hannes Delcroix","position":"CB","overall":71,"market_price":3,"sell_price":1},{"name":"巴恩斯","name_en":"Ashley Barnes","position":"ST","overall":70,"market_price":3,"sell_price":1},{"name":"查乌纳","name_en":"Loum Tchaouna","position":"RM","overall":69,"market_price":3,"sell_price":1},{"name":"魏","name_en":"Max Wei","position":"GK","overall":68,"market_price":3,"sell_price":1}]}];
+} catch(e) {
+  console.error('TEAMS_DATA parse error:', e);
+  TEAMS_DATA = [];
+}
+
+// ===== CONSTANTS =====
+const PLAYER_TEAMS = ['切尔西','利物浦','曼联','曼城'];
+const TEAM_COLORS = {
+  '曼彻斯特城': '#6CABDD', '曼城': '#6CABDD',
+  '曼彻斯特联': '#DA291C', '曼联': '#DA291C',
+  '利物浦': '#C8102E', '切尔西': '#034694', '阿森纳': '#EF0107', '热刺': '#132257',
+  '纽卡斯尔联': '#241F20', '阿斯顿维拉': '#670E36', '水晶宫': '#1B458F',
+  '诺丁汉森林': '#DD0000', '埃弗顿': '#003399', '布莱顿': '#0057B8',
+  'AFC伯恩茅斯': '#DA291C', '布伦特福德': '#e30613', '西汉姆联': '#7A263A',
+  '利兹联': '#FFCD00', '桑德兰': '#EB172B', '富勒姆': '#000000',
+  '狼队': '#FDB913', '伯恩利': '#6C1D45'
+};
+
+const FORMATIONS = {
+  '4-4-2': [[50,90],[85,75],[70,75],[30,75],[15,75],[85,50],[65,50],[35,50],[15,50],[70,30],[30,30]],
+  '4-3-3': [[50,90],[85,75],[70,75],[30,75],[15,75],[65,55],[50,55],[35,55],[85,30],[50,25],[15,30]],
+  '4-2-3-1': [[50,90],[85,75],[70,75],[30,75],[15,75],[60,58],[40,58],[75,38],[50,35],[25,38],[50,22]],
+  '3-5-2': [[50,90],[75,78],[50,78],[25,78],[85,55],[65,50],[50,45],[35,50],[15,55],[65,25],[35,25]],
+  '3-4-3': [[50,90],[75,78],[50,78],[25,78],[80,52],[55,52],[35,52],[15,52],[75,28],[50,22],[25,28]],
+  '4-1-4-1': [[50,90],[85,75],[70,75],[30,75],[15,75],[50,62],[80,45],[60,45],[40,45],[20,45],[50,25]],
+  '4-5-1': [[50,90],[85,75],[70,75],[30,75],[15,75],[80,52],[62,48],[50,40],[38,48],[20,52],[50,22]],
+  '4-3-2-1': [[50,90],[85,75],[70,75],[30,75],[15,75],[65,58],[50,58],[35,58],[65,38],[35,38],[50,22]],
+  '5-3-2': [[50,90],[85,75],[65,78],[35,78],[15,75],[75,55],[50,52],[25,55],[65,25],[35,25]],
+  '5-4-1': [[50,90],[85,75],[65,78],[35,78],[15,75],[75,52],[55,48],[45,48],[35,52],[15,48],[50,22]],
+  '4-4-1-1': [[50,90],[85,75],[70,75],[30,75],[15,75],[80,50],[60,50],[40,50],[20,50],[50,35],[50,20]],
+  '4-2-2-2': [[50,90],[85,75],[70,75],[30,75],[15,75],[60,58],[40,58],[68,38],[32,38],[68,22],[32,22]],
+};
+
+// ===== STATE =====
+let state = {
+  budgets: JSON.parse(localStorage.getItem('fc26_budgets') || 'null') || {
+    '切尔西': { balance:50, initialPoints:50, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] },
+    '曼城': { balance:50, initialPoints:50, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] },
+    '利物浦': { balance:50, initialPoints:50, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] },
+    '曼联': { balance:50, initialPoints:50, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] },
+  },
+  bteams: JSON.parse(localStorage.getItem('fc26_bteams') || 'null') || {
+    '切尔西': { name:'', demoted:[] },
+    '曼城': { name:'', demoted:[] },
+    '利物浦': { name:'', demoted:[] },
+    '曼联': { name:'', demoted:[] },
+  },
+  selectedTeam: null,
+  tacticsTeam: null,
+  tacticsFormation: '4-3-3',
+  tacticsSquad: [],
+  pitchSlots: [],
+  selectedSlotIdx: null,
+  matchHomeFormation: '4-3-3',
+  matchAwayFormation: '4-3-3',
+  matchHomeSquad: [],
+  matchAwaySquad: [],
+  awards: JSON.parse(localStorage.getItem('fc26_awards') || 'null') || [],
+  pendingOps: JSON.parse(localStorage.getItem('fc26_pendingOps') || 'null') || [],
+};
+
+function saveState() {
+  localStorage.setItem('fc26_budgets', JSON.stringify(state.budgets));
+  localStorage.setItem('fc26_bteams', JSON.stringify(state.bteams));
+  localStorage.setItem('fc26_awards', JSON.stringify(state.awards));
+  localStorage.setItem('fc26_pendingOps', JSON.stringify(state.pendingOps));
+}
+
+// ===== LOGIN =====
+// Auto-migrate: clear old data if version changed
+const APP_VERSION = 'v15-web-fix1'; // 2026-04-15: fix team name mapping
+if(localStorage.getItem('fc26_version') !== APP_VERSION) {
+  localStorage.removeItem('fc26_budgets');
+  localStorage.removeItem('fc26_bteams');
+  localStorage.removeItem('fc26_pending');
+  localStorage.removeItem('fc26_user');
+  localStorage.removeItem('fc26_awards');
+  localStorage.removeItem('fc26_pendingOps');
+  localStorage.setItem('fc26_version', APP_VERSION);
+}
+
+// Hardcoded accounts for web deployment
+const ACCOUNTS = {
+  '浩然':       { password: '123456', team: '__host__',   name: '浩然' },
+  '切尔西':     { password: '123456', team: '切尔西',     name: '切尔西管理员' },
+  '利物浦':     { password: '123456', team: '利物浦',     name: '利物浦管理员' },
+  '曼联':       { password: '123456', team: '曼联',       name: '曼联管理员' },
+  '曼城':       { password: '123456', team: '曼城',       name: '曼城管理员' },
+};
+
+let currentUser = JSON.parse(localStorage.getItem('fc26_user') || 'null');
+
+function doLogin() {
+  const account = document.getElementById('login-name').value.trim().toLowerCase();
+  const password = document.getElementById('login-pass').value;
+  if(!account) { alert('请输入账号'); return; }
+  if(!password) { alert('请输入密码'); return; }
+  const acc = ACCOUNTS[account];
+  if(!acc || acc.password !== password) { alert('账号或密码错误'); return; }
+  currentUser = { name: acc.name, team: acc.team, isHost: acc.team === '__host__' };
+  localStorage.setItem('fc26_user', JSON.stringify(currentUser));
+  showLoginUI();
+  document.querySelector('.nav button').click();
+}
+
+function doLogout() {
+  currentUser = null;
+  localStorage.removeItem('fc26_user');
+  document.getElementById('login-overlay').classList.remove('hidden');
+  document.getElementById('user-badge').style.display = 'none';
+}
+
+function showLoginUI() {
+  if(!currentUser) {
+    document.getElementById('login-overlay').classList.remove('hidden');
+    document.getElementById('user-badge').style.display = 'none';
+    return;
+  }
+  document.getElementById('login-overlay').classList.add('hidden');
+  const badge = document.getElementById('user-badge');
+  badge.style.display = 'inline-flex';
+  document.getElementById('user-avatar').textContent = currentUser.name[0];
+  document.getElementById('user-name').textContent = currentUser.name + (currentUser.isHost ? ' 👑' : ' · ' + currentUser.team);
+
+  // Show/hide tabs based on role
+  document.getElementById('nav-budget').style.display = '';
+  document.getElementById('nav-awards').style.display = currentUser.isHost ? '' : 'none';
+  document.getElementById('nav-settle').style.display = currentUser.isHost ? '' : 'none';
+  document.getElementById('nav-admin').style.display = currentUser.isHost ? '' : 'none';
+
+  // Re-init awards form when host logs in (dropdowns need currentUser context)
+  if(currentUser.isHost) {
+    initAwards();
+    renderBudget();
+  }
+
+  // Render budget for the user's team
+  renderBudget();
+  updatePendingBadge();
+}
+
+function canOperate(teamName) {
+  if(!currentUser) return false;
+  return currentUser.isHost || currentUser.team === teamName;
+}
+
+function updatePendingBadge() {
+  const count = (state.pendingOps || []).length;
+  const badge = document.getElementById('pending-count');
+  if(badge) badge.textContent = count;
+}
+
+// ===== NAVIGATION =====
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(event && event.target) event.target.classList.add('active');
+  if(id === 'db') { renderQuickAccount(); filterPlayers(); }
+  if(id === 'budget') { renderBudget(); }
+  if(id === 'settle') { renderSettlement(); renderPendingOps(); }
+  if(id === 'admin') { initAdminPanel(); }
+}
+
+// ===== PLAYER DATABASE =====
+// Team name mapping: TEAMS_DATA uses full names, PLAYER_TEAMS uses short names
+const TEAM_NAME_MAP = { '曼彻斯特城': '曼城', '曼彻斯特联': '曼联' };
+const TEAM_NAME_UNMAP = { '曼城': '曼彻斯特城', '曼联': '曼彻斯特联' };
+function resolveTeamName(name) { return TEAM_NAME_MAP[name] || name; }
+function fullTeamName(short) { return TEAM_NAME_UNMAP[short] || short; }
+
+function getAllPlayers() {
+  let players = [];
+  TEAMS_DATA.forEach(t => {
+    t.players.forEach(p => {
+      players.push({ ...p, team: resolveTeamName(t.team), team_en: t.team_en, isPlayerTeam: t.is_player_team });
+    });
+  });
+  return players;
+}
+
+function initDB() {
+  const allP = getAllPlayers();
+  const positions = [...new Set(allP.map(p => p.position))].sort();
+  const posSelect = document.getElementById('filter-pos');
+  positions.forEach(pos => { const o = document.createElement('option'); o.value=pos; o.textContent=pos; posSelect.appendChild(o); });
+  
+  const teams = TEAMS_DATA.map(t => resolveTeamName(t.team));
+  const teamSelect = document.getElementById('filter-team');
+  teams.forEach(t => { const o = document.createElement('option'); o.value=t; o.textContent=t; teamSelect.appendChild(o); });
+  
+  [75,80,85,90,95].forEach(v => {
+    ['min','max'].forEach(suffix => {
+      const sel = document.getElementById('filter-ovr-'+suffix);
+      const o = document.createElement('option'); o.value=v; o.textContent=v+'+能力'; sel.appendChild(o);
+    });
+  });
+  [5,10,15,20,25,30].forEach(v => {
+    const sel = document.getElementById('filter-price-min');
+    const o = document.createElement('option'); o.value=v; o.textContent=v+'+点'; sel.appendChild(o);
+  });
+
+  // Team tabs
+  const tabsEl = document.getElementById('team-tabs');
+  const allTab = document.createElement('div');
+  allTab.className = 'team-tab active'; allTab.textContent = '全部球队';
+  allTab.onclick = () => { state.selectedTeam=null; document.querySelectorAll('.team-tab').forEach(t=>t.classList.remove('active')); allTab.classList.add('active'); filterPlayers(); };
+  tabsEl.appendChild(allTab);
+  teams.forEach(t => {
+    const tab = document.createElement('div');
+    const teamData = TEAMS_DATA.find(td => td.team === fullTeamName(t));
+    if(teamData && teamData.is_player_team) tab.className = 'team-tab player-team';
+    else tab.className = 'team-tab';
+    tab.textContent = t;
+    tab.onclick = () => { state.selectedTeam=t; document.querySelectorAll('.team-tab').forEach(tb=>tb.classList.remove('active')); tab.classList.add('active'); filterPlayers(); };
+    tabsEl.appendChild(tab);
+  });
+
+  // Stats
+  const playerCount = allP.filter(p => p.is_player).length;
+  const legendCount = allP.filter(p => p.is_legend).length;
+  const avgOvr = (allP.reduce((s,p) => s+p.overall, 0) / allP.length).toFixed(1);
+  document.getElementById('db-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-val" style="color:var(--accent)">${allP.length}</div><div class="stat-label">总球员数</div></div>
+    <div class="stat-card"><div class="stat-val" style="color:var(--gold)">${playerCount}</div><div class="stat-label">玩家自建</div></div>
+    <div class="stat-card"><div class="stat-val" style="color:var(--accent2)">${legendCount}</div><div class="stat-label">传奇球员</div></div>
+    <div class="stat-card"><div class="stat-val">${avgOvr}</div><div class="stat-label">平均能力</div></div>
+    <div class="stat-card"><div class="stat-val">20</div><div class="stat-label">球队数</div></div>
+  `;
+
+  filterPlayers();
+}
+
+function filterPlayers() {
+  let players = getAllPlayers();
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const pos = document.getElementById('filter-pos').value;
+  const team = document.getElementById('filter-team').value;
+  const ovrMin = parseInt(document.getElementById('filter-ovr-min').value) || 0;
+  const ovrMax = parseInt(document.getElementById('filter-ovr-max').value) || 99;
+  const priceMin = parseInt(document.getElementById('filter-price-min').value) || 0;
+
+  if(search) players = players.filter(p => p.name.toLowerCase().includes(search) || p.name_en.toLowerCase().includes(search));
+  if(pos) players = players.filter(p => p.position.includes(pos));
+  if(team) players = players.filter(p => p.team === team);
+  if(state.selectedTeam) players = players.filter(p => p.team === state.selectedTeam);
+  players = players.filter(p => p.overall >= ovrMin && p.overall <= ovrMax);
+  if(priceMin) players = players.filter(p => p.market_price >= priceMin);
+
+  players.sort((a,b) => b.overall - a.overall);
+
+  const tbody = document.getElementById('player-tbody');
+  const myTeam = currentUser && !currentUser.isHost ? currentUser.team : null;
+
+  tbody.innerHTML = players.map((p, pi) => {
+    let tags = '';
+    if(p.is_player) tags += '<span class="tag tag-player">玩家</span>';
+    if(p.is_legend) tags += '<span class="tag tag-legend">传奇</span>';
+    let rowClass = p.is_player ? 'player-row' : (p.is_legend ? 'legend-row' : '');
+    const _idx = regPlayer(p, 'db_' + p.team + '_' + pi);
+    
+    // Action buttons in player database
+    let actions = '<span style="color:var(--text2);font-size:11px;">—</span>';
+    if(currentUser) {
+      if(currentUser.isHost) {
+        // Host has global control - show buy/sell for any team's players
+        if(PLAYER_TEAMS.includes(p.team)) {
+          actions = `<div style="display:flex;gap:3px;flex-wrap:wrap;">
+            ${!p.is_player ? `<button class="btn btn-sm" style="font-size:10px;padding:2px 6px;color:var(--green);border-color:var(--green);" onclick="hostSellPlayer('${_idx}')">售AI +${p.sell_price}</button>` : ''}
+            <button class="btn btn-sm" style="font-size:10px;padding:2px 6px;color:var(--accent);border-color:var(--accent);" onclick="hostBuyPlayer('${_idx}')">购入→选队</button>
+            <button class="btn btn-sm" style="font-size:10px;padding:2px 6px;color:#a78bfa;border-color:#a78bfa;" onclick="quickP2PSell('${_idx}','${p.team}')">售玩家队</button>
+          </div>`;
+        } else {
+          // AI team player - host can buy for any team
+          actions = `<button class="btn btn-sm" style="font-size:10px;padding:2px 6px;color:var(--red);border-color:var(--red);" onclick="hostBuyPlayer('${_idx}')">购入→选队 -${p.market_price}</button>`;
+        }
+      } else if(myTeam && p.team !== myTeam && PLAYER_TEAMS.includes(myTeam)) {
+        // Buy from other team
+        if(PLAYER_TEAMS.includes(p.team)) {
+          // From another player team - player-to-player trade
+          actions = `<button class="btn btn-sm" style="color:var(--accent);border-color:var(--accent);font-size:11px;padding:2px 8px;" onclick="quickP2P('${_idx}','${myTeam}')">🔄 玩家交易</button>`;
+        } else {
+          // From AI team
+          actions = `<button class="btn btn-sm" style="color:var(--red);border-color:var(--red);font-size:11px;padding:2px 8px;" onclick="quickBuy('${_idx}','${myTeam}')">购入 -${p.market_price}点</button>`;
+        }
+      } else if(myTeam && p.team === myTeam) {
+        // Sell own team player
+        actions = `<div style="display:flex;gap:4px;flex-wrap:wrap;">
+          ${!p.is_player ? `<button class="btn btn-sm" style="color:var(--green);border-color:var(--green);font-size:10px;padding:2px 6px;" onclick="quickSell('${_idx}','${myTeam}')">售AI +${p.sell_price}</button>` : ''}
+          <button class="btn btn-sm" style="color:var(--accent);border-color:var(--accent);font-size:10px;padding:2px 6px;" onclick="quickP2PSell('${_idx}','${myTeam}')">售给玩家队</button>
+        </div>`;
+      }
+    }
+    
+    return `<tr class="${rowClass}"><td><strong>${p.name}</strong><br><span style="color:var(--text2);font-size:11px">${p.name_en}</span></td><td style="color:var(--accent)">${p.position}</td><td><strong>${p.overall}</strong></td><td style="color:var(--gold)">${p.market_price}点</td><td>${p.sell_price}点</td><td>${actions}</td><td>${tags}</td></tr>`;
+  }).join('');
+
+  document.getElementById('player-count').textContent = `显示 ${players.length} / ${getAllPlayers().length} 名球员`;
+}
+
+function resetFilters() {
+  document.getElementById('search-input').value = '';
+  document.getElementById('filter-pos').value = '';
+  document.getElementById('filter-team').value = '';
+  document.getElementById('filter-ovr-min').value = '';
+  document.getElementById('filter-ovr-max').value = '';
+  document.getElementById('filter-price-min').value = '';
+  state.selectedTeam = null;
+  document.querySelectorAll('.team-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.team-tab').classList.add('active');
+  filterPlayers();
+}
+
+// ===== TACTICS BOARD =====
+function initTactics() {
+  const btnsEl = document.getElementById('formation-btns');
+  Object.keys(FORMATIONS).forEach(f => {
+    const btn = document.createElement('button');
+    btn.className = 'formation-btn' + (f === state.tacticsFormation ? ' active' : '');
+    btn.textContent = f;
+    btn.onclick = () => {
+      state.tacticsFormation = f;
+      state.selectedSlotIdx = null;
+      document.querySelectorAll('.formation-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFormation();
+    };
+    btnsEl.appendChild(btn);
+  });
+
+  const teamSelect = document.getElementById('tactics-team-select');
+  TEAMS_DATA.forEach(t => {
+    const o = document.createElement('option');
+    o.value = t.team; o.textContent = t.team + (t.is_player_team ? ' ⭐' : '');
+    teamSelect.appendChild(o);
+  });
+  teamSelect.value = '切尔西';
+  loadTacticsTeam();
+}
+
+function loadTacticsTeam() {
+  const teamName = document.getElementById('tactics-team-select').value;
+  state.tacticsTeam = teamName;
+  state.selectedSlotIdx = null;
+  const team = TEAMS_DATA.find(t => t.team === teamName);
+  const squad = [...team.players].sort((a,b) => b.overall - a.overall);
+  state.tacticsSquad = squad;
+  
+  const list = document.getElementById('squad-list');
+  list.innerHTML = squad.map((p, idx) =>
+    `<div class="squad-item" data-player-idx="${idx}" onclick="swapPlayerFromSquad(${idx})">
+      <span class="pos">${p.position}</span>
+      <span class="ovr">${p.overall}</span>
+      <span class="name">${p.name}${p.is_player?' ⭐':p.is_legend?' 🏛️':''}</span>
+      <span class="spr">${p.market_price}点</span>
+    </div>`
+  ).join('');
+  
+  applyFormation();
+}
+
+function swapPlayerFromSquad(pIdx) {
+  if(state.selectedSlotIdx === null) {
+    // No slot selected - select this player first (will be placed on next slot click)
+    state._pendingPlayerIdx = pIdx;
+    document.querySelectorAll('#squad-list .squad-item').forEach(el => el.style.background = '');
+    document.querySelectorAll('#squad-list .squad-item')[pIdx].style.background = 'rgba(250,204,21,0.15)';
+    updatePitchHint('已选中替补球员，点击场上位置放入');
+    return;
+  }
+  
+  // A slot is selected - place player there
+  const slotIdx = state.selectedSlotIdx;
+  const currentPIdx = state.pitchSlots[slotIdx].playerIdx;
+  
+  state.pitchSlots[slotIdx].playerIdx = pIdx;
+  state.selectedSlotIdx = null;
+  state._pendingPlayerIdx = null;
+  applyFormation();
+  updatePitchHint('');
+}
+
+function swapPlayerFromPitch(slotIdx) {
+  if(state.selectedSlotIdx === null) {
+    // Select this slot
+    state.selectedSlotIdx = slotIdx;
+    applyFormation();
+    updatePitchHint('已选中场上球员，点击替补球员替换 / 点击另一个场上球员交换');
+    return;
+  }
+  
+  if(state.selectedSlotIdx === slotIdx) {
+    // Deselect
+    state.selectedSlotIdx = null;
+    applyFormation();
+    updatePitchHint('');
+    return;
+  }
+  
+  // Swap two pitch players
+  const tmp = state.pitchSlots[state.selectedSlotIdx].playerIdx;
+  state.pitchSlots[state.selectedSlotIdx].playerIdx = state.pitchSlots[slotIdx].playerIdx;
+  state.pitchSlots[slotIdx].playerIdx = tmp;
+  state.selectedSlotIdx = null;
+  state._pendingPlayerIdx = null;
+  applyFormation();
+  updatePitchHint('');
+}
+
+function removePlayerFromPitch(slotIdx) {
+  state.pitchSlots[slotIdx].playerIdx = null;
+  state.selectedSlotIdx = null;
+  state._pendingPlayerIdx = null;
+  applyFormation();
+  updatePitchHint('');
+}
+
+function updatePitchHint(text) {
+  document.getElementById('pitch-hint').textContent = text;
+}
+
+function applyFormation() {
+  const form = FORMATIONS[state.tacticsFormation];
+  if(!form) return;
+  document.getElementById('tactics-formation-label').textContent = state.tacticsFormation;
+  
+  // Save existing assignments
+  const saved = state.pitchSlots.map(s => s ? s.playerIdx : null);
+  
+  state.pitchSlots = [];
+  const container = document.getElementById('pitch-players');
+  container.innerHTML = '';
+  
+  const color = TEAM_COLORS[state.tacticsTeam] || '#22d3ee';
+  const squad = state.tacticsSquad || [];
+  
+  form.forEach((pos, i) => {
+    let pIdx = null;
+    if(saved[i] !== null && saved[i] !== undefined && squad[saved[i]]) {
+      pIdx = saved[i];
+    } else {
+      const usedIdxs = new Set(state.pitchSlots.filter(s => s.playerIdx !== null).map(s => s.playerIdx));
+      const autoP = squad.findIndex((p, idx) => !usedIdxs.has(idx));
+      if(autoP >= 0) pIdx = autoP;
+    }
+    
+    state.pitchSlots[i] = { x: pos[0], y: pos[1], playerIdx: pIdx };
+    
+    if(pIdx !== null && squad[pIdx]) {
+      const player = squad[pIdx];
+      const el = document.createElement('div');
+      el.className = 'pitch-player' + (state.selectedSlotIdx === i ? ' selected' : '');
+      el.style.left = pos[0] + '%';
+      el.style.top = pos[1] + '%';
+      el.style.background = color;
+      el.onclick = () => swapPlayerFromPitch(i);
+      el.innerHTML = `
+        <div class="povr">${player.overall}</div>
+        <div class="ppos">${player.position}</div>
+        <div class="pname">${player.name}</div>
+        <div class="pprice">${player.market_price}点</div>
+      `;
+      
+      // Right-click to remove
+      el.addEventListener('contextmenu', (e) => { e.preventDefault(); removePlayerFromPitch(i); });
+      
+      container.appendChild(el);
+    } else {
+      const slot = document.createElement('div');
+      slot.className = 'pitch-slot' + (state.selectedSlotIdx === i ? ' highlight' : '');
+      slot.style.left = pos[0] + '%';
+      slot.style.top = pos[1] + '%';
+      slot.textContent = '+';
+      slot.onclick = () => {
+        if(state._pendingPlayerIdx !== null && state._pendingPlayerIdx !== undefined) {
+          state.pitchSlots[i].playerIdx = state._pendingPlayerIdx;
+          state._pendingPlayerIdx = null;
+          state.selectedSlotIdx = null;
+          applyFormation();
+          updatePitchHint('');
+        } else {
+          swapPlayerFromPitch(i);
+        }
+      };
+      container.appendChild(slot);
+    }
+  });
+  
+  // Update squad list dimming
+  const onPitchIdxs = new Set(state.pitchSlots.filter(s => s.playerIdx !== null).map(s => s.playerIdx));
+  document.querySelectorAll('#squad-list .squad-item').forEach(el => {
+    const idx = parseInt(el.dataset.playerIdx);
+    el.classList.toggle('on-pitch', onPitchIdxs.has(idx));
+    el.style.background = '';
+  });
+}
+
+function clearPitch() {
+  if(state.pitchSlots) state.pitchSlots.forEach(s => s.playerIdx = null);
+  state.selectedSlotIdx = null;
+  state._pendingPlayerIdx = null;
+  applyFormation();
+  updatePitchHint('');
+}
+
+// ===== MATCH SIMULATOR =====
+// Formation matchup table (real football tactical relationships)
+const FORMATION_MATCHUP = {
+  '4-3-3':  { strong: ['4-4-2','5-3-2','3-4-3'], weak: ['4-2-3-1','4-5-1','3-5-2'] },
+  '4-4-2':  { strong: ['4-3-3','3-5-2','4-1-4-1'], weak: ['4-5-1','4-2-3-1','3-4-3'] },
+  '4-2-3-1':{ strong: ['4-3-3','3-5-2','4-4-2'], weak: ['4-4-1-1','5-4-1','4-1-4-1'] },
+  '4-5-1':  { strong: ['4-4-2','4-3-3','3-4-3'], weak: ['4-2-3-1','4-3-2-1','5-3-2'] },
+  '3-5-2':  { strong: ['4-3-3','4-4-2','4-5-1'], weak: ['4-2-3-1','5-3-2','4-4-1-1'] },
+  '3-4-3':  { strong: ['4-5-1','5-3-2','4-4-2'], weak: ['4-3-3','4-2-3-1','3-5-2'] },
+  '5-3-2':  { strong: ['4-3-3','3-5-2','4-4-2'], weak: ['4-2-3-1','3-4-3','4-1-4-1'] },
+  '5-4-1':  { strong: ['4-3-3','4-2-3-1','3-4-3'], weak: ['4-4-2','3-5-2','4-5-1'] },
+  '4-1-4-1':{ strong: ['4-2-3-1','3-5-2','5-3-2'], weak: ['4-4-2','4-5-1','3-4-3'] },
+  '4-4-1-1':{ strong: ['4-2-3-1','5-3-2','3-5-2'], weak: ['4-3-3','4-4-2','4-5-1'] },
+  '4-3-2-1':{ strong: ['4-4-2','4-5-1','3-4-3'], weak: ['4-3-3','4-2-3-1','5-4-1'] }
+};
+
+function getFormationBonus(myForm, oppForm) {
+  const m = FORMATION_MATCHUP[myForm];
+  if(!m) return 0;
+  if(m.strong && m.strong.includes(oppForm)) return 3;
+  if(m.weak && m.weak.includes(oppForm)) return -3;
+  return 0;
+}
+
+function getPositionBonus(squad, formation) {
+  let bonus = 0;
+  squad.forEach(p => {
+    const pos = p.position;
+    // Position-formation synergy
+    if(formation.includes('5') && (pos==='LM'||pos==='RM'||pos==='LW'||pos==='RW'||pos==='LWB'||pos==='RWB')) bonus += 0.5;
+    if(formation.includes('3') && (pos==='CB'||pos==='CDM')) bonus += 0.3;
+    if((formation==='4-3-3'||formation==='4-2-3-1') && (pos==='CAM'||pos==='CF'||pos==='LW'||pos==='RW')) bonus += 0.5;
+    if(formation==='4-4-2' && (pos==='ST'||pos==='CM')) bonus += 0.3;
+    // Attacker bonus for goalscoring potential
+    if(pos==='ST'||pos==='CF'||pos==='CAM') bonus += 0.3;
+    if(pos==='GK') bonus += 0.2; // GK contributes to defense
+  });
+  return bonus;
+}
+
+function initMatch() {
+  // Populate team selects
+  ['match-home','match-away'].forEach(id => {
+    const sel = document.getElementById(id);
+    TEAMS_DATA.forEach(t => {
+      const o = document.createElement('option');
+      o.value = t.team; o.textContent = t.team + (t.is_player_team ? ' ⭐' : '');
+      sel.appendChild(o);
+    });
+  });
+  document.getElementById('match-home').value = '切尔西';
+  document.getElementById('match-away').value = '曼城';
+  
+  // Populate formation selects
+  ['match-home-formation','match-away-formation'].forEach(id => {
+    const sel = document.getElementById(id);
+    Object.keys(FORMATIONS).forEach(f => {
+      const o = document.createElement('option');
+      o.value = f; o.textContent = f;
+      sel.appendChild(o);
+    });
+  });
+  document.getElementById('match-home-formation').value = state.matchHomeFormation;
+  document.getElementById('match-away-formation').value = state.matchAwayFormation;
+  
+  loadMatchTeam('home');
+  loadMatchTeam('away');
+}
+
+function loadMatchTeam(side) {
+  const teamName = document.getElementById('match-'+side).value;
+  const formation = document.getElementById('match-'+side+'-formation').value;
+  if(side === 'home') { state.matchHomeFormation = formation; }
+  else { state.matchAwayFormation = formation; }
+  
+  const team = TEAMS_DATA.find(t => t.team === teamName);
+  const squad = [...team.players].sort((a,b) => b.overall - a.overall);
+  
+  if(side === 'home') state.matchHomeSquad = squad;
+  else state.matchAwaySquad = squad;
+  
+  const el = document.getElementById('match-'+side+'-squad');
+  el.innerHTML = squad.slice(0,11).map((p, i) =>
+    `<div class="squad-item"><span class="pos">${p.position}</span><span class="ovr">${p.overall}</span><span class="name">${p.name}</span></div>`
+  ).join('') + (squad.length > 11 ? `<div style="font-size:10px;color:var(--text2);padding:6px 8px;">...共${squad.length}名球员</div>` : '');
+  
+  // Show power bar
+  const top11 = squad.slice(0,11);
+  const avg = top11.reduce((s,p) => s+p.overall, 0) / 11;
+  const maxOvr = top11[0].overall;
+  const color = TEAM_COLORS[teamName] || 'var(--accent)';
+  document.getElementById('match-'+side+'-power').innerHTML = `
+    <div class="match-power-bar">
+      <span style="font-size:10px;color:var(--text2);width:32px;">战力</span>
+      <div class="power-bar"><div class="power-fill" style="width:${avg}%;background:${color};"></div></div>
+      <span class="power-label" style="color:${color}">${avg.toFixed(1)}</span>
+    </div>
+  `;
+}
+
+function applyMatchFormation(side) {
+  loadMatchTeam(side);
+}
+
+function getMatchSquad(side) {
+  const squad = side === 'home' ? state.matchHomeSquad : state.matchAwaySquad;
+  return squad.slice(0,11);
+}
+
+function simulateMatch() {
+  const homeName = document.getElementById('match-home').value;
+  const awayName = document.getElementById('match-away').value;
+  if(homeName === awayName) { alert('请选择不同的球队！'); return; }
+  
+  const homeForm = document.getElementById('match-home-formation').value;
+  const awayForm = document.getElementById('match-away-formation').value;
+  
+  const homeSquad = getMatchSquad('home');
+  const awaySquad = getMatchSquad('away');
+  
+  // Calculate base strengths
+  const homeAvg = homeSquad.reduce((s,p) => s+p.overall, 0) / 11;
+  const awayAvg = awaySquad.reduce((s,p) => s+p.overall, 0) / 11;
+  
+  // Formation bonuses
+  const homeFormBonus = getFormationBonus(homeForm, awayForm);
+  const awayFormBonus = getFormationBonus(awayForm, homeForm);
+  
+  // Position-formation synergy
+  const homePosBonus = getPositionBonus(homeSquad, homeForm);
+  const awayPosBonus = getPositionBonus(awaySquad, awayForm);
+  
+  // Calculate effective strength
+  const homeEff = homeAvg + homeFormBonus + homePosBonus + (Math.random()*12 - 6);
+  const awayEff = awayAvg + awayFormBonus + awayPosBonus + (Math.random()*12 - 6);
+  
+  // Determine expected goals (based on effective strength ratio)
+  const homeProb = homeEff / (homeEff + awayEff);
+  const awayProb = awayEff / (homeEff + awayEff);
+  
+  // Generate goals using Poisson-like distribution
+  const homeExpected = Math.max(0.5, homeProb * 3.2 + (Math.random()*1.5 - 0.75));
+  const awayExpected = Math.max(0.5, awayProb * 3.2 + (Math.random()*1.5 - 0.75));
+  
+  let homeGoals = 0, awayGoals = 0;
+  for(let i = 0; i < 10; i++) { if(Math.random() < homeExpected/10) homeGoals++; }
+  for(let i = 0; i < 10; i++) { if(Math.random() < awayExpected/10) awayGoals++; }
+  
+  // Generate match events
+  const events = [];
+  
+  // Goal events
+  for(let g = 0; g < homeGoals; g++) {
+    const minute = Math.floor(Math.random()*90) + 1;
+    // Attackers more likely to score
+    const attackers = homeSquad.filter(p => ['ST','CF','CAM','LW','RW'].includes(p.position));
+    const scorers = attackers.length > 0 ? attackers : homeSquad;
+    const scorer = scorers[Math.floor(Math.random()*scorers.length)];
+    events.push({ min:minute, type:'goal', side:'home', team:homeName, player:scorer.name, ovr:scorer.overall });
+  }
+  for(let g = 0; g < awayGoals; g++) {
+    const minute = Math.floor(Math.random()*90) + 1;
+    const attackers = awaySquad.filter(p => ['ST','CF','CAM','LW','RW'].includes(p.position));
+    const scorers = attackers.length > 0 ? attackers : awaySquad;
+    const scorer = scorers[Math.floor(Math.random()*scorers.length)];
+    events.push({ min:minute, type:'goal', side:'away', team:awayName, player:scorer.name, ovr:scorer.overall });
+  }
+  
+  // Yellow cards (random)
+  const cardCount = Math.floor(Math.random()*4);
+  for(let i = 0; i < cardCount; i++) {
+    const minute = Math.floor(Math.random()*90) + 1;
+    const isHome = Math.random() < 0.5;
+    const team = isHome ? homeSquad : awaySquad;
+    const player = team[Math.floor(Math.random()*team.length)];
+    events.push({ min:minute, type:'card', side:isHome?'home':'away', team:isHome?homeName:awayName, player:player.name, ovr:player.overall });
+  }
+  
+  // Halftime / Fulltime markers
+  events.push({ min:45, type:'whistle', side:'neutral', text:'半场' });
+  events.push({ min:90, type:'whistle', side:'neutral', text:'全场结束' });
+  
+  events.sort((a,b) => a.min - b.min);
+  
+  // Build analysis text
+  let analysis = '';
+  if(homeFormBonus > 0) analysis += `<strong>${homeName}</strong>（${homeForm}）阵型克制 <strong>${awayName}</strong>（${awayForm}）+${homeFormBonus} 战力<br>`;
+  else if(homeFormBonus < 0) analysis += `<strong>${awayName}</strong>（${awayForm}）阵型克制 <strong>${homeName}</strong>（${homeForm}）+${Math.abs(homeFormBonus)} 战力<br>`;
+  else analysis += `双方阵型无克制关系<br>`;
+  analysis += `综合战力: <strong style="color:${TEAM_COLORS[homeName]||'var(--accent)'}">${homeName}</strong> ${homeEff.toFixed(1)} vs <strong style="color:${TEAM_COLORS[awayName]||'var(--accent2)'}">${awayName}</strong> ${awayEff.toFixed(1)}`;
+  
+  // Build mini pitch for result display
+  const homeFormPos = FORMATIONS[homeForm] || FORMATIONS['4-3-3'];
+  const awayFormPos = FORMATIONS[awayForm] || FORMATIONS['4-3-3'];
+  const homeColor = TEAM_COLORS[homeName] || '#22d3ee';
+  const awayColor = TEAM_COLORS[awayName] || '#f472b6';
+  
+  function miniPitchHTML(squad, positions, color, isHome) {
+    return positions.map((pos, i) => {
+      const p = squad[i];
+      if(!p) return '';
+      const y = isHome ? pos[1]*0.45 : 55 + pos[1]*0.45;
+      return `<div class="mini-player" style="left:${pos[0]}%;top:${y}%"><span class="mini-ovr">${p.overall}</span><span class="mini-name">${p.name}</span></div>`;
+    }).join('');
+  }
+  
+  // Result text
+  let resultText = '平局';
+  let resultEmoji = '🤝';
+  if(homeGoals > awayGoals) { resultText = homeName + ' 获胜！'; resultEmoji = '🏆'; }
+  else if(awayGoals > homeGoals) { resultText = awayName + ' 获胜！'; resultEmoji = '🏆'; }
+  
+  // Timeline
+  function eventHTML(e) {
+    if(e.type === 'whistle') return `<div class="match-event neutral">⏱️ ${e.min}' — ${e.text}</div>`;
+    if(e.type === 'goal') {
+      const icon = e.side === 'home' ? '⚽' : '⚽';
+      return `<div class="match-event ${e.side}">${icon} ${e.min}' <strong>${e.player}</strong> <span style="opacity:0.6">(OVR ${e.ovr})</span></div>`;
+    }
+    if(e.type === 'card') {
+      return `<div class="match-event ${e.side}">🟨 ${e.min}' ${e.player}</div>`;
+    }
+    return '';
+  }
+  
+  document.getElementById('match-result-area').innerHTML = `
+    <div class="card match-result">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:6px;">${homeName} (${homeForm}) vs ${awayName} (${awayForm})</div>
+      <div class="match-score"><span style="color:${homeColor}">${homeGoals}</span> - <span style="color:${awayColor}">${awayGoals}</span></div>
+      <div style="color:var(--gold);font-size:16px;margin:6px 0;">${resultEmoji} ${resultText}</div>
+      <div class="match-analysis">${analysis}</div>
+      <div style="display:flex;gap:10px;justify-content:center;margin:10px 0;">
+        <div class="pitch-mini">${miniPitchHTML(homeSquad, homeFormPos, homeColor, true)}</div>
+        <div class="pitch-mini">${miniPitchHTML(awaySquad, awayFormPos, awayColor, false)}</div>
+      </div>
+      <div style="font-size:13px;font-weight:600;margin:12px 0 6px;">📋 比赛事件</div>
+      <div class="match-timeline">${events.map(eventHTML).join('')}</div>
+    </div>
+  `;
+}
+
+// ===== BUDGET =====
+function initBudget() {
+  renderBudget();
+}
+
+function initAwards() {
+  const awardSelect = document.getElementById('award-team');
+  awardSelect.innerHTML = '';
+  PLAYER_TEAMS.forEach(t => { const o = document.createElement('option'); o.value=t; o.textContent=t; awardSelect.appendChild(o); });
+  
+  const seasonSelect = document.getElementById('award-season');
+  seasonSelect.innerHTML = '';
+  for(let y = 2026; y <= 2046; y++) {
+    const o = document.createElement('option');
+    o.value = y;
+    o.textContent = y + '-' + (y+1) + ' 赛季';
+    seasonSelect.appendChild(o);
+  }
+  
+  // Host permission check
+  if(!currentUser || !currentUser.isHost) {
+    document.getElementById('award-form-card').style.display = 'none';
+  }
+  
+  renderAwards();
+}
+
+function submitAward(pts, label) {
+  if(!currentUser || !currentUser.isHost) { alert('仅主播可录入赛事奖项！'); return; }
+  const team = document.getElementById('award-team').value;
+  const season = document.getElementById('award-season').value;
+  if(!team) { alert('请选择获奖球队'); return; }
+  
+  const award = { season: season, team: team, label: label, pts: pts, time: new Date().toLocaleString('zh-CN') };
+  state.awards.unshift(award);
+  
+  // Add points to team account
+  state.budgets[team].balance += pts;
+  state.budgets[team].log.unshift({ action: `🏆 ${season}-${Number(season)+1} ${label}`, pts: '+'+pts, time: new Date().toLocaleString('zh-CN') });
+  
+  saveState();
+  renderAwards();
+  renderBudget();
+  updatePendingBadge();
+}
+
+function renderAwards() {
+  const historyEl = document.getElementById('awards-history');
+  if(!state.awards || state.awards.length === 0) {
+    historyEl.innerHTML = '<div style="color:var(--text2);font-size:13px;padding:8px 0;">暂无奖项记录</div>';
+  } else {
+    historyEl.innerHTML = state.awards.map((a, i) => {
+      const color = TEAM_COLORS[a.team] || 'var(--text)';
+      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;">
+        <div>
+          <span style="color:${color};font-weight:600;">${a.team}</span>
+          <span style="color:var(--text2);margin:0 8px;">${a.season}-${Number(a.season)+1}</span>
+          <span>${a.label}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="log-pts plus" style="font-weight:600;">+${a.pts}点</span>
+          ${currentUser && currentUser.isHost ? `<button onclick="deleteAward(${i})" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;">✕</button>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+  
+  // Season summary
+  renderAwardSeasonSummary();
+}
+
+function deleteAward(idx) {
+  const a = state.awards[idx];
+  if(!a) return;
+  if(!confirm(`确定删除：${a.team} ${a.season}-${Number(a.season)+1} ${a.label}？\n将扣除对应 ${a.pts} 点数。`)) return;
+  
+  // Deduct points from team
+  state.budgets[a.team].balance -= a.pts;
+  state.budgets[a.team].log.unshift({ action: `🗑️ 撤回 ${a.season}-${Number(a.season)+1} ${a.label}`, pts: '-'+a.pts, time: new Date().toLocaleString('zh-CN') });
+  
+  state.awards.splice(idx, 1);
+  saveState();
+  renderAwards();
+  renderBudget();
+  updatePendingBadge();
+}
+
+function clearAwards() {
+  if(!confirm('确定清空所有奖项记录？对应点数变动将通过撤销记录体现。')) return;
+  state.awards = [];
+  saveState();
+  renderAwards();
+}
+
+function renderAwardSeasonSummary() {
+  const summaryEl = document.getElementById('award-season-summary');
+  if(!state.awards || state.awards.length === 0) { summaryEl.innerHTML = ''; return; }
+  
+  // Group by season
+  const bySeason = {};
+  state.awards.forEach(a => {
+    if(!bySeason[a.season]) bySeason[a.season] = {};
+    if(!bySeason[a.season][a.team]) bySeason[a.season][a.team] = 0;
+    bySeason[a.season][a.team] += a.pts;
+  });
+  
+  const seasons = Object.keys(bySeason).sort();
+  summaryEl.innerHTML = `<div class="card"><div class="card-title">📊 各赛季奖项点数汇总</div>` +
+    seasons.map(s => {
+      const teams = bySeason[s];
+      return `<div style="margin-bottom:12px;"><div style="font-weight:600;font-size:14px;color:var(--accent);margin-bottom:6px;">${s}-${Number(s)+1} 赛季</div>` +
+        Object.entries(teams).map(([team, pts]) => {
+          const color = TEAM_COLORS[team] || 'var(--text)';
+          return `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:13px;border-bottom:1px solid var(--border);">
+            <span style="color:${color}">${team}</span><span style="color:var(--gold);font-weight:600;">+${pts}点</span>
+          </div>`;
+        }).join('') + '</div>';
+    }).join('') + '</div>';
+}
+
+function renderBudget() {
+  const detailEl = document.getElementById('budget-detail');
+  const titleEl = document.getElementById('budget-team-title');
+  
+  if(!currentUser) { detailEl.innerHTML = '<div style="color:var(--text2);text-align:center;padding:20px;">请先登录</div>'; return; }
+  
+  const team = currentUser.isHost ? null : currentUser.team;
+  
+  if(currentUser.isHost) {
+    // Host sees all teams with full details and operations
+    titleEl.textContent = '\uD83D\uDCB0 管理员 — 全局球队账户';
+    var html = '';
+    PLAYER_TEAMS.forEach(function(t) {
+      html += buildTeamCard(t);
+    });
+    detailEl.innerHTML = html;
+    // Bind click events after rendering
+    detailEl.querySelectorAll('[data-sell]').forEach(function(btn) {
+      btn.addEventListener('click', function() { quickSell(this.dataset.sell, this.dataset.team); });
+    });
+    detailEl.querySelectorAll('[data-p2p]').forEach(function(btn) {
+      btn.addEventListener('click', function() { quickP2PSell(this.dataset.p2p, this.dataset.team); });
+    });
+    detailEl.querySelectorAll('[data-modal]').forEach(function(btn) {
+      btn.addEventListener('click', function() { 
+        var parts = this.dataset.modal.split('|');
+        if(parts[0] === 'buy' || parts[0] === 'sell') showTransferModal(parts[0], parts[1]);
+        else if(parts[0] === 'bteam') showBteamModal(parts[1]);
+        else if(parts[0] === 'recall') showRecallModal(parts[1]);
+      });
+    });
+    return;
+  }
+  
+  // Player sees only their own team - full account view
+  var b = state.budgets[team];
+  var color = TEAM_COLORS[team] || 'var(--accent)';
+  titleEl.textContent = '\uD83D\uDCB0 ' + team + ' - ' + currentUser.name + ' 的账户';
+  
+  // Calculate category totals from confirmed log
+  var totalAwards = 0, totalBuy = 0, totalSell = 0, totalBteam = 0, totalUpgrade = 0;
+  (b.log || []).forEach(function(l) {
+    var v = parseInt(l.pts) || 0;
+    if(l.action.indexOf('冠军')>=0 || l.action.indexOf('季军')>=0 || l.action.indexOf('亚军')>=0) totalAwards += v;
+    else if(l.action.indexOf('购入')>=0) totalBuy += v;
+    else if(l.action.indexOf('出售')>=0 || l.action.indexOf('售出')>=0) totalSell += v;
+    else if(l.action.indexOf('下放')>=0 || l.action.indexOf('召回')>=0) totalBteam += v;
+    else if(l.action.indexOf('升级')>=0 || l.action.indexOf('徽章')>=0 || l.action.indexOf('逆足')>=0 || l.action.indexOf('花式')>=0) totalUpgrade += v;
+  });
+  
+  var pendingForTeam = (state.pendingOps || []).filter(function(o) { return o.team === team; });
+  var teamData = TEAMS_DATA.find(function(td) { return td.team === fullTeamName(team); });
+  var players = teamData ? teamData.players.sort(function(a,b) { return b.overall - a.overall; }) : [];
+  
+  // Build HTML purely with string concatenation - NO template literals
+  var h = '';
+  h += '<div class="card" style="border-color:' + color + ';margin-bottom:16px;">';
+  h += '<div style="text-align:center;padding:20px;">';
+  h += '<div style="font-size:13px;color:var(--text2);margin-bottom:4px;">可用点数</div>';
+  h += '<div style="font-size:42px;font-weight:800;color:' + (b.balance >= 0 ? 'var(--gold)' : 'var(--red)') + '">' + b.balance + '</div>';
+  h += '<div style="font-size:13px;color:var(--text2);margin-top:4px;">初始: ' + (b.initialPoints || 0) + ' 点';
+  if(pendingForTeam.length > 0) {
+    h += ' <span style="color:var(--red);margin-left:8px;">⏳ ' + pendingForTeam.length + ' 项操作待审核</span>';
+  }
+  h += '</div>';
+  h += '<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">';
+  h += '<button class="btn btn-sm" data-modal="buy|' + team + '">📥 购入球员</button>';
+  h += '<button class="btn btn-sm" data-modal="sell|' + team + '">📤 售出球员</button>';
+  h += '<button class="btn btn-sm" data-modal="bteam|' + team + '">⬇️ 下放球员</button>';
+  h += '<button class="btn btn-sm" data-modal="recall|' + team + '">⬆️ 召回球员</button>';
+  h += '</div></div>';
+  
+  // Quota
+  h += '<div class="card" style="margin-bottom:16px;"><div class="card-title">📊 本赛季额度</div>';
+  h += '<div class="budget-quota" style="margin:0;">';
+  h += '<div class="quota-item"><div class="quota-val" style="color:' + (5-b.tradeUsed>0?'var(--green)':'var(--red)') + '">' + b.tradeUsed + '/5</div><div class="quota-label">购入+售出</div></div>';
+  h += '<div class="quota-item"><div class="quota-val" style="color:' + (5-b.bteamUsed>0?'var(--green)':'var(--red)') + '">' + b.bteamUsed + '/5</div><div class="quota-label">下放+召回</div></div>';
+  h += '</div></div>';
+  
+  // Account Summary Table
+  h += '<div class="card" style="margin-bottom:16px;"><div class="card-title">📋 账户明细</div>';
+  h += '<table class="stat-table"><tr><th>项目</th><th style="text-align:right">点数</th></tr>';
+  h += '<tr><td class="st-label">成长档存点</td><td class="st-val">' + (b.initialPoints || 0) + '</td></tr>';
+  h += '<tr><td class="st-label">赛事冠军点数</td><td class="st-val plus">+' + totalAwards + '</td></tr>';
+  h += '<tr><td class="st-label">球员购入</td><td class="st-val minus">' + totalBuy + '</td></tr>';
+  h += '<tr><td class="st-label">球员售出给AI</td><td class="st-val plus">+' + totalSell + '</td></tr>';
+  h += '<tr><td class="st-label">球员转B队</td><td class="st-val minus">' + totalBteam + '</td></tr>';
+  h += '<tr><td class="st-label">球员升级</td><td class="st-val minus">' + totalUpgrade + '</td></tr>';
+  h += '<tr style="border-top:2px solid var(--border);"><td style="font-weight:700;">账户余额</td>';
+  h += '<td class="st-val total" style="color:' + (b.balance>=0?'var(--gold)':'var(--red)') + ';">' + b.balance + '</td></tr></table>';
+  if(pendingForTeam.length > 0) {
+    h += '<div style="margin-top:12px;padding:10px;background:rgba(239,68,68,0.1);border:1px solid var(--red);border-radius:8px;">';
+    h += '<div style="font-size:12px;color:var(--red);font-weight:600;margin-bottom:6px;">⏳ 待审核操作（尚未生效）</div>';
+    pendingForTeam.forEach(function(o, oi) {
+      var icon = o.type==='buy'?'📥':o.type==='sell'?'📤':'⬇️';
+      var cls = parseInt(o.pts)<0?'minus':'plus';
+      var realIdx = state.pendingOps.indexOf(o);
+      h += '<div style="font-size:12px;color:var(--text2);padding:3px 0;display:flex;align-items:center;justify-content:space-between;">';
+      h += '<span>' + icon + ' ' + o.action + ' <span class="' + cls + '" style="font-weight:600;">' + o.pts + '点</span></span>';
+      h += '<button class="btn btn-sm btn-red" style="font-size:10px;padding:1px 6px;" onclick="window._cancelOp(' + realIdx + ')">取消</button>';
+      h += '</div>';
+    });
+    h += '</div>';
+  }
+  h += '</div>';
+  
+  // Squad List
+  h += '<div class="card" style="margin-bottom:16px;">';
+  h += '<div class="card-title">👥 ' + team + ' 球员名单（' + players.length + '人）</div>';
+  h += '<div style="max-height:400px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;">';
+  h += '<table style="width:100%;border-collapse:collapse;font-size:12px;">';
+  h += '<tr style="background:var(--bg);position:sticky;top:0;">';
+  h += '<th style="padding:6px 8px;text-align:left;color:var(--text2);font-weight:600;">球员</th>';
+  h += '<th style="padding:6px 4px;text-align:center;color:var(--text2);font-weight:600;">位置</th>';
+  h += '<th style="padding:6px 4px;text-align:center;color:var(--text2);font-weight:600;">OVR</th>';
+  h += '<th style="padding:6px 4px;text-align:right;color:var(--text2);font-weight:600;">售AI价</th>';
+  h += '<th style="padding:6px 8px;text-align:center;color:var(--text2);font-weight:600;">升级</th></tr>';
+  players.forEach(function(p, pi) {
+    var tags = '';
+    if(p.is_player) tags += '<span class="tag tag-player" style="font-size:10px;">玩家</span>';
+    if(p.is_legend) tags += '<span class="tag tag-legend" style="font-size:10px;">传奇</span>';
+    if(p.potential_bump) tags += '<span class="tag tag-legend" style="font-size:10px;">' + p.potential_bump + '</span>';
+    var _i = regPlayer(p, 'bh_'+team+'_'+pi);
+    h += '<tr style="border-bottom:1px solid var(--border);">';
+    h += '<td style="padding:5px 8px;"><strong>' + p.name + '</strong> ' + tags + '</td>';
+    h += '<td style="padding:5px 4px;text-align:center;color:var(--accent);">' + p.position + '</td>';
+    h += '<td style="padding:5px 4px;text-align:center;color:var(--gold);font-weight:700;">' + p.overall + '</td>';
+    h += '<td style="padding:5px 4px;text-align:right;color:var(--green);font-weight:600;">+' + p.sell_price + '</td>';
+    h += '<td style="padding:5px 8px;text-align:center;"><div style="display:flex;gap:2px;justify-content:center;flex-wrap:wrap;">';
+    h += '<button class="btn btn-sm" style="font-size:9px;padding:1px 4px;color:var(--gold);border-color:var(--gold);" data-upgrade-ovr="' + _i + '" data-team="' + team + '">能力</button>';
+    h += '<button class="btn btn-sm" style="font-size:9px;padding:1px 4px;color:#a78bfa;border-color:#a78bfa;" data-upgrade-pot="' + _i + '" data-team="' + team + '">潜力</button>';
+    h += '</div></td></tr>';
+  });
+  h += '</table></div></div>';
+  
+  // Operation Log
+  h += '<div class="card"><div class="card-title">📝 操作记录</div>';
+  var logs = b.log || [];
+  if(logs.length === 0) {
+    h += '<div style="color:var(--text2);font-size:13px;text-align:center;padding:20px;">暂无记录</div>';
+  } else {
+    h += '<div class="log-list" style="max-height:300px;overflow-y:auto;">';
+    logs.slice().reverse().forEach(function(l) {
+      h += '<div class="log-item"><span class="log-pts ' + (l.pts.indexOf('+')===0?'plus':'minus') + '">' + l.pts + '</span> ' + l.action + ' <span style="opacity:0.5">' + (l.time||'') + '</span></div>';
+    });
+    h += '</div>';
+  }
+  h += '</div>';
+  
+  detailEl.innerHTML = h;
+  
+  // Bind click events via addEventListener (no inline onclick!)
+  detailEl.querySelectorAll('[data-sell]').forEach(function(btn) {
+    btn.addEventListener('click', function() { quickSell(this.dataset.sell, this.dataset.team); });
+  });
+  detailEl.querySelectorAll('[data-p2p]').forEach(function(btn) {
+    btn.addEventListener('click', function() { quickP2PSell(this.dataset.p2p, this.dataset.team); });
+  });
+  detailEl.querySelectorAll('[data-modal]').forEach(function(btn) {
+    btn.addEventListener('click', function() { 
+      var parts = this.dataset.modal.split('|');
+      if(parts[0] === 'buy' || parts[0] === 'sell') showTransferModal(parts[0], parts[1]);
+      else if(parts[0] === 'bteam') showBteamModal(parts[1]);
+      else if(parts[0] === 'recall') showRecallModal(parts[1]);
+    });
+  });
+  detailEl.querySelectorAll('[data-cancel-op]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var idx = parseInt(this.getAttribute('data-cancel-op'));
+      if(isNaN(idx)) return;
+      var op = state.pendingOps[idx];
+      if(!op) return;
+      if(!confirm('确认取消：' + op.action + '（' + op.pts + '点）？')) return;
+      state.pendingOps.splice(idx, 1);
+      saveState(); renderPendingOps(); renderBudget(); renderQuickAccount(); updatePendingBadge();
+    });
+  });
+  detailEl.querySelectorAll('[data-upgrade-ovr]').forEach(function(btn) {
+    btn.addEventListener('click', function() { doPlayerUpgrade(this.dataset.upgradeOvr, this.dataset.team, 'ovr'); });
+  });
+  detailEl.querySelectorAll('[data-upgrade-pot]').forEach(function(btn) {
+    btn.addEventListener('click', function() { doPlayerUpgrade(this.dataset.upgradePot, this.dataset.team, 'pot'); });
+  });
+}
+
+function buildTeamCard(t) {
+  var b = state.budgets[t];
+  var color = TEAM_COLORS[t] || 'var(--accent)';
+  var teamData = TEAMS_DATA.find(function(td) { return td.team === fullTeamName(t); });
+  var players = teamData ? teamData.players.sort(function(a,b) { return b.overall - a.overall; }) : [];
+  var pending = (state.pendingOps || []).filter(function(o) { return o.team === t; }).length;
+  
+  var h = '';
+  h += '<div class="card" style="border-color:' + color + ';margin-bottom:16px;">';
+  h += '<div class="budget-header" style="color:' + color + '"><span>⚽ ' + t + '</span>';
+  if(pending > 0) h += '<span class="pending-badge">' + pending + '待审</span>';
+  h += '</div>';
+  h += '<div style="text-align:center;padding:12px 0;">';
+  h += '<div style="font-size:13px;color:var(--text2);">可用点数</div>';
+  h += '<div style="font-size:32px;font-weight:800;color:' + (b.balance>=0?'var(--gold)':'var(--red)') + '">' + b.balance + '</div>';
+  h += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;">';
+  h += '<div style="text-align:center;padding:6px;background:var(--bg);border-radius:8px;"><div style="font-size:11px;color:var(--text2)">交易额度</div><div style="font-weight:700;color:' + (5-b.tradeUsed>0?'var(--green)':'var(--red)') + '">' + b.tradeUsed + '/5</div></div>';
+  h += '<div style="text-align:center;padding:6px;background:var(--bg);border-radius:8px;"><div style="font-size:11px;color:var(--text2)">B队额度</div><div style="font-weight:700;color:' + (5-b.bteamUsed>0?'var(--green)':'var(--red)') + '">' + b.bteamUsed + '/5</div></div>';
+  h += '</div></div>';
+  h += '<div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;">';
+  h += '<button class="btn btn-sm" data-modal="buy|' + t + '">📥 购入球员</button>';
+  h += '<button class="btn btn-sm" data-modal="sell|' + t + '">📤 售出球员</button>';
+  h += '<button class="btn btn-sm" data-modal="bteam|' + t + '">⬇️ 下放</button>';
+  h += '<button class="btn btn-sm" data-modal="recall|' + t + '">⬆️ 召回</button>';
+  h += '</div>';
+  h += '<div style="font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text2);">📋 球员名单（' + players.length + '人）</div>';
+  h += '<div style="max-height:300px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;">';
+  h += '<table style="width:100%;border-collapse:collapse;font-size:12px;">';
+  h += '<tr style="background:var(--bg);position:sticky;top:0;">';
+  h += '<th style="padding:6px 8px;text-align:left;color:var(--text2);font-weight:600;">球员</th>';
+  h += '<th style="padding:6px 4px;text-align:center;color:var(--text2);font-weight:600;">位置</th>';
+  h += '<th style="padding:6px 4px;text-align:center;color:var(--text2);font-weight:600;">OVR</th>';
+  h += '<th style="padding:6px 4px;text-align:right;color:var(--text2);font-weight:600;">售AI价</th></tr>';
+  players.forEach(function(p, pi) {
+    var tags = '';
+    if(p.is_player) tags += '<span class="tag tag-player" style="font-size:10px;">玩家</span>';
+    if(p.is_legend) tags += '<span class="tag tag-legend" style="font-size:10px;">传奇</span>';
+    h += '<tr style="border-bottom:1px solid var(--border);">';
+    h += '<td style="padding:5px 8px;"><strong>' + p.name + '</strong> ' + tags + '</td>';
+    h += '<td style="padding:5px 4px;text-align:center;color:var(--accent);">' + p.position + '</td>';
+    h += '<td style="padding:5px 4px;text-align:center;color:var(--gold);font-weight:700;">' + p.overall + '</td>';
+    h += '<td style="padding:5px 4px;text-align:right;color:var(--green);font-weight:600;">+' + p.sell_price + '</td>';
+    h += '</tr>';
+  });
+  h += '</table></div>';
+  var logs = b.log || [];
+  if(logs.length > 0) {
+    h += '<div style="margin-top:10px;font-size:12px;font-weight:600;color:var(--text2);">📝 操作记录</div>';
+    h += '<div class="log-list" style="max-height:150px;overflow-y:auto;">';
+    logs.slice(0,20).forEach(function(l) {
+      h += '<div class="log-item"><span class="log-pts ' + (l.pts.indexOf('+')===0?'plus':'minus') + '">' + l.pts + '</span> ' + l.action + ' <span style="opacity:0.5">' + (l.time||'') + '</span></div>';
+    });
+    h += '</div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+// ===== TRANSFER MODAL =====
+function showTransferModal(type, team, playerJson) {
+  if(!canOperate(team)) { alert('你只能操作自己所属的球队！'); return; }
+  const modal = document.getElementById('transfer-modal');
+  const title = document.getElementById('transfer-title');
+  const body = document.getElementById('transfer-body');
+  const b = state.budgets[team];
+  
+  if(type === 'buy') {
+    title.textContent = `📥 ${team} - 购入球员`;
+    const allP = getAllPlayers().filter(p => p.team !== team).sort((a,b) => b.overall - a.overall);
+    body.innerHTML = `
+      <div style="margin-bottom:10px;font-size:13px;color:var(--text2)">当前余额: <strong style="color:var(--gold)">${b.balance}点</strong> | 剩余额度: <strong style="color:var(--green)">${5-b.tradeUsed}</strong>/5</div>
+      <input class="search-box" id="transfer-search" placeholder="搜索球员..." oninput="filterTransferList(this.value,'buy','${team}')" style="width:100%;margin-bottom:10px;">
+      <div id="transfer-list" style="max-height:300px;overflow-y:auto;"></div>
+    `;
+    modal.classList.add('show');
+    filterTransferList('', 'buy', team);
+  } else if(type === 'sell') {
+    title.textContent = '📤 ' + team + ' - 售出球员给AI';
+    var teamDataSell = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(team); });
+    var sellPlayers = teamDataSell.players.sort(function(a,b) { return b.overall - a.overall; });
+    var shtml = '<div style="margin-bottom:10px;font-size:13px;color:var(--text2)">当前余额: <strong style="color:var(--gold)">' + b.balance + '点</strong> | 剩余额度: <strong style="color:var(--green)">' + (5-b.tradeUsed) + '</strong>/5</div>';
+    shtml += '<div style="max-height:300px;overflow-y:auto;">';
+    sellPlayers.forEach(function(p, pi) {
+      var sidx = regPlayer(p, 'sell_' + team + '_' + pi);
+      shtml += '<div style="display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid var(--border);font-size:13px;">';
+      shtml += '<span style="color:var(--accent);font-weight:600;width:35px">' + p.position + '</span>';
+      shtml += '<span style="flex:1">' + p.name + ' <span style="color:var(--gold)">' + p.overall + '</span></span>';
+      if(!p.is_player) {
+        shtml += '<button class="btn btn-sm" style="color:var(--green);border-color:var(--green)" data-exec-sell="' + sidx + '" data-exec-team="' + team + '">售AI +' + p.sell_price + '点</button>';
+      } else {
+        shtml += '<span style="font-size:11px;color:var(--text2)">玩家球员</span>';
+      }
+      shtml += '</div>';
+    });
+    shtml += '</div>';
+    body.innerHTML = shtml;
+    body.querySelectorAll('[data-exec-sell]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        executeSell(this.getAttribute('data-exec-team'), this.getAttribute('data-exec-sell'));
+      });
+    });
+    modal.classList.add('show');
+  }
+}
+
+function filterTransferList(search, type, team) {
+  var b = state.budgets[team];
+  var players = getAllPlayers().filter(function(p) { return p.team !== team; }).sort(function(a,b) { return b.overall - a.overall; });
+  if(search) players = players.filter(function(p) { return p.name.toLowerCase().includes(search.toLowerCase()); });
+  players = players.filter(function(p) { return p.market_price <= b.balance; });
+  
+  var listEl = document.getElementById('transfer-list');
+  var buyhtml = '';
+  players.slice(0,50).forEach(function(p, pi) {
+    var bidx = regPlayer(p, 'buy_' + team + '_' + pi);
+    buyhtml += '<div style="display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid var(--border);font-size:13px;">';
+    buyhtml += '<span style="color:var(--accent);font-weight:600;width:35px">' + p.position + '</span>';
+    buyhtml += '<span style="flex:1">' + p.name + ' (' + p.team + ') <span style="color:var(--gold)">' + p.overall + '</span></span>';
+    buyhtml += '<button class="btn btn-sm" style="color:var(--red)" data-exec-buy="' + bidx + '" data-exec-team="' + team + '">购入 -' + p.market_price + '点</button>';
+    buyhtml += '</div>';
+  });
+  if(!buyhtml) buyhtml = '<div style="color:var(--text2);padding:10px;font-size:13px;">无匹配球员或余额不足</div>';
+  listEl.innerHTML = buyhtml;
+  listEl.querySelectorAll('[data-exec-buy]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      executeBuy(this.getAttribute('data-exec-team'), this.getAttribute('data-exec-buy'));
+    });
+  });
+}
+
+function executeBuy(team, playerIdx) {
+  const p = clickPlayer(playerIdx);
+  if(!p) return;
+  const b = state.budgets[team];
+  if(b.balance < p.market_price) { alert('余额不足！'); return; }
+  if(b.tradeUsed >= 5) { alert('本赛季交易额度已用完！'); return; }
+  
+  // Create pending operation instead of direct execution
+  const op = {
+    type: 'buy', team: team, player: { name:p.name, position:p.position, overall:p.overall, team:p.team },
+    action: `购入 ${p.name}`, pts: -p.market_price,
+    player_name: p.name, time: new Date().toLocaleString('zh-CN'),
+    submitted_by: currentUser ? currentUser.name : 'unknown'
+  };
+  state.pendingOps.push(op);
+  saveState(); renderBudget(); closeModal(); updatePendingBadge();
+}
+
+function executeSell(team, playerIdx) {
+  const p = clickPlayer(playerIdx);
+  if(!p) return;
+  const b = state.budgets[team];
+  if(b.tradeUsed >= 5) { alert('本赛季交易额度已用完！'); return; }
+  
+  const op = {
+    type: 'sell', team: team, player: { name:p.name, position:p.position, overall:p.overall },
+    action: `售出 ${p.name} 给AI`, pts: '+'+p.sell_price,
+    player_name: p.name, time: new Date().toLocaleString('zh-CN'),
+    submitted_by: currentUser ? currentUser.name : 'unknown'
+  };
+  state.pendingOps.push(op);
+  saveState(); renderBudget(); closeModal(); updatePendingBadge();
+}
+
+// ===== QUICK ACTIONS (from player database) =====
+function quickBuy(playerIdx, myTeam) {
+  const p = clickPlayer(playerIdx);
+  if(!p) return;
+  const b = state.budgets[myTeam];
+  if(b.balance < p.market_price) { alert('余额不足！需要 ' + p.market_price + ' 点，当前仅 ' + b.balance + ' 点'); return; }
+  if(b.tradeUsed >= 5) { alert('本赛季交易额度已用完！'); return; }
+  const targetTeam = PLAYER_TEAMS.includes(p.team) ? '（玩家间交易）' : '从 ' + p.team;
+  if(!confirm(`确认购入 ${p.name}（${p.overall} ${p.position}）？\n消耗 ${p.market_price} 点`)) return;
+  
+  const op = {
+    type: 'buy', team: myTeam, player: { name:p.name, position:p.position, overall:p.overall, fromTeam: p.team },
+    action: `购入 ${p.name}（从${p.team}）`, pts: '-'+p.market_price,
+    player_name: p.name, time: new Date().toLocaleString('zh-CN'),
+    submitted_by: currentUser ? currentUser.name : 'unknown'
+  };
+  state.pendingOps.push(op);
+  saveState(); renderBudget(); renderQuickAccount(); filterPlayers(); updatePendingBadge();
+}
+
+// Global click helper - avoids quote escaping issues in inline onclick
+window._clickPlayerData = {};
+function clickPlayer(idx) {
+  return window._clickPlayerData[idx] || null;
+}
+function regPlayer(p, idx) {
+  window._clickPlayerData[idx] = p;
+  return idx;
+}
+
+function quickSell(playerIdx, myTeam) {
+  const p = clickPlayer(playerIdx);
+  if(!p) return;
+  if(p.is_player) { alert('⚠️ 玩家自建球员不能直接出售给AI！\n如需操作请在账户页面进行。'); return; }
+  const b = state.budgets[myTeam];
+  if(b.tradeUsed >= 5) { alert('本赛季交易额度已用完！'); return; }
+  if(!confirm(`确认将 ${p.name}（${p.overall} ${p.position}）售出给AI？\n获得 ${p.sell_price} 点`)) return;
+  
+  const op = {
+    type: 'sell', team: myTeam, player: { name:p.name, position:p.position, overall:p.overall },
+    action: `售出 ${p.name} 给AI`, pts: '+'+p.sell_price,
+    player_name: p.name, time: new Date().toLocaleString('zh-CN'),
+    submitted_by: currentUser ? currentUser.name : 'unknown'
+  };
+  state.pendingOps.push(op);
+  saveState(); renderBudget(); renderQuickAccount(); filterPlayers(); updatePendingBadge();
+}
+
+function quickP2P(playerIdx, myTeam) {
+  const p = clickPlayer(playerIdx);
+  if(!p) return;
+  const buyerOptions = PLAYER_TEAMS.filter(t => t !== myTeam);
+  let optionsHtml = buyerOptions.map(t => `<option value="${t}">${t}</option>`).join('');
+  
+  const modal = document.getElementById('transfer-modal');
+  document.getElementById('transfer-title').textContent = `🔄 玩家间交易 — ${p.name}`;
+  document.getElementById('transfer-body').innerHTML = `
+    <div style="margin-bottom:12px;font-size:13px;">
+      <strong>${p.name}</strong> ${p.position} OVR ${p.overall}<br>
+      <span style="color:var(--text2)">购入方：${myTeam} ← 售出方：${p.team}</span>
+    </div>
+    <div style="margin-bottom:12px;">
+      <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px;">售出方球队：</label>
+      <select id="p2p-seller-team" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;">
+        ${PLAYER_TEAMS.includes(p.team) ? `<option value="${p.team}" selected>${p.team}</option>` : ''}
+        ${buyerOptions.filter(t => t !== p.team).map(t => `<option value="${t}">${t}</option>`).join('')}
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div>
+        <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px;">${myTeam} 消耗（点数）：</label>
+        <input type="number" id="p2p-buyer-pts" value="${p.market_price}" min="0" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);color:var(--gold);border-radius:8px;font-size:16px;font-weight:700;">
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px;">售出方 获得（点数）：</label>
+        <input type="number" id="p2p-seller-pts" value="${p.sell_price}" min="0" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);color:var(--green);border-radius:8px;font-size:16px;font-weight:700;">
+      </div>
+    </div>
+    <div style="padding:8px;background:var(--bg);border-radius:8px;font-size:12px;color:var(--text2);margin-bottom:12px;">
+      💡 玩家间交易金额由双方协商确定，不强制按市场价。此处录入协商后的实际点数。
+    </div>
+    <button class="btn btn-primary" onclick="submitP2P('${playerIdx}','${myTeam}')" style="width:100%;">确认提交交易</button>
+  `;
+  modal.classList.add('show');
+}
+
+// ===== HOST GLOBAL OPERATIONS =====
+function hostBuyPlayer(playerIdx) {
+  const p = clickPlayer(playerIdx);
+  if(!p) return;
+  const modal = document.getElementById('transfer-modal');
+  document.getElementById('transfer-title').textContent = `📥 管理员代购 — ${p.name}`;
+  document.getElementById('transfer-body').innerHTML = `
+    <div style="margin-bottom:12px;font-size:13px;">
+      <strong>${p.name}</strong> ${p.position} OVR ${p.overall}<br>
+      <span style="color:var(--text2)">来源：${p.team} | 售AI价：${p.sell_price}点</span>
+    </div>
+    <div style="margin-bottom:12px;">
+      <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px;">选择购入球队：</label>
+      <select id="host-buy-team" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;">
+        ${PLAYER_TEAMS.map(t => {
+          const b = state.budgets[t];
+          return `<option value="${t}">${t}（余额${b.balance}点，额度${5-b.tradeUsed}/5）</option>`;
+        }).join('')}
+      </select>
+    </div>
+    <div style="margin-bottom:12px;">
+      <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px;">消耗点数：</label>
+      <input type="number" id="host-buy-pts" value="${p.market_price}" min="0" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);color:var(--gold);border-radius:8px;font-size:16px;font-weight:700;">
+    </div>
+    <button class="btn btn-primary" onclick="submitHostBuy('${playerIdx}')" style="width:100%;">确认代购</button>
+  `;
+  modal.classList.add('show');
+}
+
+function submitHostBuy(playerIdx) {
+  const p = clickPlayer(playerIdx);
+  if(!p) return;
+  const targetTeam = document.getElementById('host-buy-team').value;
+  const pts = parseInt(document.getElementById('host-buy-pts').value) || p.market_price;
+  const b = state.budgets[targetTeam];
+  if(b.balance < pts) { alert(targetTeam + ' 余额不足！需要 ' + pts + ' 点'); return; }
+  if(b.tradeUsed >= 5) { alert(targetTeam + ' 交易额度已用完！'); return; }
+  if(!confirm(`管理员代购确认：\n${p.name}（${p.overall} ${p.position}）→ ${targetTeam}\n消耗 ${pts} 点`)) return;
+  
+  const op = {
+    type: 'buy', team: targetTeam, player: { name:p.name, position:p.position, overall:p.overall, fromTeam: p.team },
+    action: `管理员代购 ${p.name}（从${p.team}）`, pts: '-'+pts,
+    player_name: p.name, time: new Date().toLocaleString('zh-CN'),
+    submitted_by: currentUser ? currentUser.name + '(管理员)' : 'admin'
+  };
+  state.pendingOps.push(op);
+  saveState(); renderBudget(); renderQuickAccount(); filterPlayers(); closeModal(); updatePendingBadge();
+}
+
+function hostSellPlayer(playerIdx) {
+  const p = clickPlayer(playerIdx);
+  if(!p) return;
+  if(p.is_player) { alert('玩家自建球员不能出售给AI！'); return; }
+  
+  // Find which player teams this player belongs to
+  const playerTeam = p.team;
+  
+  const op = {
+    type: 'sell', team: playerTeam, player: { name:p.name, position:p.position, overall:p.overall },
+    action: `管理员代售 ${p.name} 给AI`, pts: '+'+p.sell_price,
+    player_name: p.name, time: new Date().toLocaleString('zh-CN'),
+    submitted_by: currentUser ? currentUser.name + '(管理员)' : 'admin'
+  };
+  state.pendingOps.push(op);
+  saveState(); renderBudget(); renderQuickAccount(); filterPlayers(); updatePendingBadge();
+}
+
+function quickP2PSell(playerIdx, sellerTeam) {
+  const p = clickPlayer(playerIdx);
+  if(!p) return;
+  const buyerOptions = PLAYER_TEAMS.filter(t => t !== sellerTeam);
+  let optionsHtml = buyerOptions.map(t => `<option value="${t}">${t}</option>`).join('');
+  
+  const modal = document.getElementById('transfer-modal');
+  document.getElementById('transfer-title').textContent = `🔄 售给玩家队 — ${p.name}`;
+  document.getElementById('transfer-body').innerHTML = `
+    <div style="margin-bottom:12px;font-size:13px;">
+      <strong>${p.name}</strong> ${p.position} OVR ${p.overall}<br>
+      <span style="color:var(--text2)">售出方：${sellerTeam}</span>
+    </div>
+    <div style="margin-bottom:12px;">
+      <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px;">选择购入球队：</label>
+      <select id="p2p-buyer-team" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:8px;">
+        ${optionsHtml}
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+      <div>
+        <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px;">购入方 消耗（点数）：</label>
+        <input type="number" id="p2p-buyer-pts" value="${p.market_price}" min="0" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);color:var(--gold);border-radius:8px;font-size:16px;font-weight:700;">
+      </div>
+      <div>
+        <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px;">${sellerTeam} 获得（点数）：</label>
+        <input type="number" id="p2p-seller-pts" value="${p.sell_price}" min="0" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);color:var(--green);border-radius:8px;font-size:16px;font-weight:700;">
+      </div>
+    </div>
+    <div style="padding:8px;background:var(--bg);border-radius:8px;font-size:12px;color:var(--text2);margin-bottom:12px;">
+      💡 玩家间交易金额由双方协商确定，不强制按市场价。此处录入协商后的实际点数。
+    </div>
+    <button class="btn btn-primary" onclick="submitP2PSell('${playerIdx}','${sellerTeam}')" style="width:100%;">确认提交交易</button>
+  `;
+  modal.classList.add('show');
+}
+
+function submitP2PSell(playerIdx, sellerTeam) {
+  const p = clickPlayer(playerIdx);
+  if(!p) return;
+  const buyerTeam = document.getElementById('p2p-buyer-team').value;
+  const buyerPts = parseInt(document.getElementById('p2p-buyer-pts').value) || 0;
+  const sellerPts = parseInt(document.getElementById('p2p-seller-pts').value) || 0;
+  
+  if(buyerPts < 0 || sellerPts < 0) { alert('点数不能为负数！'); return; }
+  
+  const buyerBudget = state.budgets[buyerTeam];
+  if(buyerBudget.tradeUsed >= 5) { alert(buyerTeam + ' 交易额度已用完！'); return; }
+  if(buyerBudget.balance < buyerPts) { alert(buyerTeam + ' 余额不足！'); return; }
+  
+  if(!confirm(`确认玩家间交易：\n${p.name} 从 ${sellerTeam} → ${buyerTeam}\n${buyerTeam} 消耗 ${buyerPts} 点\n${sellerTeam} 获得 ${sellerPts} 点`)) return;
+  
+  const opBuy = {
+    type: 'p2p_buy', team: buyerTeam, player: { name:p.name, position:p.position, overall:p.overall, fromTeam: sellerTeam },
+    action: `玩家交易购入 ${p.name}（从${sellerTeam}）`, pts: '-'+buyerPts,
+    player_name: p.name, time: new Date().toLocaleString('zh-CN'),
+    submitted_by: currentUser ? currentUser.name : 'unknown'
+  };
+  const opSell = {
+    type: 'p2p_sell', team: sellerTeam, player: { name:p.name, position:p.position, overall:p.overall, toTeam: buyerTeam },
+    action: `玩家交易售出 ${p.name}（至${buyerTeam}）`, pts: '+'+sellerPts,
+    player_name: p.name, time: new Date().toLocaleString('zh-CN'),
+    submitted_by: currentUser ? currentUser.name : 'unknown'
+  };
+  state.pendingOps.push(opBuy);
+  state.pendingOps.push(opSell);
+  saveState(); renderBudget(); renderQuickAccount(); filterPlayers(); closeModal(); updatePendingBadge();
+}
+
+function submitP2P(playerIdx, myTeam) {
+  const p = clickPlayer(playerIdx);
+  if(!p) return;
+  const sellerTeam = document.getElementById('p2p-seller-team').value;
+  const buyerPts = parseInt(document.getElementById('p2p-buyer-pts').value) || 0;
+  const sellerPts = parseInt(document.getElementById('p2p-seller-pts').value) || 0;
+  
+  if(buyerPts < 0 || sellerPts < 0) { alert('点数不能为负数！'); return; }
+  if(!sellerTeam) { alert('请选择售出方球队！'); return; }
+  
+  const myBudget = state.budgets[myTeam];
+  if(myBudget.tradeUsed >= 5) { alert(myTeam + ' 交易额度已用完！'); return; }
+  if(myBudget.balance < buyerPts) { alert(myTeam + ' 余额不足！'); return; }
+  
+  if(!confirm(`确认玩家间交易：\n${p.name} 从 ${sellerTeam} → ${myTeam}\n${myTeam} 消耗 ${buyerPts} 点\n${sellerTeam} 获得 ${sellerPts} 点`)) return;
+  
+  const opBuy = {
+    type: 'p2p_buy', team: myTeam, player: { name:p.name, position:p.position, overall:p.overall, fromTeam: sellerTeam },
+    action: `玩家交易购入 ${p.name}（从${sellerTeam}）`, pts: '-'+buyerPts,
+    player_name: p.name, time: new Date().toLocaleString('zh-CN'),
+    submitted_by: currentUser ? currentUser.name : 'unknown'
+  };
+  const opSell = {
+    type: 'p2p_sell', team: sellerTeam, player: { name:p.name, position:p.position, overall:p.overall, toTeam: myTeam },
+    action: `玩家交易售出 ${p.name}（至${myTeam}）`, pts: '+'+sellerPts,
+    player_name: p.name, time: new Date().toLocaleString('zh-CN'),
+    submitted_by: currentUser ? currentUser.name : 'unknown'
+  };
+  state.pendingOps.push(opBuy);
+  state.pendingOps.push(opSell);
+  saveState(); renderBudget(); renderQuickAccount(); filterPlayers(); closeModal(); updatePendingBadge();
+}
+
+function renderQuickAccount() {
+  const qaTitle = document.getElementById('qa-title');
+  const qaContent = document.getElementById('qa-content');
+  if(!currentUser) { qaContent.innerHTML = '<div style="color:var(--text2);padding:10px;text-align:center;">请先登录</div>'; return; }
+  
+  if(currentUser.isHost) {
+    qaTitle.textContent = '💰 管理员 — 球队账户总览';
+    qaContent.innerHTML = PLAYER_TEAMS.map(t => {
+      const b = state.budgets[t];
+      const color = TEAM_COLORS[t] || 'var(--accent)';
+      const pending = (state.pendingOps || []).filter(o => o.team === t).length;
+      const teamData = TEAMS_DATA.find(td => td.team === fullTeamName(t));
+      const players = teamData ? teamData.players.sort((a,b) => b.overall - a.overall) : [];
+      return `
+      <div style="margin-bottom:16px;border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg);cursor:pointer;" onclick="showPage('budget')">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="width:10px;height:10px;border-radius:50%;background:${color};"></span>
+            <span style="font-weight:700;">⚽ ${t}</span>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:700;color:${b.balance>=0?'var(--gold)':'var(--red)'};font-size:16px;">${b.balance} 点</div>
+            <div style="font-size:11px;color:var(--text2)">交易 ${b.tradeUsed}/5 · B队 ${b.bteamUsed}/5${pending>0?' · <span style="color:var(--red)">'+pending+'待审</span>':''}</div>
+          </div>
+        </div>
+        <div style="padding:8px 12px;">
+          <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px;">
+            <button class="btn btn-sm" style="font-size:11px;padding:3px 8px;" onclick="showTransferModal('buy','${t}')">📥 购入</button>
+            <button class="btn btn-sm" style="font-size:11px;padding:3px 8px;" onclick="showTransferModal('sell','${t}')">📤 售出</button>
+            <button class="btn btn-sm" style="font-size:11px;padding:3px 8px;" onclick="showBteamModal('${t}')">⬇️ 下放</button>
+          </div>
+          <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">球员名单（${players.length}人）· 点击查看账户详情</div>
+          <div style="max-height:200px;overflow-y:auto;">
+            <table style="width:100%;border-collapse:collapse;font-size:11px;">
+              ${players.slice(0,15).map((p, pi) => {
+                let tags = '';
+                if(p.is_player) tags += '<span class="tag tag-player" style="font-size:9px;">玩家</span>';
+                if(p.is_legend) tags += '<span class="tag tag-legend" style="font-size:9px;">传奇</span>';
+                const _qi = regPlayer(p, 'qa_'+t+'_'+pi);
+                return `<tr style="border-bottom:1px solid var(--border);">
+                  <td style="padding:3px 6px;"><strong>${p.name}</strong> ${tags}</td>
+                  <td style="padding:3px 4px;text-align:center;color:var(--accent);width:30px;">${p.position}</td>
+                  <td style="padding:3px 4px;text-align:center;color:var(--gold);font-weight:600;width:25px;">${p.overall}</td>
+                  <td style="padding:3px 4px;text-align:right;color:var(--green);font-size:10px;width:35px;">+${p.sell_price}</td>
+                  <td style="padding:3px 6px;text-align:right;width:70px;">
+                    ${!p.is_player ? `<button class="btn btn-sm" style="font-size:9px;padding:1px 5px;color:var(--green);border-color:var(--green);" onclick="hostSellPlayer('${_qi}')">售AI</button>` : ''}
+                  </td>
+                </tr>`;
+              }).join('')}
+              ${players.length > 15 ? `<tr><td colspan="5" style="padding:4px 6px;font-size:10px;color:var(--text2);text-align:center;">...共 ${players.length} 人，点击球队名查看完整列表</td></tr>` : ''}
+            </table>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    return;
+  }
+  
+  // Normal player - show own team account
+  const team = currentUser.team;
+  const b = state.budgets[team];
+  const color = TEAM_COLORS[team] || 'var(--accent)';
+  qaTitle.textContent = `💰 ${team} 账户`;
+  
+  let totalBuy = 0, totalSell = 0, totalAwards = 0, totalBteam = 0;
+  (b.log || []).forEach(l => {
+    const v = parseInt(l.pts) || 0;
+    if(l.action.includes('购入')) totalBuy += v;
+    else if(l.action.includes('出售') || l.action.includes('售出')) totalSell += v;
+    else if(l.action.includes('冠军') || l.action.includes('季军') || l.action.includes('亚军')) totalAwards += v;
+    else if(l.action.includes('下放') || l.action.includes('召回')) totalBteam += v;
+  });
+  
+  const pending = (state.pendingOps || []).filter(o => o.team === team);
+  const pendingHtml = pending.length > 0 ? '<div style="margin-top:10px;padding:8px;background:rgba(239,68,68,0.1);border:1px solid var(--red);border-radius:8px;">' +
+    '<div style="font-size:11px;color:var(--red);font-weight:600;margin-bottom:4px;">⏳ ' + pending.length + ' 项操作待审核</div>' +
+    pending.map(function(o) {
+      var realIdx = state.pendingOps.indexOf(o);
+      var icon = o.type==='buy'?'📥':o.type==='sell'?'📤':'⬇️';
+      return '<div style="font-size:11px;color:var(--text2);padding:2px 0;display:flex;align-items:center;justify-content:space-between;">' +
+        '<span>' + icon + ' ' + o.action + ' <span style="font-weight:600;">' + o.pts + '点</span></span>' +
+        '<button class="btn btn-sm btn-red" style="font-size:9px;padding:1px 5px;" onclick="window._cancelOp(' + realIdx + ')">取消</button>' +
+        '</div>';
+    }).join('') +
+    '</div>' : '';
+  
+  qaContent.innerHTML = 
+    '<div style="text-align:center;padding:12px 0;">' +
+      '<div style="font-size:11px;color:var(--text2);">可用点数</div>' +
+      '<div style="font-size:36px;font-weight:800;color:' + (b.balance>=0?'var(--gold)':'var(--red)') + '">' + b.balance + '</div>' +
+    '</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">' +
+      '<div style="text-align:center;padding:8px;background:var(--bg);border-radius:8px;">' +
+        '<div style="font-size:11px;color:var(--text2)">交易额度</div>' +
+        '<div style="font-weight:700;color:' + (5-b.tradeUsed>0?'var(--green)':'var(--red)') + '">' + b.tradeUsed + '/5</div>' +
+      '</div>' +
+      '<div style="text-align:center;padding:8px;background:var(--bg);border-radius:8px;">' +
+        '<div style="font-size:11px;color:var(--text2)">B队额度</div>' +
+        '<div style="font-weight:700;color:' + (5-b.bteamUsed>0?'var(--green)':'var(--red)') + '">' + b.bteamUsed + '/5</div>' +
+      '</div>' +
+    '</div>' +
+    '<div style="font-size:12px;">' +
+      '<table style="width:100%;border-collapse:collapse;">' +
+        '<tr style="border-bottom:1px solid var(--border)"><td style="padding:4px 0;color:var(--text2)">初始点数</td><td style="text-align:right;font-weight:600">' + (b.initialPoints||0) + '</td></tr>' +
+        '<tr style="border-bottom:1px solid var(--border)"><td style="padding:4px 0;color:var(--text2)">🏆 赛事奖励</td><td style="text-align:right;color:var(--green);font-weight:600">+' + totalAwards + '</td></tr>' +
+        '<tr style="border-bottom:1px solid var(--border)"><td style="padding:4px 0;color:var(--text2)">📥 球员购入</td><td style="text-align:right;color:var(--red);font-weight:600">' + totalBuy + '</td></tr>' +
+        '<tr style="border-bottom:1px solid var(--border)"><td style="padding:4px 0;color:var(--text2)">📤 售出给AI</td><td style="text-align:right;color:var(--green);font-weight:600">+' + totalSell + '</td></tr>' +
+        '<tr style="border-bottom:1px solid var(--border)"><td style="padding:4px 0;color:var(--text2)">⬇️ B队操作</td><td style="text-align:right;color:var(--red);font-weight:600">' + totalBteam + '</td></tr>' +
+      '</table>' +
+    '</div>' +
+    pendingHtml +
+    '<div style="margin-top:8px;font-size:11px;color:var(--text2);">点击「⚙️ 球队管理」标签查看完整记录</div>';
+  
+  qaContent.querySelectorAll('[data-cancel-op]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var idx = parseInt(this.getAttribute('data-cancel-op'));
+      if(isNaN(idx)) return;
+      var op = state.pendingOps[idx];
+      if(!op) return;
+      if(!confirm('确认取消：' + op.action + '（' + op.pts + '点）？')) return;
+      state.pendingOps.splice(idx, 1);
+      saveState(); renderPendingOps(); renderBudget(); renderQuickAccount(); updatePendingBadge();
+    });
+  });
+}
+
+// ===== B-TEAM =====
+function initBteam() { renderBteam(); }
+
+function renderBteam() {
+  const grid = document.getElementById('bteam-grid');
+  grid.innerHTML = PLAYER_TEAMS.map(team => {
+    const bt = state.bteams[team];
+    const b = state.budgets[team];
+    return `
+    <div class="bteam-card">
+      <div class="bteam-card-header">
+        <span>⚽ ${team}</span>
+        <span style="font-size:12px;color:var(--text2)">额度 ${b.bteamUsed}/5</span>
+      </div>
+      <div class="bteam-card-body">
+        <div style="margin-bottom:10px;">
+          <label style="font-size:11px;color:var(--text2);">B队（中超）：</label>
+          <input class="search-box" id="bteam-name-${team}" value="${bt.name}" placeholder="输入中超队名..." style="width:100%;margin-top:4px;" onchange="state.bteams['${team}'].name=this.value;saveState();">
+        </div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:6px;">下放球员 (${bt.demoted.length})</div>
+        ${bt.demoted.length === 0 ? '<div style="color:var(--text2);font-size:12px;text-align:center;padding:16px;">暂无下放球员</div>' :
+          bt.demoted.map((p,i) => `
+            <div class="demoted-player">
+              <span class="dp-pos">${p.position}</span>
+              <span class="dp-name">${p.name}</span>
+              <span class="dp-ovr">${p.overall}</span>
+              <button class="btn btn-sm" onclick="recallPlayer('${team}',${i})">⬆️ 召回 -2点</button>
+            </div>
+          `).join('')
+        }
+        <div style="margin-top:8px;">
+          <button class="btn btn-sm" onclick="showBteamModal('${team}')">➕ 下放球员</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function showBteamModal(team) {
+  if(!canOperate(team)) { alert('你只能操作自己所属的球队！'); return; }
+  const b = state.budgets[team];
+  if(b.bteamUsed >= 5) { alert('本赛季B队额度已用完！'); return; }
+  if(b.balance < 2) { alert('余额不足（需2点）！'); return; }
+  const teamData = TEAMS_DATA.find(t => t.team === fullTeamName(team));
+  const players = teamData.players.filter(p => !p.is_player).sort((a,b) => b.overall - a.overall);
+  
+  document.getElementById('transfer-title').textContent = `⬇️ ${team} - 下放球员到B队`;
+  document.getElementById('transfer-body').innerHTML = `
+    <div style="margin-bottom:10px;font-size:13px;color:var(--text2)">消耗2点 | 剩余额度: <strong style="color:var(--green)">${5-b.bteamUsed}</strong>/5</div>
+    <div style="max-height:300px;overflow-y:auto;">
+      ${players.map((p, pi) => `
+        <div style="display:flex;align-items:center;gap:8px;padding:8px;border-bottom:1px solid var(--border);font-size:13px;">
+          <span style="color:var(--accent);font-weight:600;width:35px">${p.position}</span>
+          <span style="flex:1">${p.name} <span style="color:var(--gold)">${p.overall}</span></span>
+          <button class="btn btn-sm" onclick="demotePlayer('${team}','${regPlayer(p, 'dm_'+team+'_'+pi)}')">下放 -2点</button>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  document.getElementById('transfer-modal').classList.add('show');
+}
+
+function showRecallModal(team) {
+  if(!canOperate(team)) { alert('你只能操作自己所属的球队！'); return; }
+  showBteamModal(team);
+}
+
+function demotePlayer(team, playerIdx) {
+  const p = clickPlayer(playerIdx);
+  if(!p) return;
+  const b = state.budgets[team];
+  if(b.bteamUsed >= 5) { alert('额度已用完！'); return; }
+  if(b.balance < 2) { alert('余额不足！'); return; }
+  
+  const op = {
+    type: 'demote', team: team, player: { name:p.name, position:p.position, overall:p.overall },
+    action: `下放 ${p.name} 到B队`, pts: '-2',
+    player_name: p.name, time: new Date().toLocaleString('zh-CN'),
+    submitted_by: currentUser ? currentUser.name : 'unknown'
+  };
+  state.pendingOps.push(op);
+  saveState(); renderBudget(); renderBteam(); closeModal(); updatePendingBadge();
+}
+
+function recallPlayer(team, index) {
+  const p = state.bteams[team].demoted[index];
+  const b = state.budgets[team];
+  if(b.bteamUsed >= 5) { alert('额度已用完！'); return; }
+  if(b.balance < 2) { alert('余额不足！'); return; }
+  
+  const op = {
+    type: 'recall', team: team, player: { name:p.name, position:p.position, overall:p.overall },
+    action: `召回 ${p.name} 从B队`, pts: '-2',
+    player_name: p.name, time: new Date().toLocaleString('zh-CN'),
+    submitted_by: currentUser ? currentUser.name : 'unknown'
+  };
+  state.pendingOps.push(op);
+  saveState(); renderBudget(); renderBteam(); updatePendingBadge();
+}
+
+function closeModal() { document.getElementById('transfer-modal').classList.remove('show'); }
+document.getElementById('transfer-modal').addEventListener('click', (e) => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
+
+// ===== SETTLEMENT PAGE =====
+function renderPendingOps() {
+  const listEl = document.getElementById('pending-list');
+  const countEl = document.getElementById('pending-count');
+  const ops = state.pendingOps || [];
+  countEl.textContent = ops.length;
+  
+  if(ops.length === 0) {
+    listEl.innerHTML = '<div class="pending-empty">✅ 所有操作已审核完毕</div>';
+    return;
+  }
+  
+  listEl.innerHTML = ops.map((op, i) => {
+    const color = TEAM_COLORS[op.team] || 'var(--accent)';
+    const isPlus = !op.pts.startsWith('-');
+    const icon = op.type === 'buy' ? '📥' : op.type === 'sell' ? '📤' : op.type === 'demote' ? '⬇️' : op.type === 'recall' ? '⬆️' : op.type === 'p2p_buy' ? '🔄' : op.type === 'p2p_sell' ? '🔄' : '💰';
+    const isSellToAI = op.type === 'sell';
+    // Build team options for sell-to-AI destination selector
+    const destTeamOptions = isSellToAI ? 
+      TEAMS_DATA.filter(t => !PLAYER_TEAMS.includes(resolveTeamName(t.team))).map(t => `<option value="${resolveTeamName(t.team)}">${resolveTeamName(t.team)}</option>`).join('') : '';
+    return `
+    <div class="pending-row" style="${isSellToAI ? 'align-items:flex-start;' : ''}">
+      <span class="pr-team" style="color:${color}">${op.team}</span>
+      <span class="si-icon">${icon}</span>
+      <span class="pr-action">
+        <strong>${op.action}</strong>
+        <span style="color:var(--text2);font-size:11px;"> · 提交人: ${op.submitted_by || '?'} · ${op.time}</span>
+        ${isSellToAI ? `
+        <div style="margin-top:6px;display:flex;align-items:center;gap:6px;">
+          <label style="font-size:11px;color:var(--text2);white-space:nowrap;">球员去向：</label>
+          <select id="sell-dest-${i}" style="padding:3px 6px;font-size:12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;">
+            <option value="">-- 选择目标球队 --</option>
+            ${destTeamOptions}
+            <option value="__free_agent__">自由球员（不归属任何队）</option>
+          </select>
+        </div>` : ''}
+      </span>
+      <span class="pr-pts ${isPlus?'plus':'minus'}">${op.pts}</span>
+      ${isSellToAI ? `
+      <button class="btn btn-sm" style="background:var(--green);color:#000;font-size:11px;padding:4px 8px;" onclick="approveSellPending(${i})">✅ 确认去向</button>
+      ` : `
+      <button class="btn btn-sm" style="background:var(--green);color:#000;font-size:11px;padding:4px 8px;" onclick="approvePending(${i})">✅</button>
+      `}
+      <button class="btn btn-red btn-sm" style="font-size:11px;padding:4px 8px;" onclick="rejectPending(${i})">❌</button>
+    </div>`;
+  }).join('');
+}
+
+function executePendingOp(op) {
+  const b = state.budgets[op.team];
+  if(!b) return;
+  
+  const v = parseInt(op.pts) || 0;
+  b.balance += v;
+  
+  if(op.type === 'buy') {
+    b.tradeUsed++;
+  } else if(op.type === 'sell') {
+    b.tradeUsed++;
+  } else if(op.type === 'p2p_buy') {
+    b.tradeUsed++;
+  } else if(op.type === 'p2p_sell') {
+    // Player-to-player sell: no tradeUsed for seller (negotiated directly)
+  } else if(op.type === 'upgrade') {
+    // Upgrade: just deduct points, no quota usage
+  } else if(op.type === 'demote') {
+    b.bteamUsed++;
+    if(op.player) state.bteams[op.team].demoted.push(op.player);
+  } else if(op.type === 'recall') {
+    b.bteamUsed++;
+    if(op.player) {
+      const idx = state.bteams[op.team].demoted.findIndex(p => p.name === op.player.name);
+      if(idx >= 0) state.bteams[op.team].demoted.splice(idx, 1);
+    }
+  }
+  
+  b.log.unshift({ action: op.action, pts: op.pts, time: new Date().toLocaleString('zh-CN') + ' ✓' });
+}
+
+// ===== GLOBAL CANCEL (accessible from inline onclick) =====
+window._cancelOp = function(idx) {
+  if(isNaN(idx)) return;
+  var op = state.pendingOps[idx];
+  if(!op) return;
+  if(!confirm('确认取消：' + op.action + '（' + op.pts + '点）？')) return;
+  state.pendingOps.splice(idx, 1);
+  saveState(); renderPendingOps(); renderBudget(); renderQuickAccount(); updatePendingBadge();
+};
+
+function approvePending(idx) {
+  const op = state.pendingOps[idx];
+  if(!op) return;
+  executePendingOp(op);
+  state.pendingOps.splice(idx, 1);
+  saveState(); renderPendingOps(); renderBudget(); renderBteam(); renderSettlement(); updatePendingBadge();
+}
+
+function approveSellPending(idx) {
+  const op = state.pendingOps[idx];
+  if(!op || op.type !== 'sell') return;
+  const destSelect = document.getElementById('sell-dest-' + idx);
+  const destTeam = destSelect ? destSelect.value : '';
+  if(!destTeam) { alert('请先选择球员去向球队！'); return; }
+  if(!confirm(`确认：${op.player_name || op.action}\n去向：${destTeam === '__free_agent__' ? '自由球员' : destTeam}`)) return;
+  // Move player in TEAMS_DATA
+  if(destTeam !== '__free_agent__') {
+    movePlayerInData(op.player_name, op.team, destTeam);
+  } else {
+    movePlayerInData(op.player_name, op.team, null);
+  }
+  executePendingOp(op);
+  state.pendingOps.splice(idx, 1);
+  saveState(); renderPendingOps(); renderBudget(); renderBteam(); renderSettlement(); renderQuickAccount(); updatePendingBadge();
+}
+
+function movePlayerInData(playerName, fromTeam, toTeam) {
+  // Find player in TEAMS_DATA and move to destination team
+  const srcTeam = TEAMS_DATA.find(t => t.team === fullTeamName(fromTeam));
+  if(!srcTeam) return;
+  const pIdx = srcTeam.players.findIndex(p => p.name === playerName);
+  if(pIdx < 0) return;
+  const player = srcTeam.players.splice(pIdx, 1)[0];
+  if(toTeam) {
+    const destTeam = TEAMS_DATA.find(t => t.team === fullTeamName(toTeam));
+    if(destTeam) destTeam.players.push(player);
+  }
+}
+
+// ===== PLAYER UPGRADE SYSTEM =====
+function doPlayerUpgrade(playerIdx, team, type) {
+  var p = clickPlayer(playerIdx);
+  if(!p) return;
+  var b = state.budgets[team];
+  if(b.balance < 1) { alert('余额不足！升级需要至少1点。'); return; }
+  var typeName = type === 'ovr' ? '能力' : '潜力';
+  var costStr = '1';
+  
+  var qtyStr = prompt(
+    '⚡ ' + p.name + '（' + p.position + ' OVR ' + p.overall + '）\n' +
+    '当前' + typeName + (type === 'pot' ? '加成: ' + (p.potential_bump || '无') : '') + '\n\n' +
+    '输入要消耗的点数（每1点 = ' + typeName + '+1）：',
+    '1'
+  );
+  if(!qtyStr) return;
+  var qty = parseInt(qtyStr);
+  if(isNaN(qty) || qty < 1) { alert('请输入有效的正整数！'); return; }
+  if(qty > b.balance) { alert('余额不足！当前仅 ' + b.balance + ' 点，需要 ' + qty + ' 点。'); return; }
+  if(!confirm('确认：' + p.name + ' ' + typeName + ' +' + qty + '，消耗 ' + qty + ' 点？')) return;
+  
+  // Apply upgrade
+  if(type === 'ovr') {
+    p.overall += qty;
+    // Update sell_price and market_price based on new overall
+    var prices = getPrices(p.overall);
+    p.sell_price = prices.sell;
+    p.market_price = prices.market;
+  } else {
+    if(!p.potential_bump) p.potential_bump = '';
+    for(var i = 0; i < qty; i++) p.potential_bump += '+1';
+  }
+  
+  // Record in log
+  var op = {
+    type: 'upgrade', team: team,
+    player: { name: p.name, position: p.position, overall: p.overall },
+    action: p.name + ' ' + typeName + '+' + qty,
+    pts: '-' + qty,
+    player_name: p.name, time: new Date().toLocaleString('zh-CN'),
+    submitted_by: currentUser ? currentUser.name : 'unknown'
+  };
+  state.pendingOps.push(op);
+  saveState(); renderBudget(); renderQuickAccount(); updatePendingBadge();
+}
+
+function getPrices(overall) {
+  var map = {99:[42,14],98:[40,13],97:[38,12],96:[36,12],95:[34,11],94:[32,10],93:[30,10],92:[28,9],91:[26,8],90:[24,8],89:[22,7]};
+  if(map[overall]) return {market:map[overall][0], sell:map[overall][1]};
+  if(overall >= 85) return {market:20, sell:6};
+  if(overall >= 80) return {market:10, sell:3};
+  if(overall >= 75) return {market:5, sell:2};
+  return {market:3, sell:1};
+}
+
+function rejectPending(idx) {
+  const op = state.pendingOps[idx];
+  if(!op) return;
+  if(!confirm(`确定驳回：${op.team} ${op.action}？`)) return;
+  state.pendingOps.splice(idx, 1);
+  saveState(); renderPendingOps(); renderBudget(); updatePendingBadge();
+}
+
+function approveAllPending() {
+  if(state.pendingOps.length === 0) return;
+  if(!confirm(`确定全部确认 ${state.pendingOps.length} 项操作？`)) return;
+  [...state.pendingOps].forEach(op => executePendingOp(op));
+  state.pendingOps = [];
+  saveState(); renderPendingOps(); renderBudget(); renderBteam(); renderSettlement(); updatePendingBadge();
+}
+
+function rejectAllPending() {
+  if(state.pendingOps.length === 0) return;
+  if(!confirm(`确定全部驳回 ${state.pendingOps.length} 项操作？`)) return;
+  state.pendingOps = [];
+  saveState(); renderPendingOps(); renderBudget(); updatePendingBadge();
+}
+
+function renderSettlement(filter) {
+  filter = filter || 'all';
+  const container = document.getElementById('settle-content');
+  let html = '';
+
+  PLAYER_TEAMS.forEach(team => {
+    const b = state.budgets[team];
+    const bt = state.bteams[team];
+    if(!b || !b.log || b.log.length === 0) return;
+
+    let items = b.log.filter(log => {
+      if(filter === 'all') return true;
+      if(filter === 'trade') return log.action.includes('购入') || log.action.includes('出售');
+      if(filter === 'bteam') return log.action.includes('下放') || log.action.includes('召回');
+      if(filter === 'award') return log.action.includes('冠军') || log.action.includes('季军') || log.action.includes('亚军');
+      return true;
+    });
+
+    if(items.length === 0) return;
+
+    html += `<div class="settle-card">
+      <div class="settle-team"><span class="dot" style="background:${TEAM_COLORS[team]}"></span>${team}</div>`;
+
+    items.forEach(item => {
+      const isPlus = item.pts.startsWith('+');
+      const cls = isPlus ? 'plus' : 'minus';
+      let icon = '💰';
+      if(item.action.includes('冠军')) icon = '🏆';
+      else if(item.action.includes('季军') || item.action.includes('亚军')) icon = '🏅';
+      else if(item.action.includes('下放')) icon = '⬇️';
+      else if(item.action.includes('召回')) icon = '⬆️';
+      else if(item.action.includes('购入')) icon = '📥';
+      else if(item.action.includes('出售')) icon = '📤';
+
+      html += `<div class="settle-item">
+        <span class="si-icon">${icon}</span>
+        <span class="si-detail">${item.action}<br><span style="font-size:11px;color:var(--text2)">${item.time}</span></span>
+        <span class="si-pts ${cls}">${item.pts}</span>
+      </div>`;
+    });
+
+    // B队下放球员清单
+    if((filter === 'all' || filter === 'bteam') && bt.demoted && bt.demoted.length > 0) {
+      html += `<div style="margin-top:8px;padding:8px 12px;background:var(--bg);border-radius:8px;font-size:12px;color:var(--text2);">
+        <strong style="color:var(--text)">B队(${bt.name || '未设置'})在册球员：</strong><br>`;
+      bt.demoted.forEach(p => {
+        html += `<span style="color:var(--accent)">${p.position}</span> ${p.name} <span style="color:var(--gold)">${p.overall}</span>　`;
+      });
+      html += `</div>`;
+    }
+
+    html += `</div>`;
+  });
+
+  if(!html) {
+    html = '<div class="settle-empty">📭 当前赛季暂无操作记录</div>';
+  }
+
+  container.innerHTML = html;
+}
+
+function clearSettlement() {
+  if(!confirm('⚠️ 确定要清空所有球队的本赛季操作记录吗？此操作不可恢复！')) return;
+  PLAYER_TEAMS.forEach(team => {
+    state.budgets[team].initialPoints = state.budgets[team].balance;
+    state.budgets[team].log = [];
+    state.budgets[team].tradeUsed = 0;
+    state.budgets[team].bteamUsed = 0;
+  });
+  state.pendingOps = [];
+  saveState();
+  renderBudget();
+  renderSettlement();
+  renderPendingOps();
+  updatePendingBadge();
+}
+
+function initTeamBalance(team, pts) {
+  if(!currentUser || !currentUser.isHost) { alert('仅主播可操作！'); return; }
+  const b = state.budgets[team];
+  if(!b) return;
+  b.initialPoints = pts;
+  b.balance = pts;
+  b.log.unshift({ action: '赛季初始点数', pts: '+'+pts, time: new Date().toLocaleString('zh-CN') });
+  saveState(); renderBudget(); renderSettlement();
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', () => {
+  showLoginUI();
+  initDB();
+  initTactics();
+  initMatch();
+  initBudget();
+  initAwards();
+  initBteam();
+  renderQuickAccount();
+  renderSettlement();
+  renderPendingOps();
+  updatePendingBadge();
+});
+
+// ===== ADMIN PANEL =====
+function calcMarketPrice(ovr) {
+  if(ovr>=99) return 42; if(ovr>=98) return 40; if(ovr>=97) return 38; if(ovr>=96) return 36; if(ovr>=95) return 34;
+  if(ovr>=94) return 32; if(ovr>=93) return 30; if(ovr>=92) return 28; if(ovr>=91) return 26; if(ovr>=90) return 24;
+  if(ovr>=89) return 22; if(ovr>=88) return 20; if(ovr>=85) return 20; if(ovr>=84) return 10; if(ovr>=80) return 10;
+  if(ovr>=79) return 5; if(ovr>=75) return 5; return 3;
+}
+function calcSellPrice(ovr) {
+  if(ovr>=95) return Math.round(calcMarketPrice(ovr)*0.33);
+  if(ovr>=88) return 6; if(ovr>=85) return 6; if(ovr>=80) return 3; if(ovr>=75) return 2; return 1;
+}
+
+let adminLogs = JSON.parse(localStorage.getItem('fc26_admin_logs') || '[]');
+
+function adminAddLog(msg) {
+  const now = new Date();
+  const time = now.toLocaleTimeString('zh-CN', {hour:'2-digit',minute:'2-digit'});
+  adminLogs.unshift({ time, msg });
+  if(adminLogs.length > 50) adminLogs = adminLogs.slice(0, 50);
+  localStorage.setItem('fc26_admin_logs', JSON.stringify(adminLogs));
+  renderAdminLogs();
+}
+
+function renderAdminLogs() {
+  const el = document.getElementById('admin-log');
+  if(!adminLogs.length) { el.innerHTML = '暂无操作记录'; return; }
+  el.innerHTML = adminLogs.map(l => `<div class="admin-log-entry"><span class="log-time">${l.time}</span>${l.msg}</div>`).join('');
+}
+
+function initAdminPanel() {
+  // Populate team filter for player search
+  const teamFilter = document.getElementById('admin-player-team-filter');
+  if(teamFilter.options.length <= 1) {
+    TEAMS_DATA.forEach(t => {
+      const o = document.createElement('option'); o.value = t.team; o.textContent = t.team;
+      teamFilter.appendChild(o);
+    });
+  }
+  // Populate team select for budget adjustment
+  const budgetTeam = document.getElementById('admin-budget-team');
+  if(!budgetTeam.options.length) {
+    PLAYER_TEAMS.forEach(t => {
+      const o = document.createElement('option'); o.value = t; o.textContent = t;
+      budgetTeam.appendChild(o);
+    });
+  }
+  renderAdminLogs();
+  updateAdminBudgetStatus();
+}
+
+function updateAdminBudgetStatus() {
+  const el = document.getElementById('admin-budget-status');
+  const s = JSON.parse(localStorage.getItem('fc26_state') || '{}');
+  const budgets = s.budgets || {};
+  el.innerHTML = PLAYER_TEAMS.map(t => {
+    const b = budgets[t];
+    const pts = b ? b.pts : 0;
+    const color = TEAM_COLORS[t] || 'var(--accent)';
+    return `<span style="display:inline-block;margin-right:12px;padding:4px 10px;border-radius:6px;background:${color}22;color:${color};font-weight:600;">${t}: ${pts}点</span>`;
+  }).join('');
+}
+
+// --- Search & Modify Player Overall ---
+function adminSearchPlayer() {
+  const keyword = document.getElementById('admin-player-search').value.trim().toLowerCase();
+  const teamFilter = document.getElementById('admin-player-team-filter').value;
+  const container = document.getElementById('admin-player-result');
+  if(!keyword) { container.innerHTML = '搜索球员进行修改'; return; }
+
+  const allP = getAllPlayers();
+  const results = allP.filter(p => {
+    const matchName = p.name.toLowerCase().includes(keyword) || (p.name_en && p.name_en.toLowerCase().includes(keyword));
+    const matchTeam = !teamFilter || p.team === teamFilter;
+    return matchName && matchTeam;
+  }).slice(0, 10);
+
+  if(!results.length) { container.innerHTML = '未找到球员'; return; }
+  container.innerHTML = results.map(p => {
+    const ovrColor = p.overall >= 90 ? 'var(--gold)' : p.overall >= 80 ? 'var(--green)' : p.overall >= 70 ? 'var(--accent)' : 'var(--text2)';
+    return `<div class="admin-player-card">
+      <div class="ovr-badge" style="background:${ovrColor}22;color:${ovrColor};">${p.overall}</div>
+      <div class="player-info">
+        <div class="pname">${p.name}${p.name_en ? ' ('+p.name_en+')' : ''}</div>
+        <div class="pmeta">${p.team} · ${p.position} · 购入${p.market_price}点 / 售AI${p.sell_price}点</div>
+      </div>
+      <input class="admin-ovr-input" type="number" min="40" max="99" value="${p.overall}" id="admin-ovr-${p.team}-${p.name_en || p.name}">
+      <button class="btn btn-sm" style="background:var(--gold);color:#000;" onclick="adminSetOverall('${p.team}','${(p.name_en||p.name).replace(/'/g,"\\'")}')">修改</button>
+    </div>`;
+  }).join('');
+}
+
+function adminSetOverall(team, playerKey) {
+  const input = document.getElementById('admin-ovr-' + team + '-' + playerKey);
+  if(!input) return;
+  const newOvr = parseInt(input.value);
+  if(isNaN(newOvr) || newOvr < 40 || newOvr > 99) { alert('能力值需在 40-99 之间'); return; }
+
+  // Find and update in TEAMS_DATA
+  let playerName = '';
+  TEAMS_DATA.forEach(t => {
+    if(t.team === fullTeamName(team)) {
+      t.players.forEach(p => {
+        const key = p.name_en || p.name;
+        if(key === playerKey) {
+          const oldOvr = p.overall;
+          p.overall = newOvr;
+          // Recalculate prices
+          p.market_price = calcMarketPrice(newOvr);
+          p.sell_price = calcSellPrice(newOvr);
+          playerName = p.name;
+          adminAddLog(`🎯 修改能力值：${playerName}（${team}）${oldOvr} → ${newOvr}，购入${p.market_price}/售AI${p.sell_price}`);
+        }
+      });
+    }
+  });
+
+  if(playerName) {
+    alert(`✅ ${playerName} 能力值已修改为 ${newOvr}`);
+    adminSearchPlayer(); // refresh
+  }
+}
+
+// --- Adjust Budget ---
+function adminAdjustBudget() {
+  if(!currentUser || !currentUser.isHost) { alert('仅主播可操作！'); return; }
+  const team = document.getElementById('admin-budget-team').value;
+  const action = document.getElementById('admin-budget-action').value;
+  const pts = parseInt(document.getElementById('admin-budget-pts').value);
+  if(isNaN(pts) || pts < 0) { alert('请输入有效的点数'); return; }
+
+  const s = JSON.parse(localStorage.getItem('fc26_state') || '{}');
+  if(!s.budgets) s.budgets = {};
+  if(!s.budgets[team]) s.budgets[team] = { pts: 0, log: [] };
+
+  const oldPts = s.budgets[team].pts;
+  let newPts;
+  let actionText;
+  if(action === 'set') { newPts = pts; actionText = `设为`; }
+  else if(action === 'add') { newPts = oldPts + pts; actionText = `增加`; }
+  else { newPts = Math.max(0, oldPts - pts); actionText = `减少`; }
+
+  s.budgets[team].pts = newPts;
+  s.budgets[team].log.push(`${actionText} ${pts}点 → ${newPts}点（管理员操作）`);
+  localStorage.setItem('fc26_state', JSON.stringify(s));
+
+  adminAddLog(`💰 调整点数：${team} ${oldPts}点 → ${newPts}点（${actionText}${pts}）`);
+  updateAdminBudgetStatus();
+  renderBudget();
+  alert(`✅ ${team} 点数已${actionText} ${pts}，当前余额：${newPts}点`);
+}
+
+// --- Move Player ---
+function adminSearchMovePlayer() {
+  const keyword = document.getElementById('admin-move-search').value.trim().toLowerCase();
+  const container = document.getElementById('admin-move-result');
+  if(!keyword) { container.innerHTML = '搜索球员进行移动'; return; }
+
+  const allP = getAllPlayers();
+  const results = allP.filter(p => {
+    return p.name.toLowerCase().includes(keyword) || (p.name_en && p.name_en.toLowerCase().includes(keyword));
+  }).slice(0, 10);
+
+  if(!results.length) { container.innerHTML = '未找到球员'; return; }
+  const teamOptions = TEAMS_DATA.map(t => `<option value="${t.team}" ${t.team===results[0].team?'selected':''}>${t.team}</option>`).join('');
+  container.innerHTML = results.map(p => {
+    const ovrColor = p.overall >= 90 ? 'var(--gold)' : p.overall >= 80 ? 'var(--green)' : p.overall >= 70 ? 'var(--accent)' : 'var(--text2)';
+    return `<div class="admin-move-card">
+      <div class="ovr-badge" style="background:${ovrColor}22;color:${ovrColor};">${p.overall}</div>
+      <div class="player-info">
+        <div class="pname">${p.name}${p.name_en ? ' ('+p.name_en+')' : ''}</div>
+        <div class="pmeta">${p.team} · ${p.position}</div>
+      </div>
+      <select id="admin-move-target-${p.team}-${(p.name_en||p.name).replace(/'/g,"\\'")}" style="padding:6px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text);">${teamOptions}</select>
+      <button class="btn btn-sm" style="background:var(--red);color:#fff;" onclick="adminMovePlayer('${p.team}','${(p.name_en||p.name).replace(/'/g,"\\'")}')">移动</button>
+    </div>`;
+  }).join('');
+}
+
+function adminMovePlayer(fromTeam, playerKey) {
+  const selId = 'admin-move-target-' + fromTeam + '-' + playerKey;
+  const sel = document.getElementById(selId);
+  if(!sel) return;
+  const toTeam = sel.value;
+  if(toTeam === fromTeam) { alert('目标球队与当前球队相同'); return; }
+
+  // Find player data
+  let playerData = null;
+  let playerIndex = -1;
+  TEAMS_DATA.forEach(t => {
+    if(t.team === fullTeamName(fromTeam)) {
+      t.players.forEach((p, i) => {
+        if((p.name_en || p.name) === playerKey) {
+          playerData = { ...p };
+          playerIndex = i;
+        }
+      });
+    }
+  });
+
+  if(!playerData) { alert('未找到球员数据'); return; }
+
+  // Remove from source team
+  TEAMS_DATA.forEach(t => {
+    if(t.team === fullTeamName(fromTeam)) {
+      t.players.splice(playerIndex, 1);
+    }
+  });
+
+  // Add to target team
+  TEAMS_DATA.forEach(t => {
+    if(t.team === fullTeamName(toTeam)) {
+      t.players.push(playerData);
+    }
+  });
+
+  adminAddLog(`🔄 移动球员：${playerData.name} ${fromTeam} → ${toTeam}`);
+  alert(`✅ ${playerData.name} 已从 ${fromTeam} 移动到 ${toTeam}`);
+  adminSearchMovePlayer(); // refresh
+}
+</script>
+
+</body>
+</html>
