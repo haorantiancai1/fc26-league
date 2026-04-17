@@ -760,7 +760,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '42'; // 当前版本号，每次发版时更新
+  var _cv = '43'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
@@ -11708,7 +11708,169 @@ const FUN_EVENTS = [
   { icon:'🥅', pos:['GK'], text:'{player} 开大脚的时候鞋飞了！球鞋在空中划出一道弧线落在了中场……{player} 只能穿着袜子跑回去拿鞋' },
   { icon:'😴', pos:['GK'], text:'转播镜头发现 {player} 在对方角球时偷偷打了个哈欠，还好进球了不然就尴尬了' },
   { icon:'📢', pos:['GK'], text:'{player} 对着后卫线疯狂咆哮指挥，结果手滑把矿泉水瓶扔到了队友头上' }
+];// ===== 赛前解说词 =====
+function isPlayerTeam(teamName) {
+  var td = TEAMS_DATA.find(function(t){ return t.team === fullTeamName(teamName); });
+  return td && td.is_player_team;
+}
+
+const PLAYER_TEAM_INTROS = {
+  '切尔西': [
+    '各位球迷晚上好！欢迎来到本场解说，我是你们的解说员浩然！今晚我们在斯坦福桥看切尔西的比赛。说实话，切尔西最近的表现就像福州的天气一样——让人猜不透！',
+    '吃着鱼丸看切尔西，我们福州人的两大爱好兼顾了！小道消息：今天切尔西更衣室里的BGM是《打工时刻》，主教练说这能激发斗志。好吧……你开心就好',
+    '浩然在现场给大家报道！据小道消息，切尔西今晚我们家王钰栋特意穿了双红色袜子上场，说是要"红"遍全场。老清表示：只要能赢球，穿外套我都不管',
+    '切尔西今天的对手可不好惹啊，不过我们有王钰栋的中场控制，还有浩然在前线当临时主教练。什么？我不是来当解说的吗？对啊，但我的实力有目共睹！',
+    '切尔西今晚排出了4-3-3阵型，主教练在赛前发放了海鲜动物饼当能量补给。迪迪表示：我是左边锋，不是左边卖鱼丸的，请不要混淆',
+  ],
+  '曼城': [
+    '浩然在现场！今天曼城的球员们问我要不要吃福州鱼丸，我说先踢完球再说。结果他们每人吃了三串，说是要"补充蛋白质"。好吧，这个借口我先记下',
+    '曼城今天到场了！据小道消息，曼城更衣室里放着一首《We Are The Champions》循环播放，老板说这叫"胜利意识植入"。洁世一问：那输了呢？老板：没输过啊，因为我们曼城不会输',
+    '洽曼城的一场比赛！小道消息：余庭帅今天带了一袋福建特产茶叶蛋来给队友们分享。汉堡说：我吃过福州的鱼丸，但这个蛋我真的没吃过……',
+    '曼城的赛前小道消息：亚历山大在更衣室里突然打了个喷嚏，结果声音太大把隔壁的对方球员吓了一跳。亚历山大：这不是含笑，我真的是在热身！',
+  ],
+  '利物浦': [
+    '利物浦今天的比赛让浩然很期待！主教练在赛前说："今天我们要展现红军的风采！"结果球员们问他什么风采，他说："就是赢球的风采啊。"好吧……',
+    '利物浦的球员们今天状态似乎不错！据小道消息，魏清泉今天没有吃他标志性的三碗米粉，换成了六碗。同伴们表示这是升级了',
+    '欢迎回到安菲尔德！罗纳尔迪尼奥今天在更衣室里给队友们表演了个花式飞刀技巧……用的是毛巾。古利特看完表示：这个我也会，但我用的是直升飞机',
+  ],
+  '曼联': [
+    '曼联的比赛！小道消息：黑微狗今天到场时穿了一双红色的内衣外套，被队友发现后一度尴尬到想要转会。阿凡提表示：至少你穿的是我们队的颜色……',
+    '浩然在曼联现场！小道消息：哈赛今天在更衣室里开始跳爵士的舞蹈热身，被王富建拍下发到了。哈赛：删了！立刻删了！谁敢发出去我和他没完！',
+    '曼联的球员们今天精神超级好！吴恩菲尔德今晚说要用球给观众留下永恒的记忆。王富建在旁边补了一句：这话我在高中语文考试里写过，老师给了4分',
+  ]
+};
+
+const GENERIC_INTROS = [
+  '各位球迷晚上好！欢迎来到本场比赛解说，我是你们的解说员浩然！今晚这场比赛绝对值得期待，让我们一起来看看！',
+  '浩然在现场！今天的比赛有点意思，两支球队都想拿分。其实我也想拿分，毕竟我每天都在评价他们的表现……',
+  '比赛即将开始！解说员浩然提前到场为大家解说。说实话，我本来是想去吃火锅的，但老板说来球赛给我加了工资。好吧，加了五块钱就不说了！',
+  '各位观众晚上好！这场比赛的胜负其实我已经知道了……开玩笑了，我是说我知道这场会很精彩！',
+  '浩然今天状态不错，吃了一晚鱼丸来解说。不过先声明，如果解说中出现口误，那是因为我嘴里还有鱼丸……'
 ];
+
+const RIVALRY_INTROS = [
+  '重头戏！今天是玩家之间的对决！浩然表示：我当然希望切尔西赢，但如果输了我就说"这是我解说的比赛和我没关系"',
+  '玩家对决来了！小道消息：双方球员今天都没有跟对方打招呼，因为每个人都在低头刷手机看联赛直播……主教练表示很满意，说很专注',
+  '浩然在现场为大家解说这场玩家大战！说实话，每次玩家之间的对决都比世界杯决赛还精彩，因为输的那方会在群里被嘲笑一整周',
+];
+
+function generatePreMatchIntros(homeName, awayName) {
+  var intro1 = '', intro2 = '', intro3 = '';
+  var homeIsPlayer = isPlayerTeam(homeName);
+  var awayIsPlayer = isPlayerTeam(awayName);
+  var pool;
+
+  if(homeIsPlayer && awayIsPlayer) {
+    pool = RIVALRY_INTROS.slice();
+    intro1 = pool[Math.floor(Math.random()*pool.length)];
+  } else if(homeIsPlayer) {
+    pool = (PLAYER_TEAM_INTROS[homeName] || GENERIC_INTROS).slice();
+    intro1 = pool[Math.floor(Math.random()*pool.length)];
+  } else if(awayIsPlayer) {
+    pool = (PLAYER_TEAM_INTROS[awayName] || GENERIC_INTROS).slice();
+    intro1 = pool[Math.floor(Math.random()*pool.length)];
+  } else {
+    pool = GENERIC_INTROS.slice();
+    intro1 = pool[Math.floor(Math.random()*pool.length)];
+  }
+
+  var lockerMsgs = [
+    '据前方消息，主队更衣室里传来欢笑声，似乎气氛不错。希望不是在看短视频……',
+    '场地工作人员刚刚浇完草地，转播镜头捕捉到一名球员偷偷踩了一脚湿漉漉的草地，然后假装什么都没发生',
+    '双方球员已经在通道里热身完毕，解说员浩然的热身方式是吃了一碗鱼丸汤，所以我的状态也很好！',
+    '赛前双方主教练在中场线握手致意，不过看表情好像是在比谁的手力大。好吧，这就是足球的礼仪',
+    '今天的观众人数还不错！尤其是看台上的美女球迷们特别多。浩然代表男球迷向你们问好',
+  ];
+  intro2 = lockerMsgs[Math.floor(Math.random()*lockerMsgs.length)];
+
+  var predMsgs = [
+    '比赛即将开始！浩然预测今晚会有很多进球，毕竟双方都想给观众带来精彩的比赛。如果没有进球……那就当看了一场足球版的《安静》吧',
+    '好了各位，比赛马上开始！浩然的预测：这场比赛会有至少三个进球，如果预测错了，那就是双方门将太神了',
+    '火速箭已经准备好了，双方球员已经到场！浩然觉得今天谁赢都好，只要比赛精彩就行。不过如果是切尔西的比赛，我当然希望切尔西赢！我是解说员又不是裁判，偏心怎么了？',
+  ];
+  intro3 = predMsgs[Math.floor(Math.random()*predMsgs.length)];
+
+  return [
+    { text: intro1, icon: '\u{1F3DF}' },
+    { text: intro2, icon: '\u{1D4FA}' },
+    { text: intro3, icon: '\u26BD' }
+  ];
+}
+
+function generatePostMatchSummary(homeName, awayName, homeGoals, awayGoals, events, homeSquad, awaySquad) {
+  var goalScorers = events.filter(function(e){ return e.type === 'goal'; });
+  var _mvp = null, _mvpTeam = '', _mvpGoals = 0;
+
+  if(goalScorers.length > 0) {
+    var scorerMap = {};
+    goalScorers.forEach(function(e) {
+      var name = e.player || '';
+      if(!scorerMap[name]) scorerMap[name] = { name: name, side: e.side, goals: 0 };
+      scorerMap[name].goals++;
+    });
+    var best = null;
+    Object.keys(scorerMap).forEach(function(k) {
+      if(!best || scorerMap[k].goals > best.goals) best = scorerMap[k];
+    });
+    if(best) { _mvp = best.name; _mvpTeam = best.side === 'home' ? homeName : awayName; _mvpGoals = best.goals; }
+  }
+
+  if(!_mvp) {
+    var badgeEvents = events.filter(function(e){ return e.playstyle && e.player; });
+    if(badgeEvents.length > 0) {
+      var pick = badgeEvents[Math.floor(Math.random()*badgeEvents.length)];
+      _mvp = pick.player; _mvpTeam = pick.side === 'home' ? homeName : awayName; _mvpGoals = 0;
+    }
+  }
+
+  if(!_mvp) {
+    var allSquad = homeSquad.concat(awaySquad);
+    if(allSquad.length > 0) {
+      var rp = allSquad[Math.floor(Math.random()*allSquad.length)];
+      _mvp = rp.name; _mvpTeam = homeSquad.indexOf(rp) >= 0 ? homeName : awayName; _mvpGoals = 0;
+    }
+  }
+
+  if(!_mvp) { _mvp = '某球员'; _mvpTeam = homeName; }
+
+  var resultText = '';
+  var totalGoals = homeGoals + awayGoals;
+  if(homeGoals > awayGoals) resultText = homeName + ' 获胜！';
+  else if(awayGoals > homeGoals) resultText = awayName + ' 获胜！';
+  else resultText = '双方握手言和！';
+
+  var lines = [];
+  lines.push('\u{1F3C6} 终场比分 ' + homeName + ' ' + homeGoals + ' - ' + awayGoals + ' ' + awayName + '，' + resultText);
+
+  if(totalGoals >= 8) lines.push('这场比赛就像是一场打乱仗，进球多得解说员浩然都没来得及喊完"进了！"就又进了一个！');
+  else if(totalGoals >= 5) lines.push('精彩的比赛！进球不断，观众的喉咙都叫哑了，浩然的嘴也叫哑了');
+  else if(totalGoals === 0) lines.push('全场比赛 0-0……解说员浩然表示：我宁愿去吃鱼丸也不想解说这种比赛！不过还是很专业地解说完了，因为我是专业的！');
+  else if(totalGoals <= 2) lines.push('这场比赛进球不多，但每个进球都很精彩！好吧其实有的比赛确实有点无聊，但我不会说出来的');
+  else lines.push('一场有趣的比赛！双方都展现了不错的状态，观众们值回了票价');
+
+  if(_mvpGoals > 0) lines.push('\u{1F3C5} 本场最佳球员：' + _mvp + '（' + _mvpTeam + '），本场打入 ' + _mvpGoals + ' 球！表现壮观！');
+  else lines.push('\u{1F3C5} 本场最佳球员：' + _mvp + '（' + _mvpTeam + '），今晚的表现让人印象深刻！');
+
+  var interviews = [
+    '\u{1F4DE} 解说员浩然介绍赛后采访："' + _mvp + '，恭喜你当选最佳球员！请问你今晚的秘密武器是什么？"' + _mvp + '："福州鱼丸。"浩然："……好吧，这个广告我不接，但确实好吃。"',
+    '\u{1F4DE} 赛后采访："' + _mvp + '，今晚最难忘的时刻是什么？"' + _mvp + '："解说员浩然在解说时偶尔喊错球员名字……"浩然："那是我故意的！就是为了增加节目效果！"',
+    '\u{1F4DE} 浩然拿着话筒冲进了更衣室："' + _mvp + '！恭喜你获得本场最佳！你有什么想对球迷说的吗？"' + _mvp + '："请不要在我吃饭的时候采访我，我饿死了。"',
+    '\u{1F4DE} 赛后采访现场："' + _mvp + '，你觉得今天的表现如何？"' + _mvp + '："说实话，我今天状态一般……"浩然到旁边补了一句："但你赢了啊！"' + _mvp + '："……对哦。"',
+    '\u{1F4DE} 最佳球员采访："' + _mvp + '，你觉得今天解说员浩然表现得怎么样？"' + _mvp + '："他的解说很有特色，尤其是吃鱼丸那段让我印象深刻。"浩然："我何时说过吃鱼丸了？"' + _mvp + '："……你每场都在说啊。"',
+  ];
+  lines.push(interviews[Math.floor(Math.random()*interviews.length)]);
+
+  var closings = [
+    '好了，今天的解说就到这里！感谢各位看到最后，浩然下场吃鱼丸去了！下次见！',
+    '本场比赛结束！解说员浩然提醒各位：吃鱼丸就去我家店里，说是浩然朋友享九折！……其实我没这个权利，但你们可以试试',
+    '感谢各位观众的支持！解说员浩然下场了，记得点关注我的直播间！如果你们不点的话……我也没办法，反正我还要吃鱼丸',
+  ];
+  lines.push(closings[Math.floor(Math.random()*closings.length)]);
+
+  return { mvp: _mvp, mvpTeam: _mvpTeam, mvpGoals: _mvpGoals, lines: lines };
+}
+
+
 
 // ===== 比赛事件模板 =====
 const MATCH_EVENTS_POOL = {
@@ -12431,6 +12593,29 @@ function simulateMatch() {
     '</div>' +
   '</div>';
 
+  // === Pre-match intro: 3 lines, 1 per second ===
+  var _preIntros = generatePreMatchIntros(homeName, awayName);
+  var _preBox = document.createElement('div');
+  _preBox.id = 'pre-intro-container';
+  _preBox.style.cssText = 'margin-bottom:10px;';
+  var _liveContainer = area.querySelector('.match-live-container') || area.firstElementChild;
+  if(_liveContainer) _liveContainer.insertBefore(_preBox, _liveContainer.firstChild);
+  var _preIdx = 0;
+  function showNextIntro() {
+    if(_preIdx >= _preIntros.length) { _preBox.remove(); _matchTimer = setTimeout(advanceMatch, msPerMinute); return; }
+    var line = _preIntros[_preIdx];
+    var div = document.createElement('div');
+    div.className = 'match-ev neutral';
+    div.style.cssText = 'background:linear-gradient(90deg,rgba(251,191,36,0.06),rgba(245,158,11,0.06));border-left:3px solid #fbbf24;border-radius:6px;padding:8px 10px;margin:4px 0;opacity:0;transition:opacity 0.4s;';
+    div.innerHTML = '<span class="ev-icon" style="font-size:14px;">' + line.icon + '</span><span class="ev-text" style="color:#fbbf24;font-size:12px;font-style:italic;">' + line.text + '</span>';
+    _preBox.appendChild(div);
+    setTimeout(function(){ div.style.opacity = '1'; }, 50);
+    _preIdx++;
+    setTimeout(showNextIntro, 1000);
+  }
+  setTimeout(showNextIntro, 300);
+  // Start! (called after intros)
+
   // Animate events
   var eventIdx = 0;
   var currentMinute = 0;
@@ -12439,7 +12624,7 @@ function simulateMatch() {
   var eventsDiv = document.getElementById('ml-events');
 
   // Determine total duration: ~50 seconds for 90 minutes
-  var totalDuration = 48000 + Math.random() * 4000; // 48-52s
+  var totalDuration = 33000 + Math.random() * 4000; // 33-37s ~35s
   var msPerMinute = totalDuration / 95; // 0-90 + buffer
 
   function advanceMatch() {
@@ -12510,13 +12695,22 @@ function simulateMatch() {
     finalBanner.textContent = '终场比分 ' + liveHomeGoals + ' - ' + liveAwayGoals + '  ' + resultText;
     document.getElementById('ml-final').appendChild(finalBanner);
 
+    // Post-match summary & MVP
+    var _summary = generatePostMatchSummary(homeName, awayName, liveHomeGoals, liveAwayGoals, events, homeSquad, awaySquad);
+    var _sumBox = document.createElement('div');
+    _sumBox.style.cssText = 'margin-top:12px;padding:12px;background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(6,182,212,0.08));border-radius:10px;border:1px solid rgba(16,185,129,0.2);';
+    var _sumHTML = '<div style="font-size:14px;font-weight:700;color:var(--green);margin-bottom:8px;">🎬 赛后采访</div>';
+    _summary.lines.forEach(function(line) {
+      _sumHTML += '<div style="font-size:12px;color:var(--text);padding:4px 0;line-height:1.6;">' + line + '</div>';
+    });
+    _sumHTML += '<div style="margin-top:8px;padding:8px;background:rgba(16,185,129,0.1);border-radius:6px;font-size:12px;color:var(--green);font-weight:600;">🏆 MOM: ' + _summary.mvp + ' (' + _summary.mvpTeam + ')' + (_summary.mvpGoals > 0 ? ' ⭐' + _summary.mvpGoals + '球' : '') + '</div>';
+    _sumBox.innerHTML = _sumHTML;
+    document.getElementById('ml-final').appendChild(_sumBox);
+
     document.getElementById('btn-start-match').textContent = '🚀 开始模拟比赛';
     document.getElementById('btn-start-match').style.opacity = '1';
     sfxSuccess();
   }
-
-  // Start!
-  _matchTimer = setTimeout(advanceMatch, msPerMinute);
 }
 
 // ===== BUDGET =====
