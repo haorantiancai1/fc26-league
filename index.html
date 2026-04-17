@@ -760,7 +760,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '44'; // 当前版本号，每次发版时更新
+  var _cv = '45'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
@@ -12611,7 +12611,7 @@ function simulateMatch() {
     _preBox.appendChild(div);
     setTimeout(function(){ div.style.opacity = '1'; }, 50);
     _preIdx++;
-    setTimeout(showNextIntro, 1000);
+    setTimeout(showNextIntro, 3000);
   }
   setTimeout(showNextIntro, 300);
   // Start! (called after intros)
