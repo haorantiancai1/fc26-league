@@ -760,7 +760,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '33'; // 当前版本号，每次发版时更新
+  var _cv = '34'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
@@ -13031,7 +13031,8 @@ function buildTeamCard(t) {
     h += '<div style="margin-top:10px;font-size:12px;font-weight:600;color:var(--text2);">📝 操作记录</div>';
     h += '<div class="log-list" style="max-height:150px;overflow-y:auto;">';
     logs.slice(0,20).forEach(function(l) {
-      h += '<div class="log-item"><span class="log-pts ' + (l.pts.indexOf('+')===0?'plus':'minus') + '">' + l.pts + '</span> ' + l.action + ' <span style="opacity:0.5">' + (l.time||'') + '</span></div>';
+      var _lpts = String(l.pts || 0);
+      h += '<div class="log-item"><span class="log-pts ' + (_lpts.indexOf('+')===0?'plus':'minus') + '">' + _lpts + '</span> ' + l.action + ' <span style="opacity:0.5">' + (l.time||'') + '</span></div>';
     });
     h += '</div>';
   }
@@ -14279,7 +14280,8 @@ function renderSettlement(filter) {
     html += '<div class="settle-card"><div class="settle-team"><span class="dot" style="background:' + (TEAM_COLORS[team]||'var(--accent)') + '"></span>' + team + '</div>';
 
     items.forEach(item => {
-      const isPlus = item.pts.startsWith('+');
+      const _pts = String(item.pts || 0);
+      const isPlus = _pts.startsWith('+');
       const cls = isPlus ? 'plus' : 'minus';
       let icon = '\uD83D\uDCB0';
       if(item.action.includes('\u51A0\u519B')) icon = '\uD83C\uDFC6';
