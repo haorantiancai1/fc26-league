@@ -7813,6 +7813,15 @@ try {
     "is_player_team": false,
     "players": [
       {
+        "name": "罗纳尔多",
+        "name_en": "C. Ronaldo",
+        "position": "RW",
+        "overall": 92,
+        "market_price": 28,
+        "sell_price": 9,
+        "is_legend": true
+      },
+      {
         "name": "舒梅切尔",
         "name_en": "P. Schmeichel",
         "position": "GK",
@@ -10988,7 +10997,7 @@ function saveState() {
 
 // ===== LOGIN =====
 // Auto-migrate: clear old data if version changed
-const APP_VERSION = 'v19t-liverpool-fix-dups-0424'; // 2026-04-24: fix duplicate Messi/Ronaldo/Cucurella (moved from other teams)
+const APP_VERSION = 'v19u-fix-cronaldo-0424'; // 2026-04-24: restore C.Ronaldo to 传奇曼联 (different from Brazil Ronaldo)
 if(localStorage.getItem('fc26_version') !== APP_VERSION) {
   localStorage.removeItem('fc26_budgets');
   localStorage.removeItem('fc26_bteams');
