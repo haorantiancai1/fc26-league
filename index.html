@@ -2698,6 +2698,15 @@ try {
         "overall": 76,
         "market_price": 5,
         "sell_price": 2
+      },
+      {
+        "name": "赵跑跑",
+        "name_en": "ZHAO PAOPAO",
+        "position": "ST",
+        "overall": 62,
+        "market_price": 3,
+        "sell_price": 1,
+        "is_player": true
       }
     ]
   },
@@ -10744,7 +10753,7 @@ function saveState() {
 
 // ===== LOGIN =====
 // Auto-migrate: clear old data if version changed
-const APP_VERSION = 'v19j-add-arsenal-0421'; // 2026-04-21: add arsenal as player team
+const APP_VERSION = 'v19k-add-zhaopaopao-0423'; // 2026-04-23: add player 赵跑跑 to Arsenal
 if(localStorage.getItem('fc26_version') !== APP_VERSION) {
   localStorage.removeItem('fc26_budgets');
   localStorage.removeItem('fc26_bteams');
