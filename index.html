@@ -971,7 +971,7 @@ tbody td {
       <button class="btn btn-gold btn-sm" onclick="submitAward(25,'英超冠军')">🏆 英超冠军 +25</button>
       <button class="btn btn-gold btn-sm" onclick="submitAward(20,'英超第二')">🥈 英超第二 +20</button>
       <button class="btn btn-gold btn-sm" onclick="submitAward(15,'英超第三')">🥉 英超第三 +15</button>
-      <button class="btn btn-gold btn-sm" onclick="submitAward(10,'英超第四')">4️⃣ 英超第四 +10</button>
+      <button class="btn btn-gold btn-sm" onclick="submitAward(10,'英超第四后')">4️⃣ 英超第四后 +10</button>
       <button class="btn btn-gold btn-sm" onclick="submitAward(20,'足总杯冠军')">🏆 足总杯 +20</button>
       <button class="btn btn-gold btn-sm" onclick="submitAward(20,'欧联冠军')">🏆 欧联 +20</button>
       <button class="btn btn-gold btn-sm" onclick="submitAward(15,'卡拉宝杯冠军')">🏆 卡拉宝 +15</button>
@@ -10754,7 +10754,7 @@ function saveState() {
 
 // ===== LOGIN =====
 // Auto-migrate: clear old data if version changed
-const APP_VERSION = 'v19n-award-points-fix-0423'; // 2026-04-23: fix super star cup award points
+const APP_VERSION = 'v19o-award-text-fix-0423'; // 2026-04-23: fix award text 英超第四后
 if(localStorage.getItem('fc26_version') !== APP_VERSION) {
   localStorage.removeItem('fc26_budgets');
   localStorage.removeItem('fc26_bteams');
