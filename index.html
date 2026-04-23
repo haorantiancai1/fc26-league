@@ -1684,6 +1684,22 @@ try {
         "overall": 91,
         "market_price": 26,
         "sell_price": 8
+      },
+      {
+        "name": "格里利什",
+        "name_en": "J Grealish",
+        "position": "LM",
+        "overall": 82,
+        "market_price": 10,
+        "sell_price": 3
+      },
+      {
+        "name": "阿坎吉",
+        "name_en": "M Akanji",
+        "position": "CB",
+        "overall": 83,
+        "market_price": 10,
+        "sell_price": 3
       }
     ]
   },
@@ -10754,7 +10770,7 @@ function saveState() {
 
 // ===== LOGIN =====
 // Auto-migrate: clear old data if version changed
-const APP_VERSION = 'v19o-award-text-fix-0423'; // 2026-04-23: fix award text 英超第四后
+const APP_VERSION = 'v19p-add-grealish-akanji-0423'; // 2026-04-23: add 格里利什/阿坎吉 to ManCity
 if(localStorage.getItem('fc26_version') !== APP_VERSION) {
   localStorage.removeItem('fc26_budgets');
   localStorage.removeItem('fc26_bteams');
