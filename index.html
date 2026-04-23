@@ -10753,7 +10753,7 @@ function saveState() {
 
 // ===== LOGIN =====
 // Auto-migrate: clear old data if version changed
-const APP_VERSION = 'v19l-move-wang-wu-to-arsenal-0423'; // 2026-04-23: fix adminMovePlayer + move 王钰栋/吴恩菲尔德 to 阿森纳
+const APP_VERSION = 'v19m-sort-isplayer-first-0423'; // 2026-04-23: sort is_player first in all player lists
 if(localStorage.getItem('fc26_version') !== APP_VERSION) {
   localStorage.removeItem('fc26_budgets');
   localStorage.removeItem('fc26_bteams');
@@ -11119,6 +11119,30 @@ function initDB() {
   filterPlayers();
 }
 
+  function _sortPlayers(a,b) {
+    // 玩家自建排前面
+    if(a.is_player && !b.is_player) return -1;
+    if(!a.is_player && b.is_player) return 1;
+    // 传奇球员次之（可选）
+    // if(a.is_legend && !b.is_legend) return -1;
+    // if(!a.is_legend && b.is_legend) return 1;
+    // 按overall降序
+    return b.overall - a.overall;
+  }
+
+  function _sortPlayers(a,b) {
+    // 玩家自建排前面
+    if(a.is_player && !b.is_player) return -1;
+    if(!a.is_player && b.is_player) return 1;
+    // 传奇球员次之（可选）
+    // if(a.is_legend && !b.is_legend) return -1;
+    // if(!a.is_legend && b.is_legend) return 1;
+    // 按overall降序
+    return b.overall - a.overall;
+  }
+
+
+
 function filterPlayers() {
   // Update pending ops banner for normal players
   var banner = document.getElementById('db-pending-banner');
@@ -11164,7 +11188,7 @@ function filterPlayers() {
   players = players.filter(p => p.overall >= ovrMin && p.overall <= ovrMax);
   if(priceMin) players = players.filter(p => p.market_price >= priceMin);
 
-  players.sort((a,b) => b.overall - a.overall);
+  players.sort(_sortPlayers);
 
   const tbody = document.getElementById('player-tbody');
   const myTeam = currentUser && !currentUser.isHost ? currentUser.team : null;
@@ -11262,7 +11286,7 @@ function loadTacticsTeam() {
   state.selectedSlotIdx = null;
   state.pitchSlots = []; // 清空以触发智能分配
   const team = TEAMS_DATA.find(t => t.team === teamName);
-  const squad = [...team.players].sort((a,b) => b.overall - a.overall);
+  const squad = [...team.players].sort(_sortPlayers);
   state.tacticsSquad = squad;
   
   const list = document.getElementById('squad-list');
@@ -11648,7 +11672,7 @@ function loadMatchTeam(side, forceReload) {
   
   const team = TEAMS_DATA.find(t => t.team === teamName);
   if(!team) return;
-  const allPlayers = [...team.players].sort((a,b) => b.overall - a.overall);
+  const allPlayers = [...team.players].sort(_sortPlayers);
   
   // Only overwrite squad if forceReload or no existing squad
   var squad;
@@ -13487,7 +13511,7 @@ function renderBudget() {
   
   var pendingForTeam = (state.pendingOps || []).filter(function(o) { return o.team === team || (o.swap_with && o.swap_with === team); });
   var teamData = TEAMS_DATA.find(function(td) { return td.team === fullTeamName(team); });
-  var players = teamData ? teamData.players.sort(function(a,b) { return b.overall - a.overall; }) : [];
+  var players = teamData ? teamData.players.sort(_sortPlayers) : [];
   
   // Build HTML purely with string concatenation - NO template literals
   var h = '';
@@ -13647,7 +13671,7 @@ function buildTeamCard(t) {
   var b = state.budgets[t];
   var color = TEAM_COLORS[t] || 'var(--accent)';
   var teamData = TEAMS_DATA.find(function(td) { return td.team === fullTeamName(t); });
-  var players = teamData ? teamData.players.sort(function(a,b) { return b.overall - a.overall; }) : [];
+  var players = teamData ? teamData.players.sort(_sortPlayers) : [];
   var pending = (state.pendingOps || []).filter(function(o) { return o.team === t; }).length;
   
   var h = '';
@@ -13718,7 +13742,7 @@ function showTransferModal(type, team, playerJson) {
   
   if(type === 'buy') {
     title.textContent = `📥 ${team} - 购入球员`;
-    const allP = getAllPlayers().filter(p => p.team !== team).sort((a,b) => b.overall - a.overall);
+    const allP = getAllPlayers().filter(p => p.team !== team).sort(_sortPlayers);
     body.innerHTML = `
       <div style="margin-bottom:10px;font-size:13px;color:var(--text2)">当前余额: <strong style="color:var(--gold)">${b.balance}点</strong> | 剩余额度: <strong style="color:var(--green)">${5-b.tradeUsed}</strong>/5</div>
       <input class="search-box" id="transfer-search" placeholder="搜索球员..." oninput="filterTransferList(this.value,'buy','${team}')" style="width:100%;margin-bottom:10px;">
@@ -13729,7 +13753,7 @@ function showTransferModal(type, team, playerJson) {
   } else if(type === 'sell') {
     title.textContent = '📤 ' + team + ' - 售出球员给AI';
     var teamDataSell = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(team); });
-    var sellPlayers = teamDataSell.players.sort(function(a,b) { return b.overall - a.overall; });
+    var sellPlayers = teamDataSell.players.sort(_sortPlayers);
     var shtml = '<div style="margin-bottom:10px;font-size:13px;color:var(--text2)">当前余额: <strong style="color:var(--gold)">' + b.balance + '点</strong> | 剩余额度: <strong style="color:var(--green)">' + (5-b.tradeUsed) + '</strong>/5</div>';
     shtml += '<div style="max-height:300px;overflow-y:auto;">';
     sellPlayers.forEach(function(p, pi) {
@@ -13757,7 +13781,7 @@ function showTransferModal(type, team, playerJson) {
 
 function filterTransferList(search, type, team) {
   var b = state.budgets[team];
-  var players = getAllPlayers().filter(function(p) { return p.team !== team; }).sort(function(a,b) { return b.overall - a.overall; });
+  var players = getAllPlayers().filter(function(p) { return p.team !== team; }).sort(_sortPlayers);
   if(search) players = players.filter(function(p) { return p.name.toLowerCase().includes(search.toLowerCase()); });
   players = players.filter(function(p) { return p.market_price <= b.balance; });
   
@@ -14143,10 +14167,10 @@ function renderSwapLists(myTeam) {
   var targetTeam = _swapSelections.targetTeamName;
   // Get my players
   var myTeamData = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(myTeam); });
-  var myPlayers = myTeamData ? myTeamData.players.sort(function(a,b) { return b.overall - a.overall; }) : [];
+  var myPlayers = myTeamData ? myTeamData.players.sort(_sortPlayers) : [];
   // Get target players
   var targetTeamData = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(targetTeam); });
-  var targetPlayers = targetTeamData ? targetTeamData.players.sort(function(a,b) { return b.overall - a.overall; }) : [];
+  var targetPlayers = targetTeamData ? targetTeamData.players.sort(_sortPlayers) : [];
 
   // Render my team list
   var myHtml = myPlayers.map(function(p, pi) {
@@ -14311,7 +14335,7 @@ function renderQuickAccount() {
       const color = TEAM_COLORS[t] || 'var(--accent)';
       const pending = (state.pendingOps || []).filter(o => o.team === t).length;
       const teamData = TEAMS_DATA.find(td => td.team === fullTeamName(t));
-      const players = teamData ? teamData.players.sort((a,b) => b.overall - a.overall) : [];
+      const players = teamData ? teamData.players.sort(_sortPlayers) : [];
       return `
       <div style="margin-bottom:16px;border:1px solid var(--border);border-radius:12px;overflow:hidden;">
         <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg);cursor:pointer;" onclick="showPage('budget')">
@@ -14484,7 +14508,7 @@ function showBteamModal(team) {
   if(b.bteamUsed >= 5) { alert('本赛季B队额度已用完！'); return; }
   if(b.balance < 2) { alert('余额不足（需2点）！'); return; }
   const teamData = TEAMS_DATA.find(t => t.team === fullTeamName(team));
-  const players = teamData.players.filter(p => !p.is_player).sort((a,b) => b.overall - a.overall);
+  const players = teamData.players.filter(p => !p.is_player).sort(_sortPlayers);
   
   document.getElementById('transfer-title').textContent = `⬇️ ${team} - 下放球员到B队`;
   document.getElementById('transfer-body').innerHTML = `
