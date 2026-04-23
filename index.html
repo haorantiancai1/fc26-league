@@ -978,7 +978,8 @@ tbody td {
       <div style="width:100%;font-size:11px;color:var(--accent2);margin-top:6px;margin-bottom:2px;">⭐ 超级巨星杯</div>
       <button class="btn btn-sm" style="border-color:var(--accent2);color:var(--accent2);" onclick="submitAward(20,'巨星杯冠军')">⭐ 冠军 +20</button>
       <button class="btn btn-sm" style="border-color:var(--accent2);color:var(--accent2);" onclick="submitAward(15,'巨星杯亚军')">⭐ 亚军 +15</button>
-      <button class="btn btn-sm" style="border-color:var(--accent2);color:var(--accent2);" onclick="submitAward(5,'巨星杯季军')">⭐ 三四名 +5</button>
+      <button class="btn btn-sm" style="border-color:var(--accent2);color:var(--accent2);" onclick="submitAward(10,'巨星杯3/4名')">⭐ 3-4名 +10</button>
+      <button class="btn btn-sm" style="border-color:var(--accent2);color:var(--accent2);opacity:0.7;" onclick="submitAward(5,'巨星杯5名后')">⭐ 5名后 +5</button>
       <div style="width:100%;font-size:11px;color:#e879f9;margin-top:6px;margin-bottom:2px;">🌍 国家队赛事</div>
       <button class="btn btn-sm" style="border-color:#e879f9;color:#e879f9;" onclick="document.getElementById('award-team').value='__national__';submitAward(30,'世界杯冠军',true,true)">🌍 世界杯冠军 +30+徽章</button>
       <button class="btn btn-sm" style="border-color:#e879f9;color:#e879f9;" onclick="document.getElementById('award-team').value='__national__';submitAward(30,'亚洲杯冠军',true)">🌍 亚洲杯冠军 +30</button>
@@ -10753,7 +10754,7 @@ function saveState() {
 
 // ===== LOGIN =====
 // Auto-migrate: clear old data if version changed
-const APP_VERSION = 'v19m-sort-isplayer-first-0423'; // 2026-04-23: sort is_player first in all player lists
+const APP_VERSION = 'v19n-award-points-fix-0423'; // 2026-04-23: fix super star cup award points
 if(localStorage.getItem('fc26_version') !== APP_VERSION) {
   localStorage.removeItem('fc26_budgets');
   localStorage.removeItem('fc26_bteams');
