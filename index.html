@@ -10753,7 +10753,7 @@ function saveState() {
 
 // ===== LOGIN =====
 // Auto-migrate: clear old data if version changed
-const APP_VERSION = 'v19k-add-zhaopaopao-0423'; // 2026-04-23: add player 赵跑跑 to Arsenal
+const APP_VERSION = 'v19l-move-wang-wu-to-arsenal-0423'; // 2026-04-23: fix adminMovePlayer + move 王钰栋/吴恩菲尔德 to 阿森纳
 if(localStorage.getItem('fc26_version') !== APP_VERSION) {
   localStorage.removeItem('fc26_budgets');
   localStorage.removeItem('fc26_bteams');
@@ -15537,6 +15537,13 @@ function adminMovePlayer(fromTeam, playerKey) {
       t.players.push(playerData);
     }
   });
+
+  // ★ 持久化：创建 playerMove 记录并同步到 Firebase
+  if(!state.playerMoves) state.playerMoves = [];
+  state.playerMoves.push({ from: fromTeam, name: playerData.name, to: toTeam });
+  localStorage.setItem('fc26_playerMoves', JSON.stringify(state.playerMoves));
+  _fbSave('playerMoves', state.playerMoves);
+  console.log('[adminMovePlayer] playerMove saved:', fromTeam, '→', toTeam, playerData.name);
 
   adminAddLog(`🔄 移动球员：${playerData.name} ${fromTeam} → ${toTeam}`);
   alert(`✅ ${playerData.name} 已从 ${fromTeam} 移动到 ${toTeam}`);
