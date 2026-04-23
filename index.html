@@ -2368,14 +2368,6 @@ try {
         "is_player": true
       },
       {
-        "name": "库库雷利亚",
-        "name_en": "M Cucurella",
-        "position": "LB",
-        "overall": 86,
-        "market_price": 20,
-        "sell_price": 6
-      },
-      {
         "name": "威利",
         "name_en": "C Wiley",
         "position": "LB",
@@ -4364,15 +4356,6 @@ try {
     "league": "传奇",
     "is_player_team": false,
     "players": [
-      {
-        "name": "梅西",
-        "name_en": "L Messi",
-        "position": "LW",
-        "overall": 98,
-        "market_price": 40,
-        "sell_price": 13,
-        "is_legend": true
-      },
       {
         "name": "巴尔德斯",
         "name_en": "V Valdes",
@@ -7830,15 +7813,6 @@ try {
     "is_player_team": false,
     "players": [
       {
-        "name": "罗纳尔多",
-        "name_en": "C. Ronaldo",
-        "position": "RW",
-        "overall": 92,
-        "market_price": 28,
-        "sell_price": 9,
-        "is_legend": true
-      },
-      {
         "name": "舒梅切尔",
         "name_en": "P. Schmeichel",
         "position": "GK",
@@ -10267,15 +10241,6 @@ try {
         "is_legend": true
       },
       {
-        "name": "罗纳尔多",
-        "name_en": "Ronaldo",
-        "position": "ST",
-        "overall": 94,
-        "market_price": 32,
-        "sell_price": 10,
-        "is_legend": true
-      },
-      {
         "name": "阿德里亚诺",
         "name_en": "Adriano",
         "position": "ST",
@@ -11023,7 +10988,7 @@ function saveState() {
 
 // ===== LOGIN =====
 // Auto-migrate: clear old data if version changed
-const APP_VERSION = 'v19s-liverpool-full-44-0424'; // 2026-04-24: Liverpool full 44-player squad per game screenshot
+const APP_VERSION = 'v19t-liverpool-fix-dups-0424'; // 2026-04-24: fix duplicate Messi/Ronaldo/Cucurella (moved from other teams)
 if(localStorage.getItem('fc26_version') !== APP_VERSION) {
   localStorage.removeItem('fc26_budgets');
   localStorage.removeItem('fc26_bteams');
