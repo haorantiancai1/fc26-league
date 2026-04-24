@@ -15036,6 +15036,22 @@ function closeModal() { document.getElementById('transfer-modal').classList.remo
 document.getElementById('transfer-modal').addEventListener('click', (e) => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
 
 // ===== SETTLEMENT PAGE =====
+// ===== 按中文名查找球员英文名 =====
+function findPlayerNameEn(_chineseName) {
+  if(!_chineseName) return '';
+  for(var _ti = 0; _ti < TEAMS_DATA.length; _ti++) {
+    var _team = TEAMS_DATA[_ti];
+    if(_team.players) {
+      for(var _pi = 0; _pi < _team.players.length; _pi++) {
+        if(_team.players[_pi].name === _chineseName && _team.players[_pi].name_en) {
+          return _team.players[_pi].name_en;
+        }
+      }
+    }
+  }
+  return '';
+}
+
 function renderPendingOps() {
   const listEl = document.getElementById('pending-list');
   const countEl = document.getElementById('pending-count');
@@ -15072,15 +15088,18 @@ function renderPendingOps() {
     if(op.type === 'p2p_swap') {
       // Swap: show detailed two-way player list
       var swapColor = TEAM_COLORS[op.swap_with] || 'var(--accent)';
-      var outNames = (op.players_out || []).map(function(p) { return p.name + '(' + p.overall + ')'; }).join('、');
-      var inNames = (op.players_in || []).map(function(p) { return p.name + '(' + p.overall + ')'; }).join('、');
+      var outNames = (op.players_out || []).map(function(p) { var _en = findPlayerNameEn(p.name); return p.name + (_en ? ' <span style="color:var(--text2);font-size:10px;">' + _en + '</span>' : '') + '(' + p.overall + ')'; }).join('、');
+      var inNames = (op.players_in || []).map(function(p) { var _en = findPlayerNameEn(p.name); return p.name + (_en ? ' <span style="color:var(--text2);font-size:10px;">' + _en + '</span>' : '') + '(' + p.overall + ')'; }).join('、');
       detailLine = '\uD83C\uDFC3 ' + op.team + ' 出：' + outNames +
         '<br>\uD83C\uDFC3 <span style="color:' + swapColor + ';">' + op.swap_with + '</span> 出：' + inNames;
       if(op.myPts > 0 || op.targetPts > 0) {
         detailLine += '<br>\uD83D\uDCB0 ' + op.team + ' 付' + (op.myPts || 0) + '点，' + op.swap_with + ' 付' + (op.targetPts || 0) + '点';
       }
     } else {
-      if(op.player_name) detailLine += '\uD83C\uDFC3 ' + op.player_name;
+      if(op.player_name) {
+        var _playerEn = findPlayerNameEn(op.player_name);
+        detailLine += '\uD83C\uDFC3 ' + op.player_name + (_playerEn ? ' <span style="color:var(--text2);font-size:10px;">' + _playerEn + '</span>' : '');
+      }
       let destInfo = '';
       if(op.fromTeam && op.type !== 'sell') destInfo += ' \u27A1\uFE0F ' + op.team;
       if(op.toTeam) destInfo += ' \u27A1\uFE0F ' + op.toTeam;
