@@ -986,9 +986,13 @@ tbody td {
     </div>
   </div>
   <div class="card">
-    <div class="card-title" style="justify-content:space-between;">
+    <div class="card-title" style="justify-content:space-between;flex-wrap:wrap;gap:6px;">
       <span>📋 录入记录</span>
-      <button class="btn btn-sm" id="clear-awards-btn" onclick="clearAwards()" style="color:var(--red);border-color:var(--red);display:none;">🗑️ 清空</button>
+      <span style="display:flex;align-items:center;gap:6px;">
+        <select id="awards-season-view" onchange="switchAwardsView(this.value)" style="background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:4px 8px;font-size:11px;font-weight:600;"></select>
+        <button class="btn btn-sm" id="archive-awards-btn" onclick="archiveAwardsToHistory()" style="color:var(--accent2);border-color:var(--accent2);font-size:10px;display:none;" title="将当前奖项归档到历史赛季">📦 归档本季</button>
+        <button class="btn btn-sm" id="clear-awards-btn" onclick="clearAwards()" style="color:var(--red);border-color:var(--red);display:none;">🗑️ 清空</button>
+      </span>
     </div>
     <div id="awards-history"></div>
   </div>
@@ -13597,6 +13601,7 @@ function initAwards() {
     document.getElementById('award-header-card').style.display = 'none';
   } else {
     document.getElementById('clear-awards-btn').style.display = '';
+    document.getElementById('archive-awards-btn').style.display = '';
   }
   
   renderAwards();
@@ -13631,15 +13636,69 @@ function submitAward(pts, label, isNational, hasBadge) {
   alert('\u2705 ' + label + ' \u5DF2\u5F55\u5165\uFF0C' + (isNational ? '\u6240\u6709\u7403\u961F' : team) + ' +' + pts + '\u70B9' + (hasBadge ? ' +1\u679A\u94F6\u5FBD\u7AE0' : ''));
 }
 
+function switchAwardsView(view) {
+  if(!view) return;
+  currentAwardsView = view;
+  // 切换归档/清空按钮显示
+  var archiveBtn = document.getElementById('archive-awards-btn');
+  var clearBtn = document.getElementById('clear-awards-btn');
+  if(archiveBtn) archiveBtn.style.display = (view === 'current' && currentUser && currentUser.isHost) ? '' : 'none';
+  if(clearBtn) clearBtn.style.display = (view === 'current' && currentUser && currentUser.isHost && state.awards.length > 0) ? '' : 'none';
+  renderAwards();
+}
+
+function archiveAwardsToHistory() {
+  if(!state.awards || state.awards.length === 0) { alert('当前没有奖项记录可归档！'); return; }
+  if(!confirm('确定将当前所有奖项归档？\n归档后可在「历史赛季」中查看，当前列表将被清空。')) return;
+  // 自动生成赛季标签
+  var _seasons = {};
+  state.awards.forEach(function(a){ _seasons[a.season] = true; });
+  var _keys = Object.keys(_seasons).sort();
+  var seasonLabel = _keys.length === 1 ? (_keys[0] + '/' + (Number(_keys[0]) + 1)) : '多赛季';
+  AWARDS_HISTORY[seasonLabel] = {"seasonLabel": seasonLabel + ' 赛季', "archivedAt": new Date().toISOString().split('T')[0], "awards": JSON.parse(JSON.stringify(state.awards))};
+  // 清空当前
+  state.awards = [];
+  saveState();
+  currentAwardsView = seasonLabel;
+  alert('✅ 已归档为「' + seasonLabel + ' 赛季」，共 ' + AWARDS_HISTORY[seasonLabel].awards.length + ' 条记录');
+  renderAwards();
+  renderBudget();
+  updatePendingBadge();
+}
+
 function renderAwards() {
   var historyEl = document.getElementById('awards-history');
-  if(!state.awards || state.awards.length === 0) {
+  // 构建视图选择器
+  var selEl = document.getElementById('awards-season-view');
+  if(selEl) {
+    var _opts = '<option value="current">📝 当前赛季（实时）</option>';
+    Object.keys(AWARDS_HISTORY).sort().reverse().forEach(function(s){
+      _opts += '<option value="' + s + '">' + (AWARDS_HISTORY[s].seasonLabel || s) + '</option>';
+    });
+    selEl.innerHTML = _opts;
+    selEl.value = currentAwardsView || 'current';
+  }
+  // 确定数据源
+  var displayAwards = [];
+  if(currentAwardsView === 'current') {
+    displayAwards = state.awards || [];
+  } else if(AWARDS_HISTORY[currentAwardsView]) {
+    displayAwards = AWARDS_HISTORY[currentAwardsView].awards || [];
+  }
+  // 显示归档/清空按钮
+  var archiveBtn = document.getElementById('archive-awards-btn');
+  var clearBtn = document.getElementById('clear-awards-btn');
+  if(archiveBtn) archiveBtn.style.display = (currentAwardsView === 'current' && currentUser && currentUser.isHost) ? '' : 'none';
+  if(clearBtn) clearBtn.style.display = (currentAwardsView === 'current' && currentUser && currentUser.isHost && state.awards.length > 0) ? '' : 'none';
+
+  if(displayAwards.length === 0) {
     historyEl.innerHTML = '<div style="color:var(--text2);font-size:13px;padding:8px 0;">\u6682\u65E0\u5956\u9879\u8BB0\u5F55</div>';
   } else {
-    historyEl.innerHTML = state.awards.map(function(a, i) {
+    historyEl.innerHTML = displayAwards.map(function(a, i) {
       var color = TEAM_COLORS[a.team] || 'var(--text)';
       var teamLabel = a.team === '__national__' ? '\uD83C\uDF0D \u56FD\u5BB6\u961F(\u5168\u90E8)' : a.team;
       var badgeTag = a.badge ? ' <span style="display:inline-block;background:rgba(200,210,220,0.2);color:#c0c8d4;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:4px;">+1\u94F6\u5FBD\u7AE0</span>' : '';
+      var isHistory = (currentAwardsView !== 'current');
       return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;">' +
         '<div>' +
           '<span style="color:' + color + ';font-weight:600;">' + teamLabel + '</span>' +
@@ -13648,14 +13707,33 @@ function renderAwards() {
         '</div>' +
         '<div style="display:flex;align-items:center;gap:8px;">' +
           '<span class="log-pts plus" style="font-weight:600;">+' + a.pts + '\u70B9</span>' +
-          (currentUser && currentUser.isHost ? '<button onclick="deleteAward(' + i + ')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;">\u2715</button>' : '') +
+          (!isHistory && currentUser && currentUser.isHost ? '<button onclick="deleteAward(' + i + ')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;">\u2715</button>' : '') +
         '</div>' +
       '</div>';
     }).join('');
   }
-  
-  // Season summary
-  renderAwardSeasonSummary();
+
+  // Season summary (only for current view)
+  if(currentAwardsView === 'current') {
+    renderAwardSeasonSummary();
+  } else {
+    var summaryEl = document.getElementById('award-season-summary');
+    if(summaryEl) renderArchivedAwardSummary(summaryEl, displayAwards);
+  }
+}
+
+function renderArchivedAwardSummary(container, awards) {
+  if(!awards || awards.length === 0) { container.innerHTML = ''; return; }
+  const byTeam = {};
+  awards.forEach(a => {
+    var t = a.team === '__national__' ? '\uD83C\uDF0D \u56FD\u5BB6\u961F' : a.team;
+    if(!byTeam[t]) byTeam[t] = 0;
+    byTeam[t] += a.pts;
+  });
+  var sortedTeams = Object.keys(byTeam).sort((a,b) => byTeam[b] - byTeam[a]);
+  container.innerHTML = '<div class="card"><div class="card-title" style="font-size:12px;">📊 ' + (AWARDS_HISTORY[currentAwardsView] ? AWARDS_HISTORY[currentAwardsView].seasonLabel : '') + ' 奖项汇总</div><table style="width:100%;font-size:11px;border-collapse:collapse;"><thead><tr style="background:var(--bg2);"><th style="padding:6px;text-align:left;color:var(--text2);">球队</th><th style="padding:6px;text-align:right;color:var(--text2);">总点数</th></tr></thead>' +
+    sortedTeams.map(t => '<tr style="border-bottom:1px solid var(--border);"><td style="padding:6px;color:' + (TEAM_COLORS[t]||'var(--text)') + ';font-weight:600;">' + t + '</td><td style="padding:6px;text-align:right;font-weight:700;color:var(--gold);">' + byTeam[t] + '</td></tr>').join('') +
+    '</table></div>';
 }
 
 function deleteAward(idx) {
@@ -15174,6 +15252,34 @@ var STANDINGS_HISTORY = {
 };
 var currentStandingsSeason = "2026/27";
 function getCurrentStandings() { return STANDINGS_HISTORY[currentStandingsSeason] || null; }
+
+/* ========== 奖项归档数据（多赛季历史） ========== */
+var AWARDS_HISTORY = {
+  "2026/27": {"seasonLabel": "2026/27 赛季（已结束）", "archivedAt": "2026-04-25", "awards": [
+    {"team":"阿森纳","season":"2026","label":"巨星杯5名后","pts":5},
+    {"team":"阿森纳","season":"2026","label":"巨星杯5名后","pts":5},
+    {"team":"曼城","season":"2026","label":"巨星杯5名后","pts":5},
+    {"team":"曼城","season":"2026","label":"巨星杯冠军","pts":20},
+    {"team":"曼联","season":"2026","label":"巨星杯5名后","pts":5},
+    {"team":"曼联","season":"2026","label":"巨星杯5名后","pts":5},
+    {"team":"利物浦","season":"2026","label":"巨星杯3/4名","pts":10},
+    {"team":"利物浦","season":"2026","label":"巨星杯亚军","pts":15},
+    {"team":"切尔西","season":"2026","label":"巨星杯5名后","pts":5},
+    {"team":"切尔西","season":"2026","label":"巨星杯3/4名","pts":10},
+    {"team":"阿森纳","season":"2027","label":"英超第三","pts":15},
+    {"team":"利物浦","season":"2026","label":"欧冠3/4名","pts":15},
+    {"team":"利物浦","season":"2026","label":"卡拉宝杯冠军","pts":15},
+    {"team":"利物浦","season":"2026","label":"英超冠军","pts":25},
+    {"team":"曼联","season":"2026","label":"英超第四后","pts":10},
+    {"team":"曼城","season":"2026","label":"足总杯冠军","pts":20},
+    {"team":"曼城","season":"2026","label":"英超第二","pts":20},
+    {"team":"曼城","season":"2026","label":"欧冠亚军","pts":20},
+    {"team":"利物浦","season":"2026","label":"欧冠冠军","pts":30,"badge":true},
+    {"team":"曼城","season":"2026","label":"英超冠军","pts":25},
+    {"team":"曼城","season":"2026","label":"卡拉宝杯冠军","pts":15}
+  ]}
+};
+var currentAwardsView = "current"; // "current" or season key like "2026/27"
 
 
 function switchStandingsSeason(season) {
