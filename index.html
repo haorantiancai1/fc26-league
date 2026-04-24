@@ -14857,9 +14857,12 @@ function renderPendingOps() {
     return;
   }
   
+  try {
   listEl.innerHTML = ops.map((op, i) => {
+    if(!op) return '';
     const color = TEAM_COLORS[op.team] || 'var(--accent)';
-    const isPlus = !op.pts.startsWith('-');
+    const _ptsStr = String(op.pts || '0');
+    const isPlus = !_ptsStr.startsWith('-');
     let icon = '\uD83D\uDCB0';
     if(op.type === 'buy') icon = '\uD83D\uDCE5';
     else if(op.type === 'sell') icon = '\uD83D\uDCE4';
@@ -14911,7 +14914,7 @@ function renderPendingOps() {
           '</select>' +
         '</div>' : '') +
       '</span>' +
-      '<span class="pr-pts ' + (isPlus?'plus':'minus') + '">' + op.pts + '</span>' +
+      '<span class="pr-pts ' + (isPlus?'plus':'minus') + '">' + _ptsStr + '</span>' +
       (isSellToAI ?
       '<button class="btn btn-sm" style="background:var(--green);color:#000;font-size:11px;padding:4px 8px;" onclick="approveSellPending(' + i + ')">\u2705 \u786E\u8BA4\u53BB\u5411</button>'
       :
@@ -14923,6 +14926,10 @@ function renderPendingOps() {
       '<button class="btn btn-red btn-sm" style="font-size:11px;padding:4px 8px;" onclick="rejectPending(' + i + ')">\u274C</button>' +
     '</div>';
   }).join('');
+  } catch(_e) {
+    console.error('[renderPendingOps] 渲染出错:', _e, 'ops数据:', JSON.stringify(ops).substring(0,500));
+    listEl.innerHTML = '<div style="color:var(--red);font-size:12px;">⚠️ 待审核数据渲染异常，请刷新页面重试</div>';
+  }
 }
 
 function executePendingOp(op) {
