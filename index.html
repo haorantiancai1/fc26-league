@@ -13359,6 +13359,36 @@ function initFirebaseSync() {
       }
     });
   }, 30000);
+
+  // ===== VISIBILITY RECONNECT (微信小程序 WebView 从后台切回时自动重连) =====
+  document.addEventListener('visibilitychange', function() {
+    if(!document.hidden && _fbRef) {
+      console.log('[FB] 页面恢复可见，强制拉取最新数据...');
+      // 先取消旧监听避免重复
+      try { _fbRef(dbRef, 'pendingOps').off(); } catch(e) {}
+      try { _fbRef(dbRef, 'budgets').off(); } catch(e) {}
+      try { _fbRef(dbRef, 'bteams').off(); } catch(e) {}
+      try { _fbRef(dbRef, 'awards').off(); } catch(e) {}
+      try { _fbRef(dbRef, 'playerMoves').off(); } catch(e) {}
+      try { _fbRef(dbRef, 'playerUpgrades').off(); } catch(e) {}
+      // 标记需要重连
+      _fbSyncReady = false;
+      // 延迟500ms重连，等WebSocket恢复
+      setTimeout(function() {
+        console.log('[FB] 开始重连 Firebase 实时监听...');
+        initFirebaseSync();
+      }, 500);
+    }
+  });
+
+  // ===== ONLINE/OFFLINE 检测 =====
+  window.addEventListener('online', function() {
+    console.log('[FB] 网络恢复在线，强制拉取数据...');
+    if(_fbRef) _fbPullOnLogin();
+  });
+  window.addEventListener('offline', function() {
+    console.log('[FB] 网络断开，暂停同步');
+  });
 }
 
 // Required budget keys for Firebase data normalization
