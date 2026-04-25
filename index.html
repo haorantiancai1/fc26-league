@@ -14065,7 +14065,8 @@ function renderBudget() {
   } else {
     h += '<div class="log-list" style="max-height:300px;overflow-y:auto;">';
     logs.slice().reverse().forEach(function(l) {
-      h += '<div class="log-item"><span class="log-pts ' + (l.pts.indexOf('+')===0?'plus':'minus') + '">' + l.pts + '</span> ' + l.action + ' <span style="opacity:0.5">' + (l.time||'') + '</span></div>';
+      var _lPts = String(l.pts || 0);
+      h += '<div class="log-item"><span class="log-pts ' + (_lPts.indexOf('+')===0?'plus':'minus') + '">' + _lPts + '</span> ' + l.action + ' <span style="opacity:0.5">' + (l.time||'') + '</span></div>';
     });
     h += '</div>';
   }
