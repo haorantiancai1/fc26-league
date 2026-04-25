@@ -2265,6 +2265,15 @@ try {
         "market_price": 26,
         "sell_price": 8,
         "is_player": true
+      },
+      {
+        "name": "里杰卡尔德",
+        "name_en": "F. Rijkaard",
+        "position": "CDM",
+        "overall": 87,
+        "market_price": 20,
+        "sell_price": 6,
+        "is_legend": true
       }
     ]
   },
@@ -13282,6 +13291,7 @@ function initFirebaseSync() {
       localStorage.setItem('fc26_bteams', JSON.stringify(data));
       console.log('Firebase sync: bteams updated');
       initBteam();
+      renderBudget();  // 刷新球队管理页，让下放/召回标签生效
     }
   });
 
@@ -13420,6 +13430,7 @@ function initFirebaseSync() {
           PLAYER_TEAMS.forEach(function(t) { if(!data[t]) { data[t] = { name:'', demoted:[] }; } });
           localStorage.setItem('fc26_bteams', JSON.stringify(data));
           initBteam();
+          renderBudget();  // 刷新球队管理页，让下放/召回标签生效
         }
       }
     });
@@ -13597,6 +13608,7 @@ window.fbForceSync = function() {
         PLAYER_TEAMS.forEach(function(t) { if(!data[t]) { data[t] = { name:'', demoted:[] }; } });
         localStorage.setItem('fc26_bteams', JSON.stringify(data));
         initBteam();
+        renderBudget();  // 刷新球队管理页下放/召回标签
       }
       checkDone();
     });
@@ -14264,9 +14276,10 @@ function executeBuy(team, playerIdx) {
   if(b.tradeUsed >= 5) { alert('本赛季交易额度已用完！'); return; }
   
   // Create pending operation instead of direct execution
+  const _srcTeam = p.team;
   const op = {
-    type: 'buy', team: team, player: { name:p.name, position:p.position, overall:p.overall, team:p.team },
-    action: `购入 ${p.name}`, pts: -p.market_price,
+    type: 'buy', team: team, player: { name:p.name, position:p.position, overall:p.overall, fromTeam:_srcTeam },
+    action: `购入 ${p.name}（从${_srcTeam}）`, pts: '-'+p.market_price,
     player_name: p.name, time: new Date().toLocaleString('zh-CN'),
     submitted_by: currentUser ? currentUser.name : 'unknown'
   };
