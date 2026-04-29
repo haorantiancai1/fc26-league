@@ -15450,8 +15450,11 @@ function renderStandings() {
   var teams = data.standings || [];
   // 更新时间和标题
   var updatedEl = document.getElementById('standings-updated');
-  if(updatedEl && data.lastUpdated) {
-    updatedEl.textContent = '更新: ' + data.lastUpdated;
+  if(updatedEl && data.updated) {
+    var _ud = new Date(data.updated + 'T00:00:00');
+    var _us = _ud.getFullYear() + '年' + (_ud.getMonth()+1) + '月' + _ud.getDate() + '日';
+    var _uh = _ud.getHours() > 0 ? _ud.getHours() + '点' : '';
+    updatedEl.textContent = '更新时间：' + _us + _uh;
   }
   var isPlayerTeam = function(name) {
     var short = TEAM_NAME_MAP[name] || name;
