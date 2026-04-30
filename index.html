@@ -11096,6 +11096,7 @@ function saveState() {
   _fbSave('pendingOps', state.pendingOps);
   _fbSave('playerMoves', state.playerMoves);
   _fbSave('playerUpgrades', state.playerUpgrades);
+  _fbSave('teams', TEAMS_DATA);
 }
 
 // ===== LOGIN =====
@@ -11179,7 +11180,7 @@ function doLogin() {
 function _fbPullOnLogin() {
   if(!_fbRef) return;
   console.log('[_fbPullOnLogin] pulling data from Firebase...');
-  var paths = ['budgets','bteams','awards','pendingOps','playerMoves','playerUpgrades'];
+  var paths = ['budgets','bteams','awards','pendingOps','playerMoves','playerUpgrades','teams'];
   var done = 0;
   function check() {
     done++;
@@ -11226,6 +11227,8 @@ function _fbPullOnLogin() {
           }
           state.playerUpgrades = data;
           localStorage.setItem('fc26_playerUpgrades', JSON.stringify(data));
+          // Save updated TEAMS_DATA to localStorage (OVR changes must persist across page refresh)
+          localStorage.setItem('fc26_teams', JSON.stringify(TEAMS_DATA));
         } else if(path === 'playerMoves' && data) {
           if(!Array.isArray(data)) data = Object.values(data);
           state.playerMoves = data;
@@ -11259,6 +11262,11 @@ function _fbPullOnLogin() {
           state.awards = data;
           localStorage.setItem('fc26_awards', JSON.stringify(data));
           initAwards();
+        } else if(path === 'teams' && data) {
+          // 收到其他管理员同步的 TEAMS_DATA（OVR/潜力等变化）
+          TEAMS_DATA = data;
+          localStorage.setItem('fc26_teams', JSON.stringify(data));
+          console.log('[_fbPullOnLogin] TEAMS_DATA synced from Firebase, OVR changes applied');
         }
       }
       check();
@@ -13365,6 +13373,19 @@ function initFirebaseSync() {
         if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); }
         console.log('FB sync: full upgrade replay done');
       }
+    }
+  });
+
+  // Listen for TEAMS_DATA changes from other admins and sync to local
+  _fbListen('teams', function(data) {
+    if(!data) return;
+    if(JSON.stringify(data) !== JSON.stringify(TEAMS_DATA)) {
+      TEAMS_DATA = data;
+      localStorage.setItem('fc26_teams', JSON.stringify(data));
+      console.log('Firebase sync: TEAMS_DATA updated from remote, refreshing UI');
+      filterPlayers();
+      renderQuickAccount();
+      renderBudget();
     }
   });
 
