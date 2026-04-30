@@ -649,11 +649,11 @@ tbody td {
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
 @keyframes goalFlash { 0% { background: var(--gold); color: #000; transform: scale(1.03); } 100% { background: var(--bg2); color: var(--text); transform: scale(1); } }
 .match-live-score {
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  padding: 10px 0; font-size: 24px; font-weight: 800; flex-wrap: wrap;
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  padding: 12px 0; font-size: 28px; font-weight: 800;
 }
-.match-live-score .team-name { font-size: 13px; font-weight: 600; }
-.match-live-score .goals { font-size: 28px; min-width: 24px; text-align: center; }
+.match-live-score .team-name { font-size: 14px; font-weight: 600; }
+.match-live-score .goals { font-size: 32px; min-width: 30px; text-align: center; }
 .match-live-minute {
   text-align: center; font-size: 13px; color: var(--text2); margin-bottom: 8px;
 }
@@ -666,11 +666,10 @@ tbody td {
 }
 .match-live-events { max-height: 400px; overflow-y: auto; }
 .match-ev {
-  display: flex; align-items: flex-start; gap: 6px; padding: 5px 8px; margin: 2px 0;
-  border-radius: var(--radius-xs); font-size: 11px; line-height: 1.4;
+  display: flex; align-items: flex-start; gap: 8px; padding: 7px 10px; margin: 3px 0;
+  border-radius: var(--radius-xs); font-size: 12px; line-height: 1.5;
   border-left: 3px solid var(--border); background: var(--bg2);
   animation: slideIn 0.3s ease;
-  word-break: break-word; overflow-wrap: break-word;
 }
 .match-ev.home { border-left-color: var(--accent); }
 .match-ev.away { border-left-color: var(--accent2); }
@@ -678,9 +677,9 @@ tbody td {
 .match-ev.goal { background: rgba(234,179,8,0.12); border-left-color: var(--gold); font-weight: 600; animation: goalFlash 0.8s ease; }
 .match-ev.red { border-left-color: #ef4444; background: rgba(239,68,68,0.1); }
 .match-ev.injury { border-left-color: #f97316; background: rgba(249,115,22,0.08); }
-.match-ev .ev-time { color: var(--gold); font-weight: 700; min-width: 30px; font-size: 11px; }
-.match-ev .ev-icon { min-width: 18px; text-align: center; font-size: 13px; }
-.match-ev .ev-text { flex: 1; color: var(--text); min-width: 0; word-break: break-word; }
+.match-ev .ev-time { color: var(--gold); font-weight: 700; min-width: 32px; font-size: 11px; }
+.match-ev .ev-icon { min-width: 20px; text-align: center; font-size: 13px; }
+.match-ev .ev-text { flex: 1; color: var(--text); }
 .match-ev .ev-detail { color: var(--text2); font-size: 11px; }
 .match-stats-grid {
   display: grid; grid-template-columns: 1fr auto 1fr; gap: 4px 12px;
@@ -761,7 +760,7 @@ tbody td {
 <script>
 /* === 自动更新检测（独立模块，不影响任何现有功能） === */
 (function(){
-  var _cv = '57'; // 当前版本号，每次发版时更新
+  var _cv = '48'; // 当前版本号，每次发版时更新
   try {
     fetch('version.txt?t=' + Date.now())
       .then(function(r){ return r.text(); })
@@ -971,28 +970,23 @@ tbody td {
       <button class="btn btn-gold btn-sm" onclick="submitAward(25,'英超冠军')">🏆 英超冠军 +25</button>
       <button class="btn btn-gold btn-sm" onclick="submitAward(20,'英超第二')">🥈 英超第二 +20</button>
       <button class="btn btn-gold btn-sm" onclick="submitAward(15,'英超第三')">🥉 英超第三 +15</button>
-      <button class="btn btn-gold btn-sm" onclick="submitAward(10,'英超第四后')">4️⃣ 英超第四后 +10</button>
+      <button class="btn btn-gold btn-sm" onclick="submitAward(10,'英超第四')">4️⃣ 英超第四 +10</button>
       <button class="btn btn-gold btn-sm" onclick="submitAward(20,'足总杯冠军')">🏆 足总杯 +20</button>
       <button class="btn btn-gold btn-sm" onclick="submitAward(20,'欧联冠军')">🏆 欧联 +20</button>
       <button class="btn btn-gold btn-sm" onclick="submitAward(15,'卡拉宝杯冠军')">🏆 卡拉宝 +15</button>
       <div style="width:100%;font-size:11px;color:var(--accent2);margin-top:6px;margin-bottom:2px;">⭐ 超级巨星杯</div>
       <button class="btn btn-sm" style="border-color:var(--accent2);color:var(--accent2);" onclick="submitAward(20,'巨星杯冠军')">⭐ 冠军 +20</button>
       <button class="btn btn-sm" style="border-color:var(--accent2);color:var(--accent2);" onclick="submitAward(15,'巨星杯亚军')">⭐ 亚军 +15</button>
-      <button class="btn btn-sm" style="border-color:var(--accent2);color:var(--accent2);" onclick="submitAward(10,'巨星杯3/4名')">⭐ 3-4名 +10</button>
-      <button class="btn btn-sm" style="border-color:var(--accent2);color:var(--accent2);opacity:0.7;" onclick="submitAward(5,'巨星杯5名后')">⭐ 5名后 +5</button>
+      <button class="btn btn-sm" style="border-color:var(--accent2);color:var(--accent2);" onclick="submitAward(5,'巨星杯季军')">⭐ 三四名 +5</button>
       <div style="width:100%;font-size:11px;color:#e879f9;margin-top:6px;margin-bottom:2px;">🌍 国家队赛事</div>
       <button class="btn btn-sm" style="border-color:#e879f9;color:#e879f9;" onclick="document.getElementById('award-team').value='__national__';submitAward(30,'世界杯冠军',true,true)">🌍 世界杯冠军 +30+徽章</button>
       <button class="btn btn-sm" style="border-color:#e879f9;color:#e879f9;" onclick="document.getElementById('award-team').value='__national__';submitAward(30,'亚洲杯冠军',true)">🌍 亚洲杯冠军 +30</button>
     </div>
   </div>
   <div class="card">
-    <div class="card-title" style="justify-content:space-between;flex-wrap:wrap;gap:6px;">
+    <div class="card-title" style="justify-content:space-between;">
       <span>📋 录入记录</span>
-      <span style="display:flex;align-items:center;gap:6px;">
-        <select id="awards-season-view" onchange="switchAwardsView(this.value)" style="background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:4px 8px;font-size:11px;font-weight:600;"></select>
-        <button class="btn btn-sm" id="archive-awards-btn" onclick="archiveAwardsToHistory()" style="color:var(--accent2);border-color:var(--accent2);font-size:10px;display:none;" title="将当前奖项归档到历史赛季">📦 归档本季</button>
-        <button class="btn btn-sm" id="clear-awards-btn" onclick="clearAwards()" style="color:var(--red);border-color:var(--red);display:none;">🗑️ 清空</button>
-      </span>
+      <button class="btn btn-sm" id="clear-awards-btn" onclick="clearAwards()" style="color:var(--red);border-color:var(--red);display:none;">🗑️ 清空</button>
     </div>
     <div id="awards-history"></div>
   </div>
@@ -1013,7 +1007,7 @@ tbody td {
 <!-- ============ PAGE 6.5: 积分榜 ============ -->
 <div id="page-standings" class="page">
   <div class="card">
-    <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">🏆 英超积分榜 <span style="font-size:11px;color:var(--text2);font-weight:400;display:flex;align-items:center;gap:6px;"><select id="standings-season-select" onchange="switchStandingsSeason(this.value)" style="background:var(--bg3);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:4px 8px;font-size:12px;font-weight:600;"></select><span id="standings-updated" style="font-size:10px;color:var(--text3);font-weight:400;"></span></span></div>
+    <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">🏆 英超积分榜 <span style="font-size:11px;color:var(--text2);font-weight:400;">2025/26赛季</span><span id="standings-updated" style="font-size:10px;color:var(--text2);font-weight:400;"></span></div>
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:10px;">
       <span style="display:inline-flex;align-items:center;gap:3px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#34d399;"></span>冠军/欧冠</span>
       <span style="display:inline-flex;align-items:center;gap:3px;"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#60a5fa;"></span>欧联/欧协联</span>
@@ -1240,13 +1234,8 @@ function _fbListen(path, cb) {
 }
 
 // Firebase SDK is loaded via <script> tags in <head>
-try {
-  firebase.initializeApp(firebaseConfig);
-  dbRef = firebase.database();
-} catch(e) {
-  console.error('Firebase SDK init failed:', e);
-  dbRef = null;
-}
+firebase.initializeApp(firebaseConfig);
+dbRef = firebase.database();
 
 // Compat SDK: firebase.database() returns a Database instance with .ref(path) method
 // .ref(path) returns a Reference, which has .child(), .set(), .on('value', ...) etc.
@@ -1448,15 +1437,15 @@ try {
         "name": "多纳鲁马",
         "name_en": "G Donnarumma",
         "position": "GK",
-        "overall": 91,
-        "market_price": 26,
+        "overall": 90,
+        "market_price": 24,
         "sell_price": 8
       },
       {
         "name": "特拉福德",
         "name_en": "J Trafford",
         "position": "GK",
-        "overall": 80,
+        "overall": 78,
         "market_price": 5,
         "sell_price": 2
       },
@@ -1472,9 +1461,9 @@ try {
         "name": "余庭帅",
         "name_en": "YU TINGSHUAI",
         "position": "RB",
-        "overall": 95,
-        "market_price": 34,
-        "sell_price": 11,
+        "overall": 91,
+        "market_price": 26,
+        "sell_price": 8,
         "is_player": true
       },
       {
@@ -1489,9 +1478,9 @@ try {
         "name": "卡博雷",
         "name_en": "I Kaboré",
         "position": "RB",
-        "overall": 76,
-        "market_price": 5,
-        "sell_price": 2
+        "overall": 74,
+        "market_price": 3,
+        "sell_price": 1
       },
       {
         "name": "刘易斯",
@@ -1522,7 +1511,7 @@ try {
         "name": "努里",
         "name_en": "A Aït-Nouri",
         "position": "LB",
-        "overall": 83,
+        "overall": 82,
         "market_price": 10,
         "sell_price": 3
       },
@@ -1530,25 +1519,25 @@ try {
         "name": "迪亚斯",
         "name_en": "R Dias",
         "position": "CB",
-        "overall": 87,
-        "market_price": 22,
-        "sell_price": 7
+        "overall": 86,
+        "market_price": 20,
+        "sell_price": 6
       },
       {
         "name": "格伊",
         "name_en": "M Guéhi",
         "position": "CB",
-        "overall": 84,
-        "market_price": 20,
-        "sell_price": 6
+        "overall": 83,
+        "market_price": 10,
+        "sell_price": 3
       },
       {
         "name": "格瓦迪奥尔",
         "name_en": "J Gvardiol",
         "position": "CB",
-        "overall": 87,
-        "market_price": 22,
-        "sell_price": 7
+        "overall": 86,
+        "market_price": 20,
+        "sell_price": 6
       },
       {
         "name": "胡萨诺夫",
@@ -1587,7 +1576,7 @@ try {
         "name": "冈萨雷斯",
         "name_en": "N González",
         "position": "CDM",
-        "overall": 83,
+        "overall": 82,
         "market_price": 10,
         "sell_price": 3
       },
@@ -1635,18 +1624,18 @@ try {
         "name": "洁世一",
         "name_en": "Isagi",
         "position": "LM",
-        "overall": 95,
-        "market_price": 34,
-        "sell_price": 11,
+        "overall": 92,
+        "market_price": 28,
+        "sell_price": 9,
         "is_player": true
       },
       {
         "name": "切尔基",
         "name_en": "R Cherki",
         "position": "RW",
-        "overall": 86,
-        "market_price": 20,
-        "sell_price": 6
+        "overall": 84,
+        "market_price": 10,
+        "sell_price": 3
       },
       {
         "name": "萨维尼奥",
@@ -1660,9 +1649,9 @@ try {
         "name": "多库",
         "name_en": "J Doku",
         "position": "LW",
-        "overall": 86,
-        "market_price": 20,
-        "sell_price": 6
+        "overall": 84,
+        "market_price": 10,
+        "sell_price": 3
       },
       {
         "name": "马尔穆什",
@@ -1685,25 +1674,9 @@ try {
         "name": "哈兰德",
         "name_en": "E Haaland",
         "position": "ST",
-        "overall": 92,
-        "market_price": 28,
-        "sell_price": 9
-      },
-      {
-        "name": "格里利什",
-        "name_en": "J Grealish",
-        "position": "LM",
-        "overall": 82,
-        "market_price": 10,
-        "sell_price": 3
-      },
-      {
-        "name": "阿坎吉",
-        "name_en": "M Akanji",
-        "position": "CB",
-        "overall": 83,
-        "market_price": 10,
-        "sell_price": 3
+        "overall": 91,
+        "market_price": 26,
+        "sell_price": 8
       }
     ]
   },
@@ -1717,9 +1690,9 @@ try {
         "name": "罗纳尔迪尼奥",
         "name_en": "R Ronaldinho",
         "position": "LW",
-        "overall": 94,
-        "market_price": 32,
-        "sell_price": 10
+        "overall": 96,
+        "market_price": 36,
+        "sell_price": 12
       },
       {
         "name": "德克兰福德",
@@ -1734,9 +1707,9 @@ try {
         "name": "古利特",
         "name_en": "R Gullit",
         "position": "CAM",
-        "overall": 91,
-        "market_price": 26,
-        "sell_price": 8
+        "overall": 93,
+        "market_price": 30,
+        "sell_price": 10
       },
       {
         "name": "维尔茨",
@@ -1750,24 +1723,24 @@ try {
         "name": "范戴克",
         "name_en": "V Dijk",
         "position": "CB",
-        "overall": 89,
-        "market_price": 22,
-        "sell_price": 7
+        "overall": 88,
+        "market_price": 20,
+        "sell_price": 6
       },
       {
         "name": "李绥之",
         "name_en": "LI SUIZHI",
         "position": "CB",
-        "overall": 92,
-        "market_price": 28,
-        "sell_price": 9,
+        "overall": 93,
+        "market_price": 30,
+        "sell_price": 10,
         "is_player": true
       },
       {
         "name": "弗林蓬",
         "name_en": "J Frimpong",
         "position": "RB",
-        "overall": 84,
+        "overall": 83,
         "market_price": 10,
         "sell_price": 3
       },
@@ -1784,18 +1757,18 @@ try {
         "name": "卡林顿",
         "name_en": "Carrington",
         "position": "LB",
-        "overall": 92,
-        "market_price": 28,
-        "sell_price": 9,
+        "overall": 91,
+        "market_price": 26,
+        "sell_price": 8,
         "is_player": true
       },
       {
         "name": "高立青",
         "name_en": "LEO.G",
         "position": "RW",
-        "overall": 94,
-        "market_price": 32,
-        "sell_price": 10,
+        "overall": 89,
+        "market_price": 22,
+        "sell_price": 7,
         "is_player": true
       },
       {
@@ -1810,7 +1783,7 @@ try {
         "name": "琼斯",
         "name_en": "C Jones",
         "position": "CM",
-        "overall": 82,
+        "overall": 83,
         "market_price": 10,
         "sell_price": 3
       },
@@ -1818,7 +1791,7 @@ try {
         "name": "格拉芬贝赫",
         "name_en": "R Gravenberch",
         "position": "CDM",
-        "overall": 88,
+        "overall": 87,
         "market_price": 20,
         "sell_price": 6
       },
@@ -1826,33 +1799,33 @@ try {
         "name": "埃基蒂克",
         "name_en": "H Ekitike",
         "position": "ST",
-        "overall": 86,
-        "market_price": 20,
-        "sell_price": 6
-      },
-      {
-        "name": "科纳特",
-        "name_en": "I Konaté",
-        "position": "CB",
-        "overall": 86,
-        "market_price": 20,
-        "sell_price": 6
-      },
-      {
-        "name": "加克波",
-        "name_en": "C Gakpo",
-        "position": "LM",
         "overall": 84,
         "market_price": 10,
         "sell_price": 3
       },
       {
+        "name": "科纳特",
+        "name_en": "I Konaté",
+        "position": "CB",
+        "overall": 84,
+        "market_price": 10,
+        "sell_price": 3
+      },
+      {
+        "name": "加克波",
+        "name_en": "C Gakpo",
+        "position": "LM",
+        "overall": 86,
+        "market_price": 20,
+        "sell_price": 6
+      },
+      {
         "name": "远藤航",
         "name_en": "W Endo",
         "position": "CDM",
-        "overall": 79,
-        "market_price": 5,
-        "sell_price": 2
+        "overall": 82,
+        "market_price": 10,
+        "sell_price": 3
       },
       {
         "name": "凯尔克兹",
@@ -1874,9 +1847,9 @@ try {
         "name": "伊萨克",
         "name_en": "A Isak",
         "position": "ST",
-        "overall": 87,
-        "market_price": 20,
-        "sell_price": 6
+        "overall": 89,
+        "market_price": 22,
+        "sell_price": 7
       },
       {
         "name": "罗伯逊",
@@ -1890,7 +1863,7 @@ try {
         "name": "基耶萨",
         "name_en": "F Chiesa",
         "position": "RM",
-        "overall": 80,
+        "overall": 82,
         "market_price": 10,
         "sell_price": 3
       },
@@ -1946,9 +1919,9 @@ try {
         "name": "戈麦斯",
         "name_en": "J Gomez",
         "position": "CB",
-        "overall": 79,
-        "market_price": 5,
-        "sell_price": 2
+        "overall": 81,
+        "market_price": 10,
+        "sell_price": 3
       },
       {
         "name": "威廉姆斯",
@@ -1970,7 +1943,7 @@ try {
         "name": "马马尔达什维利",
         "name_en": "G Mamardashvili",
         "position": "GK",
-        "overall": 84,
+        "overall": 83,
         "market_price": 10,
         "sell_price": 3
       },
@@ -2002,9 +1975,9 @@ try {
         "name": "阿利松",
         "name_en": "Alisson",
         "position": "GK",
-        "overall": 91,
-        "market_price": 26,
-        "sell_price": 8
+        "overall": 88,
+        "market_price": 20,
+        "sell_price": 6
       }
     ]
   },
@@ -2018,15 +1991,15 @@ try {
         "name": "赖斯",
         "name_en": "D Rice",
         "position": "CDM",
-        "overall": 89,
-        "market_price": 22,
-        "sell_price": 7
+        "overall": 88,
+        "market_price": 20,
+        "sell_price": 6
       },
       {
         "name": "拉门斯",
         "name_en": "S Lammens",
         "position": "GK",
-        "overall": 83,
+        "overall": 81,
         "market_price": 10,
         "sell_price": 3
       },
@@ -2034,9 +2007,9 @@ try {
         "name": "达洛特",
         "name_en": "D Dalot",
         "position": "RB",
-        "overall": 80,
-        "market_price": 10,
-        "sell_price": 3
+        "overall": 79,
+        "market_price": 5,
+        "sell_price": 2
       },
       {
         "name": "马奎尔",
@@ -2074,9 +2047,9 @@ try {
         "name": "马伊努",
         "name_en": "K Mainoo",
         "position": "CM",
-        "overall": 80,
-        "market_price": 10,
-        "sell_price": 3
+        "overall": 78,
+        "market_price": 5,
+        "sell_price": 2
       },
       {
         "name": "阿马德",
@@ -2099,8 +2072,8 @@ try {
         "name_en": "B Fernandes",
         "position": "CM",
         "overall": 87,
-        "market_price": 22,
-        "sell_price": 7
+        "market_price": 20,
+        "sell_price": 6
       },
       {
         "name": "姆贝乌莫",
@@ -2146,15 +2119,15 @@ try {
         "name": "齐尔克泽",
         "name_en": "J Zirkzee",
         "position": "ST",
-        "overall": 80,
-        "market_price": 10,
-        "sell_price": 3
+        "overall": 78,
+        "market_price": 5,
+        "sell_price": 2
       },
       {
         "name": "德里赫特",
         "name_en": "M de Ligt",
         "position": "CB",
-        "overall": 83,
+        "overall": 82,
         "market_price": 10,
         "sell_price": 3
       },
@@ -2234,35 +2207,44 @@ try {
         "name": "阿凡提·买买提",
         "name_en": "apandim",
         "position": "LW",
-        "overall": 93,
-        "market_price": 34,
-        "sell_price": 11,
+        "overall": 91,
+        "market_price": 26,
+        "sell_price": 8,
+        "is_player": true
+      },
+      {
+        "name": "吴恩菲尔德",
+        "name_en": "Wu Anzhuo",
+        "position": "CAM",
+        "overall": 90,
+        "market_price": 24,
+        "sell_price": 8,
         "is_player": true
       },
       {
         "name": "黑微狗",
         "name_en": "H.Wego",
         "position": "CB",
-        "overall": 90,
-        "market_price": 34,
-        "sell_price": 11,
+        "overall": 88,
+        "market_price": 20,
+        "sell_price": 6,
         "is_player": true
       },
       {
         "name": "哈赛",
         "name_en": "Hasaiyo",
         "position": "RW",
-        "overall": 92,
-        "market_price": 28,
-        "sell_price": 9,
+        "overall": 90,
+        "market_price": 24,
+        "sell_price": 8,
         "is_player": true
       },
       {
         "name": "王富建",
         "name_en": "FJTY",
         "position": "ST",
-        "overall": 91,
-        "market_price": 26,
+        "overall": 90,
+        "market_price": 24,
         "sell_price": 8,
         "is_player": true
       }
@@ -2310,7 +2292,7 @@ try {
         "name": "老清",
         "name_en": "LAO.QING",
         "position": "LB",
-        "overall": 72,
+        "overall": 71,
         "market_price": 3,
         "sell_price": 1,
         "is_player": true
@@ -2327,7 +2309,7 @@ try {
         "name": "威利",
         "name_en": "C Wiley",
         "position": "LB",
-        "overall": 72,
+        "overall": 70,
         "market_price": 3,
         "sell_price": 1
       },
@@ -2335,15 +2317,15 @@ try {
         "name": "哈托",
         "name_en": "J Hato",
         "position": "LB",
-        "overall": 83,
-        "market_price": 10,
-        "sell_price": 3
+        "overall": 79,
+        "market_price": 5,
+        "sell_price": 2
       },
       {
         "name": "王大锤",
         "name_en": "WANG DACHUI",
         "position": "CB",
-        "overall": 83,
+        "overall": 81,
         "market_price": 10,
         "sell_price": 3,
         "is_player": true
@@ -2352,9 +2334,9 @@ try {
         "name": "阿切安庞",
         "name_en": "J Acheampong",
         "position": "CB",
-        "overall": 76,
-        "market_price": 5,
-        "sell_price": 2
+        "overall": 74,
+        "market_price": 3,
+        "sell_price": 1
       },
       {
         "name": "阿达拉比奥尤",
@@ -2392,7 +2374,7 @@ try {
         "name": "科尔威尔",
         "name_en": "L Colwill",
         "position": "CB",
-        "overall": 82,
+        "overall": 81,
         "market_price": 10,
         "sell_price": 3
       },
@@ -2400,7 +2382,7 @@ try {
         "name": "迪奥曼德",
         "name_en": "O Diomande",
         "position": "CB",
-        "overall": 82,
+        "overall": 80,
         "market_price": 10,
         "sell_price": 3
       },
@@ -2408,7 +2390,7 @@ try {
         "name": "萨尔",
         "name_en": "S Sarr",
         "position": "CB",
-        "overall": 79,
+        "overall": 77,
         "market_price": 5,
         "sell_price": 2
       },
@@ -2416,7 +2398,7 @@ try {
         "name": "詹姆斯",
         "name_en": "R James",
         "position": "RB",
-        "overall": 84,
+        "overall": 83,
         "market_price": 10,
         "sell_price": 3
       },
@@ -2424,7 +2406,7 @@ try {
         "name": "古斯托",
         "name_en": "M Gusto",
         "position": "RB",
-        "overall": 81,
+        "overall": 80,
         "market_price": 10,
         "sell_price": 3
       },
@@ -2440,9 +2422,9 @@ try {
         "name": "拉维亚",
         "name_en": "R Lavia",
         "position": "CDM",
-        "overall": 80,
-        "market_price": 10,
-        "sell_price": 3
+        "overall": 79,
+        "market_price": 5,
+        "sell_price": 2
       },
       {
         "name": "埃苏戈",
@@ -2464,7 +2446,7 @@ try {
         "name": "桑托斯",
         "name_en": "A Santos",
         "position": "CM",
-        "overall": 83,
+        "overall": 81,
         "market_price": 10,
         "sell_price": 3
       },
@@ -2472,7 +2454,7 @@ try {
         "name": "戴尔",
         "name_en": "K Dyer",
         "position": "CM",
-        "overall": 69,
+        "overall": 66,
         "market_price": 3,
         "sell_price": 1
       },
@@ -2489,16 +2471,16 @@ try {
         "name": "迪迪",
         "name_en": "D DICK",
         "position": "LM",
-        "overall": 90,
-        "market_price": 24,
-        "sell_price": 8,
+        "overall": 88,
+        "market_price": 20,
+        "sell_price": 6,
         "is_player": true
       },
       {
         "name": "吉滕斯",
         "name_en": "J Gittens",
         "position": "LM",
-        "overall": 82,
+        "overall": 80,
         "market_price": 10,
         "sell_price": 3
       },
@@ -2506,7 +2488,7 @@ try {
         "name": "内托",
         "name_en": "P Neto",
         "position": "RM",
-        "overall": 84,
+        "overall": 83,
         "market_price": 10,
         "sell_price": 3
       },
@@ -2514,16 +2496,16 @@ try {
         "name": "阎小王",
         "name_en": "YAN WANG",
         "position": "ST",
-        "overall": 85,
-        "market_price": 20,
-        "sell_price": 6,
+        "overall": 84,
+        "market_price": 10,
+        "sell_price": 3,
         "is_player": true
       },
       {
         "name": "佩德罗",
         "name_en": "J Pedro",
         "position": "ST",
-        "overall": 81,
+        "overall": 80,
         "market_price": 10,
         "sell_price": 3
       },
@@ -2531,25 +2513,17 @@ try {
         "name": "德拉普",
         "name_en": "L Delap",
         "position": "ST",
-        "overall": 81,
-        "market_price": 10,
-        "sell_price": 3
+        "overall": 79,
+        "market_price": 5,
+        "sell_price": 2
       },
       {
         "name": "吉乌",
         "name_en": "M Guiu",
         "position": "ST",
-        "overall": 76,
-        "market_price": 5,
-        "sell_price": 2
-      },
-      {
-        "name": "埃斯特旺 E ESTEVA",
-        "name_en": "E Estevao",
-        "position": "RW",
-        "overall": 84,
-        "market_price": 10,
-        "sell_price": 3
+        "overall": 73,
+        "market_price": 3,
+        "sell_price": 1
       }
     ]
   },
@@ -2557,7 +2531,7 @@ try {
     "team": "阿森纳",
     "team_en": "Arsenal FC",
     "league": "英超",
-    "is_player_team": true,
+    "is_player_team": false,
     "players": [
       {
         "name": "拉亚",
@@ -2579,7 +2553,7 @@ try {
         "name": "萨卡",
         "name_en": "Bukayo Saka",
         "position": "RW",
-        "overall": 90,
+        "overall": 88,
         "market_price": 20,
         "sell_price": 6
       },
@@ -2587,7 +2561,7 @@ try {
         "name": "加布里埃尔",
         "name_en": "Gabriel",
         "position": "CB",
-        "overall": 89,
+        "overall": 88,
         "market_price": 20,
         "sell_price": 6
       },
@@ -2595,7 +2569,7 @@ try {
         "name": "萨利巴",
         "name_en": "William Saliba",
         "position": "CB",
-        "overall": 89,
+        "overall": 87,
         "market_price": 20,
         "sell_price": 6
       },
@@ -2603,7 +2577,7 @@ try {
         "name": "厄德高",
         "name_en": "Martin Ødegaard",
         "position": "CM",
-        "overall": 86,
+        "overall": 87,
         "market_price": 20,
         "sell_price": 6
       },
@@ -2627,7 +2601,7 @@ try {
         "name": "祖比门迪",
         "name_en": "Zubimendi",
         "position": "CDM",
-        "overall": 87,
+        "overall": 83,
         "market_price": 10,
         "sell_price": 3
       },
@@ -2675,7 +2649,7 @@ try {
         "name": "热苏斯",
         "name_en": "Gabriel Jesus",
         "position": "ST",
-        "overall": 80,
+        "overall": 82,
         "market_price": 10,
         "sell_price": 3
       },
@@ -2683,7 +2657,7 @@ try {
         "name": "马丁内利",
         "name_en": "Gabriel Martinelli",
         "position": "LW",
-        "overall": 84,
+        "overall": 81,
         "market_price": 10,
         "sell_price": 3
       },
@@ -2691,7 +2665,7 @@ try {
         "name": "刘易斯-斯凯利",
         "name_en": "M. Lewis-Skelly",
         "position": "LB",
-        "overall": 81,
+        "overall": 78,
         "market_price": 5,
         "sell_price": 2
       },
@@ -2699,7 +2673,7 @@ try {
         "name": "卡拉菲奥里",
         "name_en": "R. Calafiori",
         "position": "LB",
-        "overall": 83,
+        "overall": 78,
         "market_price": 5,
         "sell_price": 2
       },
@@ -2707,7 +2681,7 @@ try {
         "name": "莫斯克拉",
         "name_en": "Mosquera",
         "position": "CB",
-        "overall": 79,
+        "overall": 77,
         "market_price": 5,
         "sell_price": 2
       },
@@ -2715,139 +2689,9 @@ try {
         "name": "恩瓦内里",
         "name_en": "Ethan Nwaneri",
         "position": "RW",
-        "overall": 82,
-        "market_price": 5,
-        "sell_price": 2
-      },
-      {
-        "name": "廷贝尔",
-        "name_en": "Jurrien Timber",
-        "position": "RB",
-        "overall": 85,
-        "market_price": 15,
-        "sell_price": 5
-      },
-      {
-        "name": "马杜埃克",
-        "name_en": "Noni Madueke",
-        "position": "RW",
-        "overall": 83,
-        "market_price": 10,
-        "sell_price": 3
-      },
-      {
-        "name": "埃泽",
-        "name_en": "Eberechi Eze",
-        "position": "CAM",
-        "overall": 85,
-        "market_price": 10,
-        "sell_price": 3
-      },
-      {
-        "name": "诺尔高德",
-        "name_en": "Nørgaard",
-        "position": "CDM",
-        "overall": 80,
-        "market_price": 8,
-        "sell_price": 2
-      },
-      {
-        "name": "哈弗茨",
-        "name_en": "Kai Havertz",
-        "position": "ST",
-        "overall": 83,
-        "market_price": 12,
-        "sell_price": 4
-      },
-      {
-        "name": "道曼",
-        "name_en": "MAX Dowma",
-        "position": "CAM",
-        "overall": 70,
-        "market_price": 3,
-        "sell_price": 1
-      },
-      {
-        "name": "赖因德斯",
-        "name_en": "T Reijnders",
-        "position": "CM",
-        "overall": 86,
-        "market_price": 15,
-        "sell_price": 5
-      },
-      {
-        "name": "阿克",
-        "name_en": "N Aké",
-        "position": "CB",
-        "overall": 82,
-        "market_price": 10,
-        "sell_price": 3
-      },
-      {
-        "name": "维埃拉",
-        "name_en": "F Vieira",
-        "position": "CAM",
-        "overall": 79,
-        "market_price": 10,
-        "sell_price": 3
-      },
-      {
-        "name": "海因",
-        "name_en": "K Hein",
-        "position": "GK",
-        "overall": 78,
-        "market_price": 5,
-        "sell_price": 2
-      },
-      {
-        "name": "卡比亚",
-        "name_en": "I Kabia",
-        "position": "RW",
-        "overall": 65,
-        "market_price": 2,
-        "sell_price": 1
-      },
-      {
-        "name": "基维奥尔",
-        "name_en": "J Kiwior",
-        "position": "CB",
-        "overall": 83,
-        "market_price": 8,
-        "sell_price": 2
-      },
-      {
-        "name": "尼尔森",
-        "name_en": "R Nelson",
-        "position": "RM",
         "overall": 76,
         "market_price": 5,
         "sell_price": 2
-      },
-      {
-        "name": "L. Copley",
-        "name_en": "L Copley",
-        "position": "CM",
-        "overall": 66,
-        "market_price": 2,
-        "sell_price": 1
-      },
-      {
-        "name": "吴国佬",
-        "name_en": "Wu Anzhuo",
-        "position": "CAM",
-        "overall": 91,
-        "market_price": 30,
-        "sell_price": 10,
-        "is_player": true
-      },
-      {
-        "name": "赵跑跑",
-        "name_en": "ZHAO PAOPAO",
-        "position": "ST",
-        "overall": 62,
-        "market_price": 3,
-        "sell_price": 1,
-        "is_player": true
       }
     ]
   },
@@ -6473,7 +6317,7 @@ try {
         "name": "杰克逊",
         "name_en": "N Jackson",
         "position": "ST",
-        "overall": 81,
+        "overall": 80,
         "market_price": 10,
         "sell_price": 3
       },
@@ -10677,212 +10521,6 @@ try {
         "sell_price": 1
       }
     ]
-  },
-  {
-    "team": "传奇巴黎圣日耳曼",
-    "team_en": "Paris Saint-Germain (Legend)",
-    "league": "传奇",
-    "is_player_team": false,
-    "players": [
-      {
-        "name": "纳瓦斯",
-        "name_en": "K. Navas",
-        "position": "GK",
-        "overall": 87,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "西里古",
-        "name_en": "S. Sirigu",
-        "position": "GK",
-        "overall": 88,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "阿拉诺",
-        "name_en": "A Alano",
-        "position": "RB",
-        "overall": 88,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "蒂亚戈·席尔瓦",
-        "name_en": "T. Silva",
-        "position": "CB",
-        "overall": 87,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "波切蒂诺",
-        "name_en": "M. Pochettino",
-        "position": "CB",
-        "overall": 87,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "大卫·路易斯",
-        "name_en": "D. Luiz",
-        "position": "CB",
-        "overall": 86,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "索尔",
-        "name_en": "P. Sorh",
-        "position": "LB",
-        "overall": 87,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "马克斯韦尔",
-        "name_en": "Maxwell",
-        "position": "LB",
-        "overall": 87,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "马图伊迪",
-        "name_en": "B. Matuidi",
-        "position": "CDM",
-        "overall": 86,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "西塞",
-        "name_en": "E. Cisse",
-        "position": "CDM",
-        "overall": 88,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "莫塔",
-        "name_en": "T. Motta",
-        "position": "CDM",
-        "overall": 85,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "维拉蒂",
-        "name_en": "M. Verratti",
-        "position": "CM",
-        "overall": 90,
-        "market_price": 24,
-        "sell_price": 8,
-        "is_legend": true
-      },
-      {
-        "name": "帕斯托雷",
-        "name_en": "J. Pastore",
-        "position": "CM",
-        "overall": 85,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "奥科查",
-        "name_en": "J. Okocha",
-        "position": "CAM",
-        "overall": 88,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "德约卡夫",
-        "name_en": "Y. Djorkaeff",
-        "position": "CAM",
-        "overall": 88,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "吉诺拉",
-        "name_en": "D Ginola",
-        "position": "LM",
-        "overall": 89,
-        "market_price": 22,
-        "sell_price": 7,
-        "is_legend": true
-      },
-      {
-        "name": "久利",
-        "name_en": "L. Giuly",
-        "position": "RM",
-        "overall": 86,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "拉维齐",
-        "name_en": "E. Lavezzi",
-        "position": "LW",
-        "overall": 88,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "乔治·维阿",
-        "name_en": "G. Weah",
-        "position": "ST",
-        "overall": 92,
-        "market_price": 28,
-        "sell_price": 9,
-        "is_legend": true
-      },
-      {
-        "name": "伊布拉希莫维奇",
-        "name_en": "Z. Ibrahimovic",
-        "position": "ST",
-        "overall": 88,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "卡瓦尼",
-        "name_en": "E Cavani",
-        "position": "ST",
-        "overall": 88,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      },
-      {
-        "name": "保莱塔",
-        "name_en": "Pauleta",
-        "position": "ST",
-        "overall": 88,
-        "market_price": 20,
-        "sell_price": 6,
-        "is_legend": true
-      }
-    ]
   }
 ];
 } catch(e) {
@@ -10891,7 +10529,7 @@ try {
 }
 
 // ===== CONSTANTS =====
-const PLAYER_TEAMS = ['切尔西','利物浦','曼联','曼城','阿森纳'];
+const PLAYER_TEAMS = ['切尔西','利物浦','曼联','曼城'];
 const TEAM_COLORS = {
   '曼彻斯特城': '#6CABDD', '曼城': '#6CABDD',
   '曼彻斯特联': '#DA291C', '曼联': '#DA291C',
@@ -10917,7 +10555,7 @@ const TEAM_COLORS = {
   '传奇马德里竞技': '#CB3524',
   '传奇切尔西': '#034694',
   '传奇多特蒙德': '#FDE100',
-  '传奇巴黎圣日耳曼': '#004170',
+  '巴黎圣日尔曼': '#004170',
   '纽卡斯尔联': '#241F20', '阿斯顿维拉': '#670E36', '水晶宫': '#1B6EC2',
   '诺丁汉森林': '#DD0000', '埃弗顿': '#003399', '布莱顿': '#0057B8',
   'AFC伯恩茅斯': '#DA291C', '布伦特福德': '#e30613', '西汉姆联': '#7A263A',
@@ -11057,14 +10695,12 @@ let state = {
     '曼城': { balance:0, initialPoints:0, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] },
     '利物浦': { balance:0, initialPoints:0, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] },
     '曼联': { balance:0, initialPoints:0, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] },
-    '阿森纳': { balance:0, initialPoints:0, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] },
   },
   bteams: JSON.parse(localStorage.getItem('fc26_bteams') || 'null') || {
     '切尔西': { name:'', demoted:[] },
     '曼城': { name:'', demoted:[] },
     '利物浦': { name:'', demoted:[] },
     '曼联': { name:'', demoted:[] },
-    '阿森纳': { name:'', demoted:[] },
   },
   selectedTeam: null,
   tacticsTeam: null,
@@ -11100,7 +10736,7 @@ function saveState() {
 
 // ===== LOGIN =====
 // Auto-migrate: clear old data if version changed
-const APP_VERSION = 'v19aa-manutd-ovr-0424'; // 2026-04-24: update ManUtd OVR (11 players)
+const APP_VERSION = 'v19i-full-reset-0416'; // 2026-04-16: full data reset
 if(localStorage.getItem('fc26_version') !== APP_VERSION) {
   localStorage.removeItem('fc26_budgets');
   localStorage.removeItem('fc26_bteams');
@@ -11118,7 +10754,6 @@ const ACCOUNTS = {
   '利物浦':     { password: '123456', team: '利物浦',     name: '利物浦管理员' },
   '曼联':       { password: '123456', team: '曼联',       name: '曼联管理员' },
   '曼城':       { password: '123456', team: '曼城',       name: '曼城管理员' },
-  '阿森纳':     { password: '123456', team: '阿森纳',     name: '阿森纳管理员' },
 };
 
 // 自定义密码（覆盖默认密码，存储在 localStorage）
@@ -11230,30 +10865,14 @@ function _fbPullOnLogin() {
           if(!Array.isArray(data)) data = Object.values(data);
           state.playerMoves = data;
           localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
-          // 强制replay所有playerMoves到TEAMS_DATA（每次页面刷新TEAMS_DATA都是初始状态）
-          console.log('[_fbPullOnLogin] replaying ' + data.length + ' playerMoves on TEAMS_DATA');
-          for(var _pmi = 0; _pmi < data.length; _pmi++) {
-            var _mv = data[_pmi];
-            var _srcT = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(_mv.from); });
-            if(!_srcT) { console.warn('[replay] src not found:', _mv.from); continue; }
-            var _pi = _srcT.players.findIndex(function(p) { return p.name === _mv.name; });
-            if(_pi < 0) { console.warn('[replay] player not found:', _mv.name, 'in', _mv.from); continue; }
-            var _pl = _srcT.players.splice(_pi, 1)[0];
-            if(_mv.to) {
-              var _dstT = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(_mv.to); });
-              if(_dstT) _dstT.players.push(_pl);
-            }
-          }
         } else if(path === 'pendingOps' && data) {
           state.pendingOps = data;
           localStorage.setItem('fc26_pendingOps', JSON.stringify(data));
         } else if(path === 'budgets' && data) {
           state.budgets = data;
-          PLAYER_TEAMS.forEach(function(t) { if(!data[t]) { data[t] = { balance:0, initialPoints:0, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] }; } });
           localStorage.setItem('fc26_budgets', JSON.stringify(data));
         } else if(path === 'bteams' && data) {
           state.bteams = data;
-          PLAYER_TEAMS.forEach(function(t) { if(!data[t]) { data[t] = { name:'', demoted:[] }; } });
           localStorage.setItem('fc26_bteams', JSON.stringify(data));
         } else if(path === 'awards' && data) {
           state.awards = data;
@@ -11466,30 +11085,6 @@ function initDB() {
   filterPlayers();
 }
 
-  function _sortPlayers(a,b) {
-    // 玩家自建排前面
-    if(a.is_player && !b.is_player) return -1;
-    if(!a.is_player && b.is_player) return 1;
-    // 传奇球员次之（可选）
-    // if(a.is_legend && !b.is_legend) return -1;
-    // if(!a.is_legend && b.is_legend) return 1;
-    // 按overall降序
-    return b.overall - a.overall;
-  }
-
-  function _sortPlayers(a,b) {
-    // 玩家自建排前面
-    if(a.is_player && !b.is_player) return -1;
-    if(!a.is_player && b.is_player) return 1;
-    // 传奇球员次之（可选）
-    // if(a.is_legend && !b.is_legend) return -1;
-    // if(!a.is_legend && b.is_legend) return 1;
-    // 按overall降序
-    return b.overall - a.overall;
-  }
-
-
-
 function filterPlayers() {
   // Update pending ops banner for normal players
   var banner = document.getElementById('db-pending-banner');
@@ -11535,7 +11130,7 @@ function filterPlayers() {
   players = players.filter(p => p.overall >= ovrMin && p.overall <= ovrMax);
   if(priceMin) players = players.filter(p => p.market_price >= priceMin);
 
-  players.sort(_sortPlayers);
+  players.sort((a,b) => b.overall - a.overall);
 
   const tbody = document.getElementById('player-tbody');
   const myTeam = currentUser && !currentUser.isHost ? currentUser.team : null;
@@ -11633,7 +11228,7 @@ function loadTacticsTeam() {
   state.selectedSlotIdx = null;
   state.pitchSlots = []; // 清空以触发智能分配
   const team = TEAMS_DATA.find(t => t.team === teamName);
-  const squad = [...team.players].sort(_sortPlayers);
+  const squad = [...team.players].sort((a,b) => b.overall - a.overall);
   state.tacticsSquad = squad;
   
   const list = document.getElementById('squad-list');
@@ -12019,7 +11614,7 @@ function loadMatchTeam(side, forceReload) {
   
   const team = TEAMS_DATA.find(t => t.team === teamName);
   if(!team) return;
-  const allPlayers = [...team.players].sort(_sortPlayers);
+  const allPlayers = [...team.players].sort((a,b) => b.overall - a.overall);
   
   // Only overwrite squad if forceReload or no existing squad
   var squad;
@@ -12888,7 +12483,7 @@ function eventToHTML(e) {
   // PlayStyle badge tag
   var badgeTag = '';
   if(e.playstyle) {
-    badgeTag = ' <span style="display:block;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1a2e;font-size:9px;font-weight:600;padding:2px 5px;border-radius:10px;margin-top:3px;letter-spacing:0;word-break:break-all;line-height:1.3;">' + e.playstyle + '</span>';
+    badgeTag = ' <span style="display:inline-block;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1a2e;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;vertical-align:middle;letter-spacing:0.3px;">' + e.playstyle + '</span>';
   }
 
   var html = '';
@@ -13240,12 +12835,6 @@ function initFirebaseSync() {
         }
       }
       state.budgets = data;
-      // Ensure all PLAYER_TEAMS have budget entries (new teams may not exist in Firebase yet)
-      PLAYER_TEAMS.forEach(function(t) {
-        if(!data[t]) {
-          data[t] = { balance:0, initialPoints:0, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] };
-        }
-      });
       localStorage.setItem('fc26_budgets', JSON.stringify(data));
       console.log('Firebase sync: budgets updated');
       renderBudget();
@@ -13278,11 +12867,9 @@ function initFirebaseSync() {
         }
       }
       state.bteams = data;
-      PLAYER_TEAMS.forEach(function(t) { if(!data[t]) { data[t] = { name:'', demoted:[] }; } });
       localStorage.setItem('fc26_bteams', JSON.stringify(data));
       console.log('Firebase sync: bteams updated');
       initBteam();
-      renderBudget();  // 刷新球队管理页，让下放/召回标签生效
     }
   });
 
@@ -13292,31 +12879,37 @@ function initFirebaseSync() {
     // Firebase may store arrays as objects - normalize
     if(!Array.isArray(data)) { data = Object.values(data); }
     console.log('FB sync: playerMoves received, count=' + data.length + ', local=' + state.playerMoves.length);
-    // 只处理新增的moves（_fbPullOnLogin已完整replay过）
-    if(data.length > 0 && data.length > state.playerMoves.length) {
-      console.log('FB sync: applying ' + (data.length - state.playerMoves.length) + ' new player moves');
-      for(var i = state.playerMoves.length; i < data.length; i++) {
-        var m = data[i];
-        var srcTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
-        if(!srcTeam) { console.warn('FB sync: src team not found for', m.from); continue; }
-        var pIdx = srcTeam.players.findIndex(function(p) { return p.name === m.name; });
-        if(pIdx < 0) { console.warn('FB sync: player not found in', m.from, m.name); continue; }
-        var player = srcTeam.players.splice(pIdx, 1)[0];
-        if(m.to) {
-          var destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.to); });
-          if(destTeam) destTeam.players.push(player);
+    // Always replay ALL moves from scratch (TEAMS_DATA resets on page reload)
+    if(data.length > 0 && data.length >= state.playerMoves.length) {
+      // Always replay when content differs (not just length)
+      var _fbHash = JSON.stringify(data);
+      var _localHash = JSON.stringify(state.playerMoves);
+      if(data.length > 0 && _fbHash !== _localHash) {
+        console.log('FB sync: full replay of ' + data.length + ' player moves');
+        for(var i = 0; i < data.length; i++) {
+          var m = data[i];
+          // Apply move to TEAMS_DATA (without re-recording)
+          var srcTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
+          if(!srcTeam) { console.warn('FB sync: src team not found for', m.from); continue; }
+          var pIdx = srcTeam.players.findIndex(function(p) { return p.name === m.name; });
+          if(pIdx < 0) { console.warn('FB sync: player not found in', m.from, m.name); continue; }
+          var player = srcTeam.players.splice(pIdx, 1)[0];
+          if(m.to) {
+            var destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.to); });
+            if(destTeam) destTeam.players.push(player);
+          }
         }
+        state.playerMoves = data;
+        localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
+        filterPlayers();
+        renderBteam();
+        renderQuickAccount();
+        // 刷新战术板和模拟比赛的球员缓存（转会后数据可能已变化）
+        if(typeof loadTacticsTeam === 'function') loadTacticsTeam();
+        if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); }
+        _needsMovesReplay = false;
+        console.log('FB sync: full replay done');
       }
-      state.playerMoves = data;
-      localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
-      filterPlayers();
-      renderBteam();
-      renderQuickAccount();
-      // 刷新战术板和模拟比赛的球员缓存（转会后数据可能已变化）
-      if(typeof loadTacticsTeam === 'function') loadTacticsTeam();
-      if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); }
-      _needsMovesReplay = false;
-      console.log('FB sync: incremental replay done');
     }
   });
 
@@ -13359,7 +12952,6 @@ function initFirebaseSync() {
         localStorage.setItem('fc26_playerUpgrades', JSON.stringify(data));
         filterPlayers();
         renderQuickAccount();
-        renderBudget();
         // 刷新战术板和模拟比赛（能力值变更后需要更新）
         if(typeof loadTacticsTeam === 'function') loadTacticsTeam();
         if(typeof loadMatchTeam === 'function') { loadMatchTeam('home', true); loadMatchTeam('away', true); }
@@ -13401,7 +12993,6 @@ function initFirebaseSync() {
         }
         if(JSON.stringify(data) !== JSON.stringify(state.budgets)) {
           state.budgets = data;
-          PLAYER_TEAMS.forEach(function(t) { if(!data[t]) { data[t] = { balance:0, initialPoints:0, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] }; } });
           localStorage.setItem('fc26_budgets', JSON.stringify(data));
           renderBudget(); renderSettlement(); renderQuickAccount();
         }
@@ -13418,10 +13009,8 @@ function initFirebaseSync() {
         }
         if(JSON.stringify(data) !== JSON.stringify(state.bteams)) {
           state.bteams = data;
-          PLAYER_TEAMS.forEach(function(t) { if(!data[t]) { data[t] = { name:'', demoted:[] }; } });
           localStorage.setItem('fc26_bteams', JSON.stringify(data));
           initBteam();
-          renderBudget();  // 刷新球队管理页，让下放/召回标签生效
         }
       }
     });
@@ -13485,36 +13074,6 @@ function initFirebaseSync() {
       }
     });
   }, 30000);
-
-  // ===== VISIBILITY RECONNECT (微信小程序 WebView 从后台切回时自动重连) =====
-  document.addEventListener('visibilitychange', function() {
-    if(!document.hidden && _fbRef) {
-      console.log('[FB] 页面恢复可见，强制拉取最新数据...');
-      // 先取消旧监听避免重复
-      try { _fbRef(dbRef, 'pendingOps').off(); } catch(e) {}
-      try { _fbRef(dbRef, 'budgets').off(); } catch(e) {}
-      try { _fbRef(dbRef, 'bteams').off(); } catch(e) {}
-      try { _fbRef(dbRef, 'awards').off(); } catch(e) {}
-      try { _fbRef(dbRef, 'playerMoves').off(); } catch(e) {}
-      try { _fbRef(dbRef, 'playerUpgrades').off(); } catch(e) {}
-      // 标记需要重连
-      _fbSyncReady = false;
-      // 延迟500ms重连，等WebSocket恢复
-      setTimeout(function() {
-        console.log('[FB] 开始重连 Firebase 实时监听...');
-        initFirebaseSync();
-      }, 500);
-    }
-  });
-
-  // ===== ONLINE/OFFLINE 检测 =====
-  window.addEventListener('online', function() {
-    console.log('[FB] 网络恢复在线，强制拉取数据...');
-    if(_fbRef) _fbPullOnLogin();
-  });
-  window.addEventListener('offline', function() {
-    console.log('[FB] 网络断开，暂停同步');
-  });
 }
 
 // Required budget keys for Firebase data normalization
@@ -13573,7 +13132,6 @@ window.fbForceSync = function() {
           }
         }
         state.budgets = data;
-        PLAYER_TEAMS.forEach(function(t) { if(!data[t]) { data[t] = { balance:0, initialPoints:0, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] }; } });
         localStorage.setItem('fc26_budgets', JSON.stringify(data));
         renderBudget(); renderSettlement(); renderQuickAccount();
       }
@@ -13596,10 +13154,8 @@ window.fbForceSync = function() {
           }
         }
         state.bteams = data;
-        PLAYER_TEAMS.forEach(function(t) { if(!data[t]) { data[t] = { name:'', demoted:[] }; } });
         localStorage.setItem('fc26_bteams', JSON.stringify(data));
         initBteam();
-        renderBudget();  // 刷新球队管理页下放/召回标签
       }
       checkDone();
     });
@@ -13724,7 +13280,6 @@ function initAwards() {
     document.getElementById('award-header-card').style.display = 'none';
   } else {
     document.getElementById('clear-awards-btn').style.display = '';
-    document.getElementById('archive-awards-btn').style.display = '';
   }
   
   renderAwards();
@@ -13759,69 +13314,15 @@ function submitAward(pts, label, isNational, hasBadge) {
   alert('\u2705 ' + label + ' \u5DF2\u5F55\u5165\uFF0C' + (isNational ? '\u6240\u6709\u7403\u961F' : team) + ' +' + pts + '\u70B9' + (hasBadge ? ' +1\u679A\u94F6\u5FBD\u7AE0' : ''));
 }
 
-function switchAwardsView(view) {
-  if(!view) return;
-  currentAwardsView = view;
-  // 切换归档/清空按钮显示
-  var archiveBtn = document.getElementById('archive-awards-btn');
-  var clearBtn = document.getElementById('clear-awards-btn');
-  if(archiveBtn) archiveBtn.style.display = (view === 'current' && currentUser && currentUser.isHost) ? '' : 'none';
-  if(clearBtn) clearBtn.style.display = (view === 'current' && currentUser && currentUser.isHost && state.awards.length > 0) ? '' : 'none';
-  renderAwards();
-}
-
-function archiveAwardsToHistory() {
-  if(!state.awards || state.awards.length === 0) { alert('当前没有奖项记录可归档！'); return; }
-  if(!confirm('确定将当前所有奖项归档？\n归档后可在「历史赛季」中查看，当前列表将被清空。')) return;
-  // 自动生成赛季标签
-  var _seasons = {};
-  state.awards.forEach(function(a){ _seasons[a.season] = true; });
-  var _keys = Object.keys(_seasons).sort();
-  var seasonLabel = _keys.length === 1 ? (_keys[0] + '/' + (Number(_keys[0]) + 1)) : '多赛季';
-  AWARDS_HISTORY[seasonLabel] = {"seasonLabel": seasonLabel + ' 赛季', "archivedAt": new Date().toISOString().split('T')[0], "awards": JSON.parse(JSON.stringify(state.awards))};
-  // 清空当前
-  state.awards = [];
-  saveState();
-  currentAwardsView = seasonLabel;
-  alert('✅ 已归档为「' + seasonLabel + ' 赛季」，共 ' + AWARDS_HISTORY[seasonLabel].awards.length + ' 条记录');
-  renderAwards();
-  renderBudget();
-  updatePendingBadge();
-}
-
 function renderAwards() {
   var historyEl = document.getElementById('awards-history');
-  // 构建视图选择器
-  var selEl = document.getElementById('awards-season-view');
-  if(selEl) {
-    var _opts = '<option value="current">📝 当前赛季（实时）</option>';
-    Object.keys(AWARDS_HISTORY).sort().reverse().forEach(function(s){
-      _opts += '<option value="' + s + '">' + (AWARDS_HISTORY[s].seasonLabel || s) + '</option>';
-    });
-    selEl.innerHTML = _opts;
-    selEl.value = currentAwardsView || 'current';
-  }
-  // 确定数据源
-  var displayAwards = [];
-  if(currentAwardsView === 'current') {
-    displayAwards = state.awards || [];
-  } else if(AWARDS_HISTORY[currentAwardsView]) {
-    displayAwards = AWARDS_HISTORY[currentAwardsView].awards || [];
-  }
-  // 显示归档/清空按钮
-  var archiveBtn = document.getElementById('archive-awards-btn');
-  var clearBtn = document.getElementById('clear-awards-btn');
-  if(archiveBtn) archiveBtn.style.display = (currentAwardsView === 'current' && currentUser && currentUser.isHost) ? '' : 'none';
-  if(clearBtn) clearBtn.style.display = (currentAwardsView === 'current' && currentUser && currentUser.isHost && state.awards.length > 0) ? '' : 'none';
-
-  if(displayAwards.length === 0) {
+  if(!state.awards || state.awards.length === 0) {
     historyEl.innerHTML = '<div style="color:var(--text2);font-size:13px;padding:8px 0;">\u6682\u65E0\u5956\u9879\u8BB0\u5F55</div>';
   } else {
-    historyEl.innerHTML = displayAwards.map(function(a, i) {
+    historyEl.innerHTML = state.awards.map(function(a, i) {
       var color = TEAM_COLORS[a.team] || 'var(--text)';
       var teamLabel = a.team === '__national__' ? '\uD83C\uDF0D \u56FD\u5BB6\u961F(\u5168\u90E8)' : a.team;
       var badgeTag = a.badge ? ' <span style="display:inline-block;background:rgba(200,210,220,0.2);color:#c0c8d4;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:4px;">+1\u94F6\u5FBD\u7AE0</span>' : '';
-      var isHistory = (currentAwardsView !== 'current');
       return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;">' +
         '<div>' +
           '<span style="color:' + color + ';font-weight:600;">' + teamLabel + '</span>' +
@@ -13830,33 +13331,14 @@ function renderAwards() {
         '</div>' +
         '<div style="display:flex;align-items:center;gap:8px;">' +
           '<span class="log-pts plus" style="font-weight:600;">+' + a.pts + '\u70B9</span>' +
-          (!isHistory && currentUser && currentUser.isHost ? '<button onclick="deleteAward(' + i + ')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;">\u2715</button>' : '') +
+          (currentUser && currentUser.isHost ? '<button onclick="deleteAward(' + i + ')" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:12px;">\u2715</button>' : '') +
         '</div>' +
       '</div>';
     }).join('');
   }
-
-  // Season summary (only for current view)
-  if(currentAwardsView === 'current') {
-    renderAwardSeasonSummary();
-  } else {
-    var summaryEl = document.getElementById('award-season-summary');
-    if(summaryEl) renderArchivedAwardSummary(summaryEl, displayAwards);
-  }
-}
-
-function renderArchivedAwardSummary(container, awards) {
-  if(!awards || awards.length === 0) { container.innerHTML = ''; return; }
-  const byTeam = {};
-  awards.forEach(a => {
-    var t = a.team === '__national__' ? '\uD83C\uDF0D \u56FD\u5BB6\u961F' : a.team;
-    if(!byTeam[t]) byTeam[t] = 0;
-    byTeam[t] += a.pts;
-  });
-  var sortedTeams = Object.keys(byTeam).sort((a,b) => byTeam[b] - byTeam[a]);
-  container.innerHTML = '<div class="card"><div class="card-title" style="font-size:12px;">📊 ' + (AWARDS_HISTORY[currentAwardsView] ? AWARDS_HISTORY[currentAwardsView].seasonLabel : '') + ' 奖项汇总</div><table style="width:100%;font-size:11px;border-collapse:collapse;"><thead><tr style="background:var(--bg2);"><th style="padding:6px;text-align:left;color:var(--text2);">球队</th><th style="padding:6px;text-align:right;color:var(--text2);">总点数</th></tr></thead>' +
-    sortedTeams.map(t => '<tr style="border-bottom:1px solid var(--border);"><td style="padding:6px;color:' + (TEAM_COLORS[t]||'var(--text)') + ';font-weight:600;">' + t + '</td><td style="padding:6px;text-align:right;font-weight:700;color:var(--gold);">' + byTeam[t] + '</td></tr>').join('') +
-    '</table></div>';
+  
+  // Season summary
+  renderAwardSeasonSummary();
 }
 
 function deleteAward(idx) {
@@ -13965,7 +13447,7 @@ function renderBudget() {
   
   var pendingForTeam = (state.pendingOps || []).filter(function(o) { return o.team === team || (o.swap_with && o.swap_with === team); });
   var teamData = TEAMS_DATA.find(function(td) { return td.team === fullTeamName(team); });
-  var players = teamData ? teamData.players.sort(_sortPlayers) : [];
+  var players = teamData ? teamData.players.sort(function(a,b) { return b.overall - a.overall; }) : [];
   
   // Build HTML purely with string concatenation - NO template literals
   var h = '';
@@ -14050,7 +13532,7 @@ function renderBudget() {
     var tags = '';
     if(p.is_player) tags += '<span class="tag tag-player" style="font-size:10px;">玩家</span>';
     if(p.is_legend) tags += '<span class="tag tag-legend" style="font-size:10px;">传奇</span>';
-    if(p.potential_bump) { var _pbCount = (p.potential_bump.match(/\+1/g)||[]).length; tags += '<span class="tag tag-legend" style="font-size:10px;">' + p.potential_bump + '=' + _pbCount + '潜力</span>'; }
+    if(p.potential_bump) tags += '<span class="tag tag-legend" style="font-size:10px;">' + p.potential_bump + '</span>';
     // Check if player is demoted to B-team
     var demoted = (state.bteams[team] && state.bteams[team].demoted) || [];
     var isDemoted = demoted.some(function(dp) { return dp.name === p.name; });
@@ -14076,8 +13558,7 @@ function renderBudget() {
   } else {
     h += '<div class="log-list" style="max-height:300px;overflow-y:auto;">';
     logs.slice().reverse().forEach(function(l) {
-      var _lPts = String(l.pts || 0);
-      h += '<div class="log-item"><span class="log-pts ' + (_lPts.indexOf('+')===0?'plus':'minus') + '">' + _lPts + '</span> ' + l.action + ' <span style="opacity:0.5">' + (l.time||'') + '</span></div>';
+      h += '<div class="log-item"><span class="log-pts ' + (l.pts.indexOf('+')===0?'plus':'minus') + '">' + l.pts + '</span> ' + l.action + ' <span style="opacity:0.5">' + (l.time||'') + '</span></div>';
     });
     h += '</div>';
   }
@@ -14126,7 +13607,7 @@ function buildTeamCard(t) {
   var b = state.budgets[t];
   var color = TEAM_COLORS[t] || 'var(--accent)';
   var teamData = TEAMS_DATA.find(function(td) { return td.team === fullTeamName(t); });
-  var players = teamData ? teamData.players.sort(_sortPlayers) : [];
+  var players = teamData ? teamData.players.sort(function(a,b) { return b.overall - a.overall; }) : [];
   var pending = (state.pendingOps || []).filter(function(o) { return o.team === t; }).length;
   
   var h = '';
@@ -14160,7 +13641,6 @@ function buildTeamCard(t) {
     var tags = '';
     if(p.is_player) tags += '<span class="tag tag-player" style="font-size:10px;">玩家</span>';
     if(p.is_legend) tags += '<span class="tag tag-legend" style="font-size:10px;">传奇</span>';
-    if(p.potential_bump) { var _pbCount2 = (p.potential_bump.match(/\+1/g)||[]).length; tags += '<span class="tag tag-legend" style="font-size:10px;">' + p.potential_bump + '=' + _pbCount2 + '潜力</span>'; }
     // Check if player is demoted to B-team
     var demoted = (state.bteams[t] && state.bteams[t].demoted) || [];
     var isDemoted = demoted.some(function(dp) { return dp.name === p.name; });
@@ -14197,7 +13677,7 @@ function showTransferModal(type, team, playerJson) {
   
   if(type === 'buy') {
     title.textContent = `📥 ${team} - 购入球员`;
-    const allP = getAllPlayers().filter(p => p.team !== team).sort(_sortPlayers);
+    const allP = getAllPlayers().filter(p => p.team !== team).sort((a,b) => b.overall - a.overall);
     body.innerHTML = `
       <div style="margin-bottom:10px;font-size:13px;color:var(--text2)">当前余额: <strong style="color:var(--gold)">${b.balance}点</strong> | 剩余额度: <strong style="color:var(--green)">${5-b.tradeUsed}</strong>/5</div>
       <input class="search-box" id="transfer-search" placeholder="搜索球员..." oninput="filterTransferList(this.value,'buy','${team}')" style="width:100%;margin-bottom:10px;">
@@ -14208,7 +13688,7 @@ function showTransferModal(type, team, playerJson) {
   } else if(type === 'sell') {
     title.textContent = '📤 ' + team + ' - 售出球员给AI';
     var teamDataSell = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(team); });
-    var sellPlayers = teamDataSell.players.sort(_sortPlayers);
+    var sellPlayers = teamDataSell.players.sort(function(a,b) { return b.overall - a.overall; });
     var shtml = '<div style="margin-bottom:10px;font-size:13px;color:var(--text2)">当前余额: <strong style="color:var(--gold)">' + b.balance + '点</strong> | 剩余额度: <strong style="color:var(--green)">' + (5-b.tradeUsed) + '</strong>/5</div>';
     shtml += '<div style="max-height:300px;overflow-y:auto;">';
     sellPlayers.forEach(function(p, pi) {
@@ -14236,7 +13716,7 @@ function showTransferModal(type, team, playerJson) {
 
 function filterTransferList(search, type, team) {
   var b = state.budgets[team];
-  var players = getAllPlayers().filter(function(p) { return p.team !== team; }).sort(_sortPlayers);
+  var players = getAllPlayers().filter(function(p) { return p.team !== team; }).sort(function(a,b) { return b.overall - a.overall; });
   if(search) players = players.filter(function(p) { return p.name.toLowerCase().includes(search.toLowerCase()); });
   players = players.filter(function(p) { return p.market_price <= b.balance; });
   
@@ -14267,10 +13747,9 @@ function executeBuy(team, playerIdx) {
   if(b.tradeUsed >= 5) { alert('本赛季交易额度已用完！'); return; }
   
   // Create pending operation instead of direct execution
-  const _srcTeam = p.team;
   const op = {
-    type: 'buy', team: team, player: { name:p.name, position:p.position, overall:p.overall, fromTeam:_srcTeam },
-    action: `购入 ${p.name}（从${_srcTeam}）`, pts: '-'+p.market_price,
+    type: 'buy', team: team, player: { name:p.name, position:p.position, overall:p.overall, team:p.team },
+    action: `购入 ${p.name}`, pts: -p.market_price,
     player_name: p.name, time: new Date().toLocaleString('zh-CN'),
     submitted_by: currentUser ? currentUser.name : 'unknown'
   };
@@ -14623,10 +14102,10 @@ function renderSwapLists(myTeam) {
   var targetTeam = _swapSelections.targetTeamName;
   // Get my players
   var myTeamData = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(myTeam); });
-  var myPlayers = myTeamData ? myTeamData.players.sort(_sortPlayers) : [];
+  var myPlayers = myTeamData ? myTeamData.players.sort(function(a,b) { return b.overall - a.overall; }) : [];
   // Get target players
   var targetTeamData = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(targetTeam); });
-  var targetPlayers = targetTeamData ? targetTeamData.players.sort(_sortPlayers) : [];
+  var targetPlayers = targetTeamData ? targetTeamData.players.sort(function(a,b) { return b.overall - a.overall; }) : [];
 
   // Render my team list
   var myHtml = myPlayers.map(function(p, pi) {
@@ -14791,7 +14270,7 @@ function renderQuickAccount() {
       const color = TEAM_COLORS[t] || 'var(--accent)';
       const pending = (state.pendingOps || []).filter(o => o.team === t).length;
       const teamData = TEAMS_DATA.find(td => td.team === fullTeamName(t));
-      const players = teamData ? teamData.players.sort(_sortPlayers) : [];
+      const players = teamData ? teamData.players.sort((a,b) => b.overall - a.overall) : [];
       return `
       <div style="margin-bottom:16px;border:1px solid var(--border);border-radius:12px;overflow:hidden;">
         <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg);cursor:pointer;" onclick="showPage('budget')">
@@ -14817,7 +14296,6 @@ function renderQuickAccount() {
                 let tags = '';
                 if(p.is_player) tags += '<span class="tag tag-player" style="font-size:9px;">玩家</span>';
                 if(p.is_legend) tags += '<span class="tag tag-legend" style="font-size:9px;">传奇</span>';
-                if(p.potential_bump) { var _pbCount3 = (p.potential_bump.match(/\+1/g)||[]).length; tags += '<span class="tag tag-legend" style="font-size:9px;">'+p.potential_bump+'='+_pbCount3+'潜力</span>'; }
                 const _qi = regPlayer(p, 'qa_'+t+'_'+pi);
                 return `<tr style="border-bottom:1px solid var(--border);">
                   <td style="padding:3px 6px;"><strong>${p.name}</strong> ${tags}</td>
@@ -14964,7 +14442,7 @@ function showBteamModal(team) {
   if(b.bteamUsed >= 5) { alert('本赛季B队额度已用完！'); return; }
   if(b.balance < 2) { alert('余额不足（需2点）！'); return; }
   const teamData = TEAMS_DATA.find(t => t.team === fullTeamName(team));
-  const players = teamData.players.filter(p => !p.is_player).sort(_sortPlayers);
+  const players = teamData.players.filter(p => !p.is_player).sort((a,b) => b.overall - a.overall);
   
   document.getElementById('transfer-title').textContent = `⬇️ ${team} - 下放球员到B队`;
   document.getElementById('transfer-body').innerHTML = `
@@ -15049,22 +14527,6 @@ function closeModal() { document.getElementById('transfer-modal').classList.remo
 document.getElementById('transfer-modal').addEventListener('click', (e) => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
 
 // ===== SETTLEMENT PAGE =====
-// ===== 按中文名查找球员英文名 =====
-function findPlayerNameEn(_chineseName) {
-  if(!_chineseName) return '';
-  for(var _ti = 0; _ti < TEAMS_DATA.length; _ti++) {
-    var _team = TEAMS_DATA[_ti];
-    if(_team.players) {
-      for(var _pi = 0; _pi < _team.players.length; _pi++) {
-        if(_team.players[_pi].name === _chineseName && _team.players[_pi].name_en) {
-          return _team.players[_pi].name_en;
-        }
-      }
-    }
-  }
-  return '';
-}
-
 function renderPendingOps() {
   const listEl = document.getElementById('pending-list');
   const countEl = document.getElementById('pending-count');
@@ -15076,12 +14538,9 @@ function renderPendingOps() {
     return;
   }
   
-  try {
   listEl.innerHTML = ops.map((op, i) => {
-    if(!op) return '';
     const color = TEAM_COLORS[op.team] || 'var(--accent)';
-    const _ptsStr = String(op.pts || '0');
-    const isPlus = !_ptsStr.startsWith('-');
+    const isPlus = !op.pts.startsWith('-');
     let icon = '\uD83D\uDCB0';
     if(op.type === 'buy') icon = '\uD83D\uDCE5';
     else if(op.type === 'sell') icon = '\uD83D\uDCE4';
@@ -15101,18 +14560,15 @@ function renderPendingOps() {
     if(op.type === 'p2p_swap') {
       // Swap: show detailed two-way player list
       var swapColor = TEAM_COLORS[op.swap_with] || 'var(--accent)';
-      var outNames = (op.players_out || []).map(function(p) { var _en = findPlayerNameEn(p.name); return p.name + (_en ? ' <span style="color:var(--text2);font-size:10px;">' + _en + '</span>' : '') + '(' + p.overall + ')'; }).join('、');
-      var inNames = (op.players_in || []).map(function(p) { var _en = findPlayerNameEn(p.name); return p.name + (_en ? ' <span style="color:var(--text2);font-size:10px;">' + _en + '</span>' : '') + '(' + p.overall + ')'; }).join('、');
+      var outNames = (op.players_out || []).map(function(p) { return p.name + '(' + p.overall + ')'; }).join('、');
+      var inNames = (op.players_in || []).map(function(p) { return p.name + '(' + p.overall + ')'; }).join('、');
       detailLine = '\uD83C\uDFC3 ' + op.team + ' 出：' + outNames +
         '<br>\uD83C\uDFC3 <span style="color:' + swapColor + ';">' + op.swap_with + '</span> 出：' + inNames;
       if(op.myPts > 0 || op.targetPts > 0) {
         detailLine += '<br>\uD83D\uDCB0 ' + op.team + ' 付' + (op.myPts || 0) + '点，' + op.swap_with + ' 付' + (op.targetPts || 0) + '点';
       }
     } else {
-      if(op.player_name) {
-        var _playerEn = findPlayerNameEn(op.player_name);
-        detailLine += '\uD83C\uDFC3 ' + op.player_name + (_playerEn ? ' <span style="color:var(--text2);font-size:10px;">' + _playerEn + '</span>' : '');
-      }
+      if(op.player_name) detailLine += '\uD83C\uDFC3 ' + op.player_name;
       let destInfo = '';
       if(op.fromTeam && op.type !== 'sell') destInfo += ' \u27A1\uFE0F ' + op.team;
       if(op.toTeam) destInfo += ' \u27A1\uFE0F ' + op.toTeam;
@@ -15136,7 +14592,7 @@ function renderPendingOps() {
           '</select>' +
         '</div>' : '') +
       '</span>' +
-      '<span class="pr-pts ' + (isPlus?'plus':'minus') + '">' + _ptsStr + '</span>' +
+      '<span class="pr-pts ' + (isPlus?'plus':'minus') + '">' + op.pts + '</span>' +
       (isSellToAI ?
       '<button class="btn btn-sm" style="background:var(--green);color:#000;font-size:11px;padding:4px 8px;" onclick="approveSellPending(' + i + ')">\u2705 \u786E\u8BA4\u53BB\u5411</button>'
       :
@@ -15148,10 +14604,6 @@ function renderPendingOps() {
       '<button class="btn btn-red btn-sm" style="font-size:11px;padding:4px 8px;" onclick="rejectPending(' + i + ')">\u274C</button>' +
     '</div>';
   }).join('');
-  } catch(_e) {
-    console.error('[renderPendingOps] 渲染出错:', _e, 'ops数据:', JSON.stringify(ops).substring(0,500));
-    listEl.innerHTML = '<div style="color:var(--red);font-size:12px;">⚠️ 待审核数据渲染异常，请刷新页面重试</div>';
-  }
 }
 
 function executePendingOp(op) {
@@ -15305,36 +14757,22 @@ function doPlayerUpgrade(playerIdx, team, type) {
   var p = clickPlayer(playerIdx);
   if(!p) return;
   var b = state.budgets[team];
+  if(b.balance < 1) { alert('余额不足！升级需要至少1点。'); return; }
   var typeName = type === 'ovr' ? '能力' : '潜力';
-
-  // 区分玩家球员（1:1）和其他球员（1:5）
-  var isUserPlayer = p.is_player === true;
-  var costPerAbility = isUserPlayer ? 1 : 5;
-  var minBalance = costPerAbility; // 最少需要 costPerAbility 点才能升1点能力
-
-  if(b.balance < minBalance) {
-    var unit = isUserPlayer ? '1点' : '5点';
-    alert('余额不足！升级需要至少 ' + unit + '。');
-    return;
-  }
-
+  var costStr = '1';
+  
   var qtyStr = prompt(
-    '⚡ ' + p.name + '（' + p.position + ' OVR ' + p.overall + '）' +
-    (isUserPlayer ? ' [玩家球员]' : ' [其他球员]') + '\n' +
+    '⚡ ' + p.name + '（' + p.position + ' OVR ' + p.overall + '）\n' +
     '当前' + typeName + (type === 'pot' ? '加成: ' + (p.potential_bump || '无') : '') + '\n\n' +
-    '输入要增加的' + typeName + '点数（每1点 = ' + costPerAbility + '积分）：',
+    '输入要消耗的点数（每1点 = ' + typeName + '+1）：',
     '1'
   );
   if(!qtyStr) return;
   var qty = parseInt(qtyStr);
   if(isNaN(qty) || qty < 1) { alert('请输入有效的正整数！'); return; }
-  var totalCost = qty * costPerAbility;
-  if(b.balance < totalCost) {
-    alert('余额不足！当前仅 ' + b.balance + ' 点，需要 ' + totalCost + ' 点（' + qty + '点 × ' + costPerAbility + '积分）。');
-    return;
-  }
-  if(!confirm('确认：' + p.name + ' ' + typeName + ' +' + qty + '，消耗 ' + totalCost + ' 点？')) return;
-
+  if(qty > b.balance) { alert('余额不足！当前仅 ' + b.balance + ' 点，需要 ' + qty + ' 点。'); return; }
+  if(!confirm('确认：' + p.name + ' ' + typeName + ' +' + qty + '，消耗 ' + qty + ' 点？')) return;
+  
   // Apply upgrade
   if(type === 'ovr') {
     p.overall += qty;
@@ -15346,23 +14784,23 @@ function doPlayerUpgrade(playerIdx, team, type) {
     if(!p.potential_bump) p.potential_bump = '';
     for(var i = 0; i < qty; i++) p.potential_bump += '+1';
   }
-
+  
   // Record upgrade for Firebase sync
   state.playerUpgrades.push({
     name: p.name, position: p.position,
-    type: type, qty: qty, cost: totalCost,
+    type: type, qty: qty,
     new_overall: p.overall,
     new_sell_price: p.sell_price,
     new_market_price: p.market_price,
     new_potential_bump: p.potential_bump || ''
   });
-
+  
   // Record in log
   var op = {
     type: 'upgrade', team: team,
     player: { name: p.name, position: p.position, overall: p.overall },
-    action: p.name + ' ' + typeName + '+' + qty + '（' + costPerAbility + '积分/' + typeName + '）',
-    pts: '-' + totalCost,
+    action: p.name + ' ' + typeName + '+' + qty,
+    pts: '-' + qty,
     player_name: p.name, time: new Date().toLocaleString('zh-CN'),
     submitted_by: currentUser ? currentUser.name : 'unknown'
   };
@@ -15404,68 +14842,17 @@ function rejectAllPending() {
 }
 
 /* ========== 积分榜数据 & 渲染 ========== */
-/* ========== 积分榜数据 & 渲染（多赛季历史） ========== */
-var STANDINGS_HISTORY = {"2027/28":{"league":"英格兰足球超级联赛","season":"2027/28","updated":"2026-05-01","lastUpdated":"赛季结束","standings":[{"rank":1,"team":"利物浦","played":38,"won":28,"drawn":5,"lost":5,"goals_for":92,"goals_against":37,"goal_difference":55,"points":89,"qualification":"冠军"},{"rank":2,"team":"曼彻斯特联","played":38,"won":28,"drawn":4,"lost":6,"goals_for":94,"goals_against":47,"goal_difference":47,"points":88},{"rank":3,"team":"曼彻斯特城","played":38,"won":26,"drawn":8,"lost":4,"goals_for":92,"goals_against":35,"goal_difference":57,"points":86},{"rank":4,"team":"阿森纳","played":38,"won":26,"drawn":6,"lost":6,"goals_for":81,"goals_against":44,"goal_difference":37,"points":84},{"rank":5,"team":"纽卡斯尔联","played":38,"won":21,"drawn":6,"lost":11,"goals_for":72,"goals_against":49,"goal_difference":23,"points":69},{"rank":6,"team":"切尔西","played":38,"won":19,"drawn":8,"lost":11,"goals_for":80,"goals_against":56,"goal_difference":24,"points":65},{"rank":7,"team":"阿斯顿维拉","played":38,"won":20,"drawn":3,"lost":15,"goals_for":57,"goals_against":49,"goal_difference":8,"points":63},{"rank":8,"team":"热刺","played":38,"won":19,"drawn":4,"lost":15,"goals_for":64,"goals_against":54,"goal_difference":10,"points":61},{"rank":9,"team":"水晶宫","played":38,"won":17,"drawn":8,"lost":13,"goals_for":56,"goals_against":60,"goal_difference":-4,"points":59},{"rank":10,"team":"诺丁汉森林","played":38,"won":16,"drawn":7,"lost":15,"goals_for":55,"goals_against":53,"goal_difference":2,"points":55},{"rank":11,"team":"桑德兰","played":38,"won":14,"drawn":7,"lost":17,"goals_for":43,"goals_against":55,"goal_difference":-12,"points":49},{"rank":12,"team":"布莱顿","played":38,"won":12,"drawn":10,"lost":16,"goals_for":46,"goals_against":60,"goal_difference":-14,"points":46},{"rank":13,"team":"埃弗顿","played":38,"won":10,"drawn":15,"lost":13,"goals_for":55,"goals_against":65,"goal_difference":-10,"points":45},{"rank":14,"team":"富勒姆","played":38,"won":13,"drawn":6,"lost":19,"goals_for":44,"goals_against":62,"goal_difference":-18,"points":45},{"rank":15,"team":"伯恩利","played":38,"won":11,"drawn":9,"lost":18,"goals_for":50,"goals_against":64,"goal_difference":-14,"points":42},{"rank":16,"team":"AFC伯恩茅斯","played":38,"won":8,"drawn":12,"lost":18,"goals_for":43,"goals_against":63,"goal_difference":-20,"points":36},{"rank":17,"team":"布伦特福德","played":38,"won":6,"drawn":9,"lost":23,"goals_for":44,"goals_against":72,"goal_difference":-28,"points":27},{"rank":18,"team":"狼队","played":38,"won":7,"drawn":5,"lost":26,"goals_for":39,"goals_against":79,"goal_difference":-40,"points":26,"qualification":"降级"},{"rank":19,"team":"利兹联","played":38,"won":5,"drawn":5,"lost":28,"goals_for":31,"goals_against":84,"goal_difference":-53,"points":20,"qualification":"降级"},{"rank":20,"team":"西汉姆联","played":38,"won":4,"drawn":3,"lost":31,"goals_for":37,"goals_against":87,"goal_difference":-50,"points":15,"qualification":"降级"}]},"2026/27":{"league":"英格兰足球超级联赛","season":"2026/27","updated":"2026-04-25","lastUpdated":"赛季结束","standings":[{"rank":1,"team":"利物浦","played":38,"won":27,"drawn":8,"lost":3,"goals_for":88,"goals_against":40,"goal_difference":48,"points":89,"qualification":"冠军"},{"rank":2,"team":"曼彻斯特城","played":38,"won":27,"drawn":7,"lost":4,"goals_for":84,"goals_against":33,"goal_difference":51,"points":88,"qualification":"UEFA Champions League"},{"rank":3,"team":"阿森纳","played":38,"won":23,"drawn":7,"lost":8,"goals_for":67,"goals_against":35,"goal_difference":32,"points":76},{"rank":4,"team":"曼彻斯特联","played":38,"won":18,"drawn":15,"lost":5,"goals_for":73,"goals_against":53,"goal_difference":20,"points":69,"qualification":"UEFA Europa League"},{"rank":5,"team":"切尔西","played":38,"won":20,"drawn":8,"lost":10,"goals_for":70,"goals_against":51,"goal_difference":19,"points":68,"qualification":"UEFA Conference League"},{"rank":6,"team":"纽卡斯尔联","played":38,"won":19,"drawn":6,"lost":13,"goals_for":62,"goals_against":54,"goal_difference":8,"points":63},{"rank":7,"team":"阿斯顿维拉","played":38,"won":15,"drawn":12,"lost":11,"goals_for":54,"goals_against":44,"goal_difference":10,"points":57},{"rank":8,"team":"水晶宫","played":38,"won":17,"drawn":5,"lost":16,"goals_for":52,"goals_against":52,"goal_difference":0,"points":56},{"rank":9,"team":"诺丁汉森林","played":38,"won":15,"drawn":9,"lost":14,"goals_for":51,"goals_against":40,"goal_difference":11,"points":54},{"rank":10,"team":"布莱顿","played":38,"won":14,"drawn":11,"lost":13,"goals_for":52,"goals_against":52,"goal_difference":0,"points":53},{"rank":11,"team":"热刺","played":38,"won":15,"drawn":8,"lost":15,"goals_for":44,"goals_against":48,"goal_difference":-4,"points":53},{"rank":12,"team":"埃弗顿","played":38,"won":13,"drawn":12,"lost":13,"goals_for":47,"goals_against":49,"goal_difference":-2,"points":51},{"rank":13,"team":"布伦特福德","played":38,"won":11,"drawn":10,"lost":17,"goals_for":41,"goals_against":56,"goal_difference":-15,"points":43},{"rank":14,"team":"AFC伯恩茅斯","played":38,"won":10,"drawn":11,"lost":17,"goals_for":50,"goals_against":60,"goal_difference":-10,"points":41},{"rank":15,"team":"西汉姆联","played":38,"won":10,"drawn":8,"lost":20,"goals_for":43,"goals_against":57,"goal_difference":-14,"points":38},{"rank":16,"team":"狼队","played":38,"won":7,"drawn":14,"lost":17,"goals_for":41,"goals_against":68,"goal_difference":-27,"points":35},{"rank":17,"team":"利兹联","played":38,"won":7,"drawn":13,"lost":18,"goals_for":40,"goals_against":66,"goal_difference":-26,"points":34,"qualification":"降级"},{"rank":18,"team":"莱斯特城","played":38,"won":6,"drawn":9,"lost":23,"goals_for":44,"goals_against":78,"goal_difference":-34,"points":27,"qualification":"降级"},{"rank":19,"team":"伊普斯维奇","played":38,"won":6,"drawn":8,"lost":24,"goals_for":39,"goals_against":69,"goal_difference":-30,"points":26,"qualification":"降级"},{"rank":20,"team":"南安普顿","played":38,"won":6,"drawn":7,"lost":25,"goals_for":32,"goals_against":69,"goal_difference":-37,"points":25,"qualification":"降级"}]}};
-var currentStandingsSeason = "2027/28";
-function getCurrentStandings() { return STANDINGS_HISTORY[currentStandingsSeason] || null; }
+var STANDINGS_DATA = {"league":"\u82F1\u683C\u5170\u8DB3\u7403\u8D85\u7EA7\u8054\u8D5B","season":"2025/26","updated":"2026-04-15","standings":[{"rank":1,"team":"\u66FC\u5F7B\u65AF\u7279\u57CE","played":34,"won":21,"drawn":9,"lost":4,"goals_for":66,"goals_against":33,"goal_difference":33,"points":72,"qualification":"\u51A0\u519B"},{"rank":2,"team":"\u5229\u7269\u6D66","played":33,"won":20,"drawn":8,"lost":5,"goals_for":68,"goals_against":39,"goal_difference":29,"points":68,"qualification":"\u6B27\u51A0"},{"rank":3,"team":"\u66FC\u5F7B\u65AF\u7279\u8054","played":33,"won":18,"drawn":11,"lost":4,"goals_for":62,"goals_against":38,"goal_difference":24,"points":65,"qualification":"\u6B27\u51A0"},{"rank":4,"team":"\u5207\u5C14\u897F","played":34,"won":18,"drawn":7,"lost":9,"goals_for":55,"goals_against":36,"goal_difference":19,"points":61,"qualification":"\u6B27\u8054"},{"rank":5,"team":"\u963F\u68EE\u7EB3","played":34,"won":18,"drawn":7,"lost":9,"goals_for":63,"goals_against":45,"goal_difference":18,"points":61,"qualification":"\u6B27\u534F\u8054"},{"rank":6,"team":"\u70ED\u523A","played":34,"won":16,"drawn":11,"lost":7,"goals_for":55,"goals_against":35,"goal_difference":20,"points":59},{"rank":7,"team":"\u7EBD\u5361\u65AF\u5C14\u8054","played":34,"won":17,"drawn":7,"lost":10,"goals_for":53,"goals_against":41,"goal_difference":12,"points":58},{"rank":8,"team":"\u963F\u65AF\u987F\u7EF4\u62C9","played":34,"won":16,"drawn":8,"lost":10,"goals_for":49,"goals_against":34,"goal_difference":15,"points":56},{"rank":9,"team":"\u6C34\u6676\u5BAB","played":33,"won":14,"drawn":7,"lost":12,"goals_for":43,"goals_against":41,"goal_difference":2,"points":49},{"rank":10,"team":"\u8BFA\u4E01\u6C49\u68EE\u6797","played":34,"won":13,"drawn":8,"lost":13,"goals_for":51,"goals_against":49,"goal_difference":2,"points":47},{"rank":11,"team":"\u57C3\u5F17\u987F","played":33,"won":12,"drawn":9,"lost":12,"goals_for":51,"goals_against":48,"goal_difference":3,"points":45},{"rank":12,"team":"\u5E03\u83B1\u987F","played":34,"won":12,"drawn":7,"lost":15,"goals_for":42,"goals_against":48,"goal_difference":-6,"points":43},{"rank":13,"team":"AFC\u4F2F\u6069\u8305\u65AF","played":34,"won":10,"drawn":9,"lost":15,"goals_for":39,"goals_against":49,"goal_difference":-10,"points":39},{"rank":14,"team":"\u5E03\u4F26\u7279\u798F\u5FB7","played":33,"won":7,"drawn":12,"lost":14,"goals_for":35,"goals_against":47,"goal_difference":-12,"points":33},{"rank":15,"team":"\u897F\u6C49\u59C6\u8054","played":33,"won":8,"drawn":9,"lost":16,"goals_for":40,"goals_against":55,"goal_difference":-15,"points":33},{"rank":16,"team":"\u5229\u5179\u8054","played":34,"won":7,"drawn":10,"lost":17,"goals_for":35,"goals_against":59,"goal_difference":-24,"points":31},{"rank":17,"team":"\u6851\u5FB7\u5170","played":34,"won":7,"drawn":8,"lost":19,"goals_for":40,"goals_against":58,"goal_difference":-18,"points":29},{"rank":18,"team":"\u5BCC\u52D2\u59C6","played":34,"won":6,"drawn":8,"lost":20,"goals_for":33,"goals_against":65,"goal_difference":-32,"points":26},{"rank":19,"team":"\u72FC\u961F","played":34,"won":6,"drawn":7,"lost":21,"goals_for":34,"goals_against":71,"goal_difference":-37,"points":25},{"rank":20,"team":"\u4F2F\u6069\u5229","played":34,"won":5,"drawn":7,"lost":22,"goals_for":34,"goals_against":71,"goal_difference":-37,"points":22}]};
 
-/* ========== 奖项归档数据（多赛季历史） ========== */
-var AWARDS_HISTORY = {
-  "2026/27": {"seasonLabel": "2026/27 赛季（已结束）", "archivedAt": "2026-04-25", "awards": [
-    {"team":"阿森纳","season":"2026","label":"巨星杯5名后","pts":5},
-    {"team":"阿森纳","season":"2026","label":"巨星杯5名后","pts":5},
-    {"team":"曼城","season":"2026","label":"巨星杯5名后","pts":5},
-    {"team":"曼城","season":"2026","label":"巨星杯冠军","pts":20},
-    {"team":"曼联","season":"2026","label":"巨星杯5名后","pts":5},
-    {"team":"曼联","season":"2026","label":"巨星杯5名后","pts":5},
-    {"team":"利物浦","season":"2026","label":"巨星杯3/4名","pts":10},
-    {"team":"利物浦","season":"2026","label":"巨星杯亚军","pts":15},
-    {"team":"切尔西","season":"2026","label":"巨星杯5名后","pts":5},
-    {"team":"切尔西","season":"2026","label":"巨星杯3/4名","pts":10},
-    {"team":"阿森纳","season":"2027","label":"英超第三","pts":15},
-    {"team":"利物浦","season":"2026","label":"欧冠3/4名","pts":15},
-    {"team":"利物浦","season":"2026","label":"卡拉宝杯冠军","pts":15},
-    {"team":"利物浦","season":"2026","label":"英超冠军","pts":25},
-    {"team":"曼联","season":"2026","label":"英超第四后","pts":10},
-    {"team":"曼城","season":"2026","label":"足总杯冠军","pts":20},
-    {"team":"曼城","season":"2026","label":"英超第二","pts":20},
-    {"team":"曼城","season":"2026","label":"欧冠亚军","pts":20},
-    {"team":"利物浦","season":"2026","label":"欧冠冠军","pts":30,"badge":true},
-    {"team":"曼城","season":"2026","label":"英超冠军","pts":25},
-    {"team":"曼城","season":"2026","label":"卡拉宝杯冠军","pts":15}
-  ]}
-};
-var currentAwardsView = "current"; // "current" or season key like "2026/27"
-
-
-function switchStandingsSeason(season) {
-  if(!season || !STANDINGS_HISTORY[season]) return;
-  currentStandingsSeason = season;
-  renderStandings();
-}
 
 function renderStandings() {
   var tbody = document.getElementById('standings-tbody');
   if(!tbody) return;
-  // 构建赛季选择器
-  var selEl = document.getElementById('standings-season-select');
-  if(selEl) {
-    var _seasons = Object.keys(STANDINGS_HISTORY).sort().reverse();
-    var _oldVal = selEl.value;
-    selEl.innerHTML = _seasons.map(function(s){return '<option value="'+s+'"'+(s===currentStandingsSeason?' selected':'')+'>'+s+'赛季</option>';}).join('');
-    if(selEl && !_oldVal) selEl.value = currentStandingsSeason;
-  }
-  // 获取当前赛季数据
-  var data = getCurrentStandings();
-  if(!data) { tbody.innerHTML = '<tr><td colspan="10" style="padding:20px;text-align:center;color:var(--text2);">暂无该赛季数据</td></tr>'; return; }
-  var teams = data.standings || [];
-  // 更新时间和标题
+  var teams = STANDINGS_DATA.standings || [];
+  // 更新时间
   var updatedEl = document.getElementById('standings-updated');
-  if(updatedEl && data.updated) {
-    var _ud = new Date(data.updated + 'T00:00:00');
-    var _us = _ud.getFullYear() + '年' + (_ud.getMonth()+1) + '月' + _ud.getDate() + '日';
-    var _uh = _ud.getHours() > 0 ? _ud.getHours() + '点' : '';
-    updatedEl.textContent = '更新时间：' + _us + _uh;
+  if(updatedEl && STANDINGS_DATA.lastUpdated) {
+    updatedEl.textContent = '更新: ' + STANDINGS_DATA.lastUpdated;
   }
   var isPlayerTeam = function(name) {
     var short = TEAM_NAME_MAP[name] || name;
@@ -15824,10 +15211,6 @@ document.addEventListener('DOMContentLoaded', () => {
   renderPendingOps();
   updatePendingBadge();
   initFirebaseSync();
-  // 页面刷新时如果已登录，也要replay Firebase数据（TEAMS_DATA已重置为初始值）
-  if(currentUser) {
-    setTimeout(function(){ _fbPullOnLogin(); }, 1000);
-  }
 });
 
 // ===== ADMIN PANEL =====
@@ -16108,13 +15491,6 @@ function adminMovePlayer(fromTeam, playerKey) {
       t.players.push(playerData);
     }
   });
-
-  // ★ 持久化：创建 playerMove 记录并同步到 Firebase
-  if(!state.playerMoves) state.playerMoves = [];
-  state.playerMoves.push({ from: fromTeam, name: playerData.name, to: toTeam });
-  localStorage.setItem('fc26_playerMoves', JSON.stringify(state.playerMoves));
-  _fbSave('playerMoves', state.playerMoves);
-  console.log('[adminMovePlayer] playerMove saved:', fromTeam, '→', toTeam, playerData.name);
 
   adminAddLog(`🔄 移动球员：${playerData.name} ${fromTeam} → ${toTeam}`);
   alert(`✅ ${playerData.name} 已从 ${fromTeam} 移动到 ${toTeam}`);

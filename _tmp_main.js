@@ -1,0 +1,30 @@
+var firebase={apps:[],initializeApp:function(){this.apps.push({});return this;},database:function(){return{ref:function(){return{set:function(){return Promise.resolve();},get:function(){return Promise.resolve({val:function(){return null;}});},on:function(){},off:function(){},remove:function(){return Promise.resolve();},update:function(){return Promise.resolve();},push:function(){return{key:'x',set:function(){return Promise.resolve();}}}}}}}}};
+var window=global;
+var document={createElement:function(){return{textContent:'',innerHTML:'',style:{},appendChild:function(){},addEventListener:function(){},classList:{add:function(){},remove:function(){},toggle:function(){},contains:function(){return false}}}},getElementById:function(){return{textContent:'',innerHTML:'',style:{},value:'',checked:false,addEventListener:function(){},removeEventListener:function(){},classList:{add:function(){},remove:function(){},toggle:function(){},contains:function(){return false}},querySelector:function(){return null},querySelectorAll:function(){return[]}},querySelector:function(){return null},querySelectorAll:function(){return[]},body:{appendChild:function(){},removeChild:function(){}},head:{appendChild:function(){},removeChild:function(){}},addEventListener:function(){},removeEventListener:function(){},readyState:'complete',createTextNode:function(t){return{textContent:t}},cookie:'',location:{href:'',search:'',hash:''},title:''};
+var localStorage={getItem:function(){return null;},setItem:function(){},removeItem:function(){}};
+var console={log:function(){},warn:function(){},error:function(){},info:function(){},debug:function(){}};
+var setTimeout=function(f,t){return 0;};
+var setInterval=function(f,t){return 0;};
+var clearTimeout=function(){};
+var clearInterval=function(){};
+var alert=function(){};
+var confirm=function(){return false;};
+var navigator={userAgent:''};
+var atob=function(s){return s;};
+var btoa=function(s){return s;};
+var fetch=function(){return Promise.resolve({json:function(){return Promise.resolve({})},text:function(){return Promise.resolve('')}});};
+var AudioContext=function(){return{};};
+var XMLHttpRequest=function(){return{open:function(){},send:function(){},setRequestHeader:function(){},onload:null,onerror:null,responseText:'',status:200}};
+var performance={now:function(){return 0;}};
+var crypto={randomUUID:function(){return'xxxx-xxxx';}};
+var MutationObserver=function(){return{observe:function(){},disconnect:function(){}};};
+var ResizeObserver=function(){return{observe:function(){},disconnect:function(){}};};
+var IntersectionObserver=function(){return{observe:function(){},disconnect:function(){}};};
+var requestAnimationFrame=function(f){return 0;};
+var cancelAnimationFrame=function(){};
+var History=function(){return{pushState:function(){},replaceState:function(){}};};
+var URL={createObjectURL:function(){return'';}};
+var Blob=function(){};
+var HTMLAudioElement=function(){};
+
+try { eval(require("fs").readFileSync(require("path").join(__dirname, "_tmp_code.js"), "utf8")); console.log("EVAL_OK"); } catch(e) { console.log("EVAL_ERROR: " + e.message); }

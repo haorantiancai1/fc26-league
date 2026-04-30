@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Syntax Test 2</title>
+<script src="firebase-sdk/firebase-app-compat.js"></script>
+<script src="firebase-sdk/firebase-database-compat.js"></script>
+<script>
+window.onerror = function(msg, url, line, col, err) {
+    document.getElementById('error').textContent += '\nPAGE ERROR: ' + msg + ' @' + url + ':' + line + ':' + col;
+    return false;
+};
+</script>
+</head>
+<body>
+<div id="result"></div>
+<div id="error"></div>
+<script>
+fetch('index.html').then(r => r.text()).then(html => {
+    var scripts = html.match(/<script[^>]*>([\s\S]*?)<\/script>/g);
+    var mainScript = '';
+    var maxLen = 0;
+    scripts.forEach(function(s) {
+        var content = s.replace(/<\/?script[^>]*>/g, '');
+        if (content.length > maxLen) { maxLen = content.length; mainScript = content; }
+    });
+
+    var lines = mainScript.split('\n');
+    document.getElementById('result').textContent = 'Total: ' + lines.length + ' lines';
+
+    // Try evaluating incrementally, 100 lines at a time
+    var tested = 0;
+    var step = 100;
+    while (tested < lines.length) {
+        var end = Math.min(tested + step, lines.length);
+        var chunk = lines.slice(tested, end).join('\n');
+        try {
+            // Use indirect eval to execute in global scope
+            (0, eval)(chunk);
+        } catch(e) {
+            if (e instanceof SyntaxError) {
+                // Found syntax error in this chunk - narrow down
+                document.getElementById('error').textContent = 'SyntaxError in lines ' + (tested+1) + '-' + end + '\n';
+                for (var i = tested; i < end; i++) {
+                    try {
+                        (0, eval)(lines[i]);
+                    } catch(e2) {
+                        if (e2 instanceof SyntaxError) {
+                            document.getElementById('error').textContent += '\nLine ' + (i+1) + ': ' + e2.message + '\n' + lines[i] + '\nContext:\n' + lines.slice(Math.max(0,i-2), Math.min(lines.length, i+3)).join('\n');
+                            document.getElementById('error').textContent += '\n---DONE---';
+                            return;
+                        }
+                    }
+                }
+                // If single-line check didn't find it, error is multi-line
+                document.getElementById('error').textContent += '\nCould not narrow down to single line (multi-line expression)';
+                return;
+            }
+        }
+        tested = end;
+    }
+    document.getElementById('result').textContent += ' | ALL CHUNKS OK';
+});
+</script>
+</body>
+</html>

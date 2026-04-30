@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Test 5</title>
+</head>
+<body>
+<div id="r" style="white-space:pre-wrap;font-family:monospace;font-size:11px;"></div>
+<script>
+// Capture the original error before it disappears
+var origError = window.onerror;
+window.onerror = function(msg, url, line, col, err) {
+    var info = 'ERROR: ' + msg + '\nURL: ' + url + '\nLine: ' + line + '\nCol: ' + col;
+    if (err && err.stack) info += '\nStack:\n' + err.stack;
+    document.getElementById('r').textContent = info;
+    return false;
+};
+
+// Now load the main script dynamically
+var xhr = new XMLHttpRequest();
+xhr.open('GET', 'index.html', false);
+xhr.send();
+var html = xhr.responseText;
+
+// Extract the main script (largest <script> block)
+var matches = html.match(/<script[^>]*>([\s\S]*?)<\/script>/g);
+var mainScript = '';
+var maxLen = 0;
+matches.forEach(function(s) {
+    var c = s.replace(/<\/?script[^>]*>/g, '');
+    if (c.length > maxLen) { maxLen = c.length; mainScript = c; }
+});
+
+document.getElementById('r').textContent += 'Script length: ' + mainScript.length + '\n';
+
+// Try to create a script element and execute it
+var script = document.createElement('script');
+script.textContent = mainScript;
+document.head.appendChild(script);
+
+// Check results
+document.getElementById('r').textContent += '\nAfter script execution:\n';
+document.getElementById('r').textContent += 'typeof doLogin: ' + typeof doLogin + '\n';
+document.getElementById('r').textContent += 'typeof TEAMS_DATA: ' + typeof TEAMS_DATA + '\n';
+document.getElementById('r').textContent += 'typeof filterPlayers: ' + typeof filterPlayers + '\n';
+</script>
+</body>
+</html>

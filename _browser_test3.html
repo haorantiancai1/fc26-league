@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Syntax Test 3</title>
+<script src="firebase-sdk/firebase-app-compat.js"></script>
+<script src="firebase-sdk/firebase-database-compat.js"></script>
+</head>
+<body>
+<div id="result" style="white-space:pre-wrap;font-family:monospace;font-size:12px;"></div>
+<div id="error" style="white-space:pre-wrap;font-family:monospace;font-size:12px;color:red;"></div>
+<script>
+fetch('index.html').then(r => r.text()).then(html => {
+    var scripts = html.match(/<script[^>]*>([\s\S]*?)<\/script>/g);
+    var mainScript = '';
+    var maxLen = 0;
+    scripts.forEach(function(s) {
+        var content = s.replace(/<\/?script[^>]*>/g, '');
+        if (content.length > maxLen) { maxLen = content.length; mainScript = content; }
+    });
+
+    var lines = mainScript.split('\n');
+    document.getElementById('result').textContent = 'Total: ' + lines.length + ' lines\n';
+
+    // Incremental eval - try first N lines, increasing by 50
+    var lastOk = 0;
+    var step = 50;
+    for (var n = step; n <= lines.length; n += step) {
+        var code = lines.slice(0, n).join('\n');
+        try {
+            new Function(code);
+            lastOk = n;
+        } catch(e) {
+            if (e instanceof SyntaxError) {
+                document.getElementById('result').textContent += 'Error between lines ' + (lastOk+1) + ' and ' + n + '\n';
+                // Binary search
+                var lo = lastOk, hi = n;
+                while (lo < hi - 1) {
+                    var mid = Math.floor((lo + hi) / 2);
+                    try {
+                        new Function(lines.slice(0, mid).join('\n'));
+                        lo = mid;
+                    } catch(e2) {
+                        hi = mid;
+                    }
+                }
+                document.getElementById('result').textContent += 'Error at line ' + hi + '\n';
+                // Show context
+                for (var i = Math.max(0, hi-5); i < Math.min(lines.length, hi+5); i++) {
+                    var marker = (i+1 === hi) ? '>>>' : '   ';
+                    document.getElementById('result').textContent += marker + ' ' + (i+1) + ': ' + lines[i] + '\n';
+                }
+                document.getElementById('error').textContent = 'DONE';
+                return;
+            }
+        }
+    }
+    document.getElementById('result').textContent += 'All OK!';
+});
+</script>
+</body>
+</html>

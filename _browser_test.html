@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Syntax Test</title>
+<script src="firebase-sdk/firebase-app-compat.js"></script>
+<script src="firebase-sdk/firebase-database-compat.js"></script>
+<script>
+window.onerror = function(msg, url, line, col, err) {
+    document.getElementById('error').textContent = msg + ' | Line: ' + line + ' | Col: ' + col + ' | Stack: ' + (err ? err.stack : '');
+    return false;
+};
+</script>
+</head>
+<body>
+<div id="result"></div>
+<div id="error"></div>
+<script id="main-script"></script>
+<script>
+// Fetch the main index.html and extract the main script
+fetch('index.html').then(r => r.text()).then(html => {
+    // Extract the largest script block
+    var scripts = html.match(/<script[^>]*>([\s\S]*?)<\/script>/g);
+    var mainScript = '';
+    var maxLen = 0;
+    scripts.forEach(function(s) {
+        var content = s.replace(/<\/?script[^>]*>/g, '');
+        if (content.length > maxLen) {
+            maxLen = content.length;
+            mainScript = content;
+        }
+    });
+    
+    document.getElementById('result').textContent = 'Main script length: ' + mainScript.length + ' chars';
+    
+    // Try to eval it - split into chunks to find the error
+    try {
+        eval(mainScript);
+        document.getElementById('result').textContent += ' | EVAL SUCCESS | TEAMS_DATA: ' + (typeof TEAMS_DATA);
+    } catch(e) {
+        document.getElementById('error').textContent = 'EVAL ERROR: ' + e.message;
+        // Try to find the error line by binary search
+        var lines = mainScript.split('\n');
+        var lo = 0, hi = lines.length;
+        var errLine = -1;
+        while (lo < hi) {
+            var mid = Math.floor((lo + hi) / 2);
+            try {
+                // Wrap in a function to avoid polluting scope
+                new Function(lines.slice(0, mid).join('\n'));
+                lo = mid + 1;
+            } catch(e2) {
+                hi = mid;
+                errLine = mid;
+            }
+        }
+        if (errLine > 0) {
+            var context = lines.slice(Math.max(0, errLine-3), Math.min(lines.length, errLine+5)).map(function(l, i) {
+                return (errLine - 3 + i === errLine - 1 ? '>>>' : '   ') + (errLine - 3 + i + 1) + ': ' + l;
+            }).join('\n');
+            document.getElementById('error').textContent += ' | Error around JS line ' + errLine + ':\n' + context;
+        }
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# 测试登录功能
+- open: http://localhost:8099
+- wait: 3000
+- fill:
+    selector: '#login-name'
+    value: '浩然'
+- fill:
+    selector: '#login-pass'
+    value: '123456'
+- click: '#login-btn'
+- wait: 3000
+- screenshot: _login_result.png
+- assertText:
+    selector: 'body'
+    text: '浩然'
+    contains: true

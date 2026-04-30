@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Test 6</title>
+</head>
+<body>
+<div id="r" style="white-space:pre-wrap;font-family:monospace;font-size:11px;"></div>
+<script>
+window.onerror = function(msg, url, line, col, err) {
+    document.getElementById('r').textContent += '\nERROR at line ' + line + ' col ' + col + ': ' + msg;
+    return false;
+};
+
+var xhr = new XMLHttpRequest();
+xhr.open('GET', 'index.html', false);
+xhr.send();
+var html = xhr.responseText;
+
+var matches = html.match(/<script[^>]*>([\s\S]*?)<\/script>/g);
+var mainScript = '';
+var maxLen = 0;
+matches.forEach(function(s) {
+    var c = s.replace(/<\/?script[^>]*>/g, '');
+    if (c.length > maxLen) { maxLen = c.length; mainScript = c; }
+});
+
+var lines = mainScript.split('\n');
+var total = lines.length;
+document.getElementById('r').textContent = 'Total lines: ' + total + '\n';
+
+// Split in half and test each
+var half = Math.floor(total / 2);
+
+// Test first half
+document.getElementById('r').textContent += '\n--- Testing first half (1-' + half + ') ---\n';
+var script1 = document.createElement('script');
+script1.textContent = lines.slice(0, half).join('\n');
+try {
+    document.head.appendChild(script1);
+    document.getElementById('r').textContent += 'First half: OK\n';
+} catch(e) {
+    document.getElementById('r').textContent += 'First half: ERROR - ' + e.message + '\n';
+}
+
+// Test second half
+document.getElementById('r').textContent += '\n--- Testing second half (' + (half+1) + '-' + total + ') ---\n';
+var script2 = document.createElement('script');
+script2.textContent = lines.slice(half).join('\n');
+try {
+    document.head.appendChild(script2);
+    document.getElementById('r').textContent += 'Second half: OK\n';
+} catch(e) {
+    document.getElementById('r').textContent += 'Second half: ERROR - ' + e.message + '\n';
+}
+
+document.getElementById('r').textContent += '\n---DONE---';
+</script>
+</body>
+</html>

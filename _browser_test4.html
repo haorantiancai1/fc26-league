@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Syntax Test 4</title>
+<script src="firebase-sdk/firebase-app-compat.js"></script>
+<script src="firebase-sdk/firebase-database-compat.js"></script>
+</head>
+<body>
+<div id="r" style="white-space:pre-wrap;font-family:monospace;"></div>
+<script>
+fetch('index.html').then(r => r.text()).then(html => {
+    var scripts = html.match(/<script[^>]*>([\s\S]*?)<\/script>/g);
+    var mainScript = '';
+    var maxLen = 0;
+    scripts.forEach(function(s) {
+        var c = s.replace(/<\/?script[^>]*>/g, '');
+        if (c.length > maxLen) { maxLen = c.length; mainScript = c; }
+    });
+    var lines = mainScript.split('\n');
+
+    // Try eval'ing just the first 32 lines
+    try {
+        eval(lines.slice(0, 32).join('\n'));
+        document.getElementById('r').textContent += 'Lines 1-32: OK\n';
+    } catch(e) {
+        document.getElementById('r').textContent += 'Lines 1-32: ERROR - ' + e.message + '\n';
+    }
+
+    // Try lines 1-33
+    try {
+        eval(lines.slice(0, 33).join('\n'));
+        document.getElementById('r').textContent += 'Lines 1-33: OK\n';
+    } catch(e) {
+        document.getElementById('r').textContent += 'Lines 1-33: ERROR - ' + e.message + '\n';
+    }
+
+    // Show the exact line 32 and 33
+    document.getElementById('r').textContent += '\nLine 32: [' + lines[31] + ']\n';
+    document.getElementById('r').textContent += 'Line 33: [' + lines[32] + ']\n';
+
+    // Check for hidden characters in line 32
+    var line32 = lines[31];
+    var hex = '';
+    for (var i = 0; i < line32.length; i++) {
+        hex += line32.charCodeAt(i).toString(16).padStart(2, '0') + ' ';
+    }
+    document.getElementById('r').textContent += '\nLine 32 hex: ' + hex;
+});
+</script>
+</body>
+</html>
