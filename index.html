@@ -11398,8 +11398,13 @@ function _fbPullOnLogin() {
           initAwards();
         } else if(path === 'teams' && data) {
           // 收到其他管理员同步的 TEAMS_DATA（OVR/潜力等变化）
-          TEAMS_DATA = data;
-          localStorage.setItem('fc26_teams', JSON.stringify(data));
+          // Firebase stores teams as object keyed by index {"0":{...},"3":{...}}，需要转回数组
+          if(Array.isArray(data)) {
+            TEAMS_DATA = data;
+          } else {
+            TEAMS_DATA = Object.values(data);
+          }
+          localStorage.setItem('fc26_teams', JSON.stringify(TEAMS_DATA));
           console.log('[_fbPullOnLogin] TEAMS_DATA synced from Firebase, OVR changes applied');
         }
       }
