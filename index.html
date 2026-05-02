@@ -13518,6 +13518,8 @@ function initFirebaseSync() {
   // Listen for TEAMS_DATA changes from other admins and sync to local
   _fbListen('teams', function(data) {
     if(!data) return;
+    // Firebase returns teams as object {"0":{...},"3":{...}}，需要转数组
+    if(!Array.isArray(data)) data = Object.values(data);
     if(JSON.stringify(data) !== JSON.stringify(TEAMS_DATA)) {
       TEAMS_DATA = data;
       localStorage.setItem('fc26_teams', JSON.stringify(data));
