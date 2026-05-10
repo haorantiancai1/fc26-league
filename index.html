@@ -2191,6 +2191,15 @@ try {
         "position": "RB",
         "sell_price": 6,
         "market_value": 20
+      },
+      {
+        "name": "李鲤",
+        "name_en": "Li Li",
+        "position": "RB",
+        "overall": 55,
+        "market_value": 3,
+        "sell_price": 1,
+        "is_player": true
       }
     ],
     "team": "利物浦",
@@ -3230,6 +3239,7 @@ try {
       },
       {
         "name": "王鲁一",
+        "name_en": "Wang Luyi",
         "position": "ST",
         "overall": 91,
         "market_value": 26,
@@ -12925,7 +12935,7 @@ function filterPlayers() {
   const ovrMax = parseInt(document.getElementById('filter-ovr-max').value) || 99;
   const priceMin = parseInt(document.getElementById('filter-price-min').value) || 0;
 
-  if(search) players = players.filter(p => p.name.toLowerCase().includes(search) || p.name_en.toLowerCase().includes(search));
+  if(search) players = players.filter(p => p.name.toLowerCase().includes(search) || (p.name_en || '').toLowerCase().includes(search));
   if(pos) players = players.filter(p => p.position && p.position.includes(pos));
   const activeTeam = state.selectedTeam || team;
   if(activeTeam) players = players.filter(p => p.team === activeTeam);
