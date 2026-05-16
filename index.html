@@ -14933,6 +14933,18 @@ function initFirebaseSync() {
         }
       }
     });
+    // Poll teams - sync TEAMS_DATA from Firebase (fixes stale static data after transfers)
+    _fbRef(dbRef, 'teams').once('value', function(snap) {
+      var data = snap.val();
+      if(data && Array.isArray(data) && JSON.stringify(data) !== JSON.stringify(TEAMS_DATA)) {
+        console.log('FB poll: TEAMS_DATA changed from Firebase, syncing (' + data.length + ' teams)');
+        TEAMS_DATA = data;
+        localStorage.setItem('fc26_teams', JSON.stringify(data));
+        filterPlayers();
+        renderQuickAccount();
+        renderBudget();
+      }
+    });
   }, 30000);
 
   // ===== VISIBILITY RECONNECT (微信小程序 WebView 从后台切回时自动重连) =====
