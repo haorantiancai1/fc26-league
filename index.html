@@ -12903,11 +12903,31 @@ function initDB() {
 
   // Initialize free agents from existing playerMoves (before first render)
   state.freeAgents = (state.playerMoves || []).filter(function(m) { return !m.to; }).map(function(m) {
+    // 1st: try source team (most common case - player still listed there)
     var _src = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
-    if(!_src) return null;
-    var _p = (_src.players || []).find(function(p) { return p.name === m.name; });
-    return _p ? { ..._p, team: '__free_agent__', _originalTeam: m.from } : null;
-  }).filter(Boolean);
+    if(_src) {
+      var _p = (_src.players || []).find(function(p) { return p.name === m.name; });
+      if(_p) return { ..._p, team: '__free_agent__', _originalTeam: m.from };
+    }
+    // 2nd: player may have been moved to an AI team by other ops - search all teams
+    var _found = null;
+    TEAMS_DATA.forEach(function(t) {
+      if(!_found) {
+        var _c = (t.players || []).find(function(p) { return p.name === m.name; });
+        if(_c) _found = { ..._c, team: '__free_agent__', _originalTeam: m.from };
+      }
+    });
+    if(_found) return _found;
+    // 3rd: create minimal entry from move record data (player fully removed from all teams)
+    return {
+      name: m.name, name_en: m.name_en || '',
+      position: m.position || '?', overall: m.overall || 0,
+      number: m.number || '', market_value: m.market_value || 0,
+      sell_price: m.sell_price || 0, market_price: m.market_price || 0,
+      is_player: !!m.is_player, is_legend: !!m.is_legend,
+      team: '__free_agent__', _originalTeam: m.from, _stub: true
+    };
+  });
 
   filterPlayers();
 }
@@ -14900,16 +14920,45 @@ function initFirebaseSync() {
           state.freeAgents = [];
           for(var i = 0; i < data.length; i++) {
             var m = data[i];
+            // Try source team first
             var srcTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
-            if(!srcTeam) continue;
-            var pIdx = srcTeam.players.findIndex(function(p) { return p.name === m.name; });
-            if(pIdx < 0) continue;
-            var _pollPlayer = srcTeam.players.splice(pIdx, 1)[0];
-            if(m.to) {
-              var destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.to); });
-              if(destTeam) destTeam.players.push(_pollPlayer);
+            var pIdx = -1;
+            var _pollPlayer = null;
+            if(srcTeam) pIdx = srcTeam.players.findIndex(function(p) { return p.name === m.name; });
+            if(pIdx >= 0) {
+              // Normal: player still in source team, move them out
+              _pollPlayer = srcTeam.players.splice(pIdx, 1)[0];
+              if(m.to) {
+                var destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.to); });
+                if(destTeam) destTeam.players.push(_pollPlayer);
+              } else {
+                state.freeAgents.push({ ..._pollPlayer, team: '__free_agent__', _originalTeam: m.from });
+              }
             } else {
-              state.freeAgents.push({ ..._pollPlayer, team: '__free_agent__', _originalTeam: m.from });
+              // Player not in source team (already moved elsewhere or removed)
+              if(m.to) { /* destination exists, nothing to do */ }
+              else {
+                // Free agent: search ALL teams for full data, fallback to stub
+                _pollPlayer = null;
+                TEAMS_DATA.forEach(function(t) {
+                  if(!_pollPlayer) {
+                    var _c = (t.players || []).find(function(p) { return p.name === m.name; });
+                    if(_c) _pollPlayer = _c;
+                  }
+                });
+                if(_pollPlayer) {
+                  state.freeAgents.push({ ..._pollPlayer, team: '__free_agent__', _originalTeam: m.from });
+                } else {
+                  state.freeAgents.push({
+                    name: m.name, name_en: m.name_en || '',
+                    position: m.position || '?', overall: m.overall || 0,
+                    number: m.number || '', market_value: m.market_value || 0,
+                    sell_price: m.sell_price || 0, market_price: m.market_price || 0,
+                    is_player: !!m.is_player, is_legend: !!m.is_legend,
+                    team: '__free_agent__', _originalTeam: m.from, _stub: true
+                  });
+                }
+              }
             }
           }
           state.playerMoves = data;
