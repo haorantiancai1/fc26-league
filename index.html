@@ -12508,6 +12508,7 @@ let state = {
   pendingOps: JSON.parse(localStorage.getItem('fc26_pendingOps') || 'null') || [],
   playerMoves: JSON.parse(localStorage.getItem('fc26_playerMoves') || 'null') || [],
   playerUpgrades: JSON.parse(localStorage.getItem('fc26_playerUpgrades') || 'null') || [],
+  freeAgents: [],
 };
 
 function saveState() {
@@ -12835,6 +12836,7 @@ function initDB() {
   const teams = TEAMS_DATA.map(t => resolveTeamName(t.team));
   const teamSelect = document.getElementById('filter-team');
   teams.forEach(t => { const o = document.createElement('option'); o.value=t; o.textContent=t; teamSelect.appendChild(o); });
+  { const fa = document.createElement('option'); fa.value='__free_agent__'; fa.textContent='🆓 自由球员'; teamSelect.appendChild(fa); }
   
   [75,80,85,90,95].forEach(v => {
     ['min','max'].forEach(suffix => {
@@ -12967,7 +12969,13 @@ function filterPlayers() {
   if(search) players = players.filter(p => p.name.toLowerCase().includes(search) || (p.name_en || '').toLowerCase().includes(search));
   if(pos) players = players.filter(p => p.position && p.position.includes(pos));
   const activeTeam = state.selectedTeam || team;
-  if(activeTeam) players = players.filter(p => p.team === activeTeam);
+  if(activeTeam === '__free_agent__') {
+    players = (state.freeAgents || []).map(function(p){ return {...p}; });
+    if(search) players = players.filter(p => p.name.toLowerCase().includes(search) || (p.name_en || '').toLowerCase().includes(search));
+    if(pos) players = players.filter(p => p.position && p.position.includes(pos));
+  } else if(activeTeam) {
+    players = players.filter(p => p.team === activeTeam);
+  }
   players = players.filter(p => p.overall >= ovrMin && p.overall <= ovrMax);
   if(priceMin) players = players.filter(p => p.market_price >= priceMin);
 
@@ -14881,16 +14889,19 @@ function initFirebaseSync() {
         var _pollHash = JSON.stringify(data);
         var _localHash = JSON.stringify(state.playerMoves);
         if(_pollHash !== _localHash) {
+          state.freeAgents = [];
           for(var i = 0; i < data.length; i++) {
             var m = data[i];
             var srcTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
             if(!srcTeam) continue;
             var pIdx = srcTeam.players.findIndex(function(p) { return p.name === m.name; });
             if(pIdx < 0) continue;
-            var player = srcTeam.players.splice(pIdx, 1)[0];
+            var _pollPlayer = srcTeam.players.splice(pIdx, 1)[0];
             if(m.to) {
               var destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.to); });
-              if(destTeam) destTeam.players.push(player);
+              if(destTeam) destTeam.players.push(_pollPlayer);
+            } else {
+              state.freeAgents.push({ ..._pollPlayer, team: '__free_agent__', _originalTeam: m.from });
             }
           }
           state.playerMoves = data;
@@ -16756,6 +16767,9 @@ function movePlayerInData(playerName, fromTeam, toTeam) {
   if(toTeam) {
     const destTeam = TEAMS_DATA.find(t => t.team === fullTeamName(toTeam));
     if(destTeam) destTeam.players.push(player);
+  } else {
+    // Becoming free agent - store full data for filtering
+    state.freeAgents.push({ ...player, team: '__free_agent__', _originalTeam: fromTeam });
   }
   // Record move for Firebase sync
   state.playerMoves.push({ name: playerName, from: fromTeam, to: toTeam });
