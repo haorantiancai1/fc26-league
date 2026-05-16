@@ -12901,6 +12901,14 @@ function initDB() {
     <div class="stat-card"><div class="stat-val">${TEAMS_DATA.length}</div><div class="stat-label">球队数</div></div>
   `;
 
+  // Initialize free agents from existing playerMoves (before first render)
+  state.freeAgents = (state.playerMoves || []).filter(function(m) { return !m.to; }).map(function(m) {
+    var _src = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
+    if(!_src) return null;
+    var _p = (_src.players || []).find(function(p) { return p.name === m.name; });
+    return _p ? { ..._p, team: '__free_agent__', _originalTeam: m.from } : null;
+  }).filter(Boolean);
+
   filterPlayers();
 }
 
