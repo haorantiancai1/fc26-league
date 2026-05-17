@@ -14894,13 +14894,25 @@ function initFirebaseSync() {
         }
         state.budgets = data;
       }
-      // Ensure all PLAYER_TEAMS have budget entries (new teams may not exist in Firebase yet)
+      // Ensure all PLAYER_TEAMS have budget entries with required fields
+      // Firebase omits empty arrays [], so log/pendingOps may be missing
+      var _reqKeys = ['balance','initialPoints','pendingOps','tradeUsed','bteamUsed','log'];
       PLAYER_TEAMS.forEach(function(t) {
-        if(!data[t]) {
-          data[t] = { balance:0, initialPoints:0, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] };
+        if(!data[t]) data[t] = { balance:0, initialPoints:0, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] };
+        for(var _k=0; _k<_reqKeys.length; _k++) {
+          if(data[t][_reqKeys[_k]] === undefined) {
+            data[t][_reqKeys[_k]] = (_reqKeys[_k]==='log' || _reqKeys[_k]==='pendingOps') ? [] : 0;
+          }
+        }
+        // Also ensure state has the field
+        if(!state.budgets[t]) state.budgets[t] = { balance:0, initialPoints:0, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] };
+        for(var _k2=0; _k2<_reqKeys.length; _k2++) {
+          if(state.budgets[t][_reqKeys[_k2]] === undefined) {
+            state.budgets[t][_reqKeys[_k2]] = (_reqKeys[_k2]==='log' || _reqKeys[_k2]==='pendingOps') ? [] : 0;
+          }
         }
       });
-      localStorage.setItem('fc26_budgets', JSON.stringify(data));
+      localStorage.setItem('fc26_budgets', JSON.stringify(state.budgets));
       console.log('Firebase sync: budgets updated');
       renderBudget();
       renderSettlement();
@@ -15233,6 +15245,13 @@ function initFirebaseSync() {
           });
         } else {
           console.log('FB poll: budgets changed from Firebase, syncing');
+          // Firebase omits empty arrays,补全缺失字段
+          var _pollReqKeys = ['balance','initialPoints','pendingOps','tradeUsed','bteamUsed','log'];
+          for(var _pt in data) {
+            if(data[_pt]) for(var _pk=0;_pk<_pollReqKeys.length;_pk++) {
+              if(data[_pt][_pollReqKeys[_pk]] === undefined) data[_pt][_pollReqKeys[_pk]] = (_pollReqKeys[_pk]==='log'||_pollReqKeys[_pk]==='pendingOps')?[]:0;
+            }
+          }
           state.budgets = data;
         }
         localStorage.setItem('fc26_budgets', JSON.stringify(state.budgets));
