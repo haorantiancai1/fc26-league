@@ -17018,7 +17018,7 @@ function movePlayerInData(playerName, fromTeam, toTeam) {
     // Becoming free agent - store full data for filtering
     state.freeAgents.push({ ...player, team: '__free_agent__', _originalTeam: fromTeam });
   }
-  state.playerMoves.push({ name: playerName, from: fromTeam, to: toTeam });
+  state.playerMoves.push({ name: playerName, name_en: player.name_en||'', position: player.position||'', overall: player.overall||0, number: player.number||'', market_value: player.market_value||0, sell_price: player.sell_price||0, market_price: player.market_price||0, is_player: !!player.is_player, is_legend: !!player.is_legend, from: fromTeam, to: toTeam });
 }
 
 // ===== PLAYER UPGRADE SYSTEM =====
@@ -17852,7 +17852,7 @@ function adminMovePlayer(fromTeam, playerKey) {
 
   // ★ 持久化：创建 playerMove 记录并同步到 Firebase
   if(!state.playerMoves) state.playerMoves = [];
-  state.playerMoves.push({ from: fromTeam, name: playerData.name, to: toTeam });
+  state.playerMoves.push({ name: playerData.name, name_en: playerData.name_en||'', position: playerData.position||'', overall: playerData.overall||0, number: playerData.number||'', market_value: playerData.market_value||0, sell_price: playerData.sell_price||0, market_price: playerData.market_price||0, is_player: !!playerData.is_player, is_legend: !!playerData.is_legend, from: fromTeam, to: toTeam });
   localStorage.setItem('fc26_playerMoves', JSON.stringify(state.playerMoves));
   _fbSave('playerMoves', state.playerMoves);
   console.log('[adminMovePlayer] playerMove saved:', fromTeam, '→', toTeam, playerData.name);
