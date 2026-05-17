@@ -3161,6 +3161,8 @@ try {
         "sell_price": 1,
         "market_value": 3
       },
+      {"is_player":true,"market_price":5,"market_value":5,"name":"林天宇","name_en":"TY.LIN","overall":76,"position":"CAM","number":20,"sell_price":2},
+      {"is_player":true,"market_price":10,"market_value":10,"name":"神龟","name_en":"S.GUI","overall":82,"position":"LW","number":16,"sell_price":3},
       {
         "market_price": 8,
         "name": "基维奥尔",
@@ -12506,6 +12508,7 @@ let state = {
   matchAwaySquad: [],
   awards: JSON.parse(localStorage.getItem('fc26_awards') || 'null') || [],
   pendingOps: JSON.parse(localStorage.getItem('fc26_pendingOps') || 'null') || [],
+  submitQueue: JSON.parse(localStorage.getItem('fc26_submitQueue') || 'null') || [],
   playerMoves: JSON.parse(localStorage.getItem('fc26_playerMoves') || 'null') || [],
   playerUpgrades: JSON.parse(localStorage.getItem('fc26_playerUpgrades') || 'null') || [],
   freeAgents: [],
@@ -12516,17 +12519,103 @@ function saveState() {
   localStorage.setItem('fc26_bteams', JSON.stringify(state.bteams));
   localStorage.setItem('fc26_awards', JSON.stringify(state.awards));
   localStorage.setItem('fc26_pendingOps', JSON.stringify(state.pendingOps));
+  localStorage.setItem('fc26_submitQueue', JSON.stringify(state.submitQueue));
   localStorage.setItem('fc26_playerMoves', JSON.stringify(state.playerMoves));
   localStorage.setItem('fc26_playerUpgrades', JSON.stringify(state.playerUpgrades));
   // Sync to Firebase (shared across all users)
+  // ⚠️ 不再同步 pendingOps 到 Firebase！改用 submit_queue 节点（只追加，避免覆盖）
   _fbSave('budgets', state.budgets);
   _fbSave('bteams', state.bteams);
   _fbSave('awards', state.awards);
-  _fbSave('pendingOps', state.pendingOps);
+  // _fbSave('pendingOps', state.pendingOps); // ← 已废弃，改用 submit_queue
   _fbSave('playerMoves', state.playerMoves);
   _fbSave('playerUpgrades', state.playerUpgrades);
   _fbSave('teams', TEAMS_DATA);
 }
+
+// ===== SUBMIT QUEUE (提交队列) =====
+// 核心改造：从 pendingOps 共享数组改为 submit_queue 独立记录节点
+// 每条提交有唯一 ID，只追加不删除，彻底解决"后登录者覆盖先提交者"的问题
+//
+// 数据结构：
+//   Firebase: submit_queue/{uniqueId} = { id, type, fromTeam, player, action, pts,
+//           player_name, time, submitted_by, status, reviewed_by, reviewed_at, reject_reason }
+//   status: 'pending' | 'approved' | 'rejected'
+function pushToSubmitQueue(op) {
+  // 生成唯一ID：sq_ + 时间戳 + 3位随机数
+  var _now = Date.now();
+  var _rand = Math.floor(Math.random() * 900) + 100;
+  var _id = 'sq_' + _now + '_' + _rand;
+
+  // 补充 submit_queue 专用字段
+  var _record = {
+    id: _id,
+    type: op.type || 'unknown',
+    fromTeam: op.team || '',
+    player: op.player || null,
+    action: op.action || '',
+    pts: op.pts || '0',
+    player_name: op.player_name || '',
+    time: op.time || new Date().toLocaleString('zh-CN'),
+    submitted_by: op.submitted_by || (currentUser ? currentUser.name : 'unknown'),
+    status: 'pending',
+    reviewed_by: null,
+    reviewed_at: null,
+    reject_reason: ''
+  };
+
+  // 复制 p2p_swap 特有字段
+  if (op.swap_with) _record.swap_with = op.swap_with;
+  if (op.players_out) _record.players_out = op.players_out;
+  if (op.players_in) _record.players_in = op.players_in;
+  if (op.myPts !== undefined) _record.myPts = op.myPts;
+  if (op.targetPts !== undefined) _record.targetPts = op.targetPts;
+  if (op.toTeam) _record.toTeam = op.toTeam;
+  if (op.fromTeam) _record.fromTeam = op.fromTeam; // buy 类型
+
+  // 同时写本地缓存（用于即时渲染）
+  state.submitQueue.push(_record);
+  localStorage.setItem('fc26_submitQueue', JSON.stringify(state.submitQueue));
+
+  // 写入 Firebase（只追加这条记录，不影响其他记录！）
+  _fbSave('submit_queue/' + _id, _record);
+
+  console.log('[submit_queue] 提交成功:', _id, _record.action, 'by', _record.submitted_by);
+
+  // 刷新 UI
+  renderPendingOps();
+  updatePendingBadge();
+
+  return _id;
+}
+
+// 🔔 提交队列通知系统（状态变化时弹窗提示）
+function showSubmitNotification(msg, type) {
+  // type: 'success' | 'error' | 'info'
+  if(!currentUser) return;
+  var _container = document.getElementById('submit-notifications');
+  if(!_container) {
+    _container = document.createElement('div');
+    _container.id = 'submit-notifications';
+    _container.style.cssText = 'position:fixed;top:60px;right:10px;z-index:9999;max-width:320px;display:flex;flex-direction:column;gap:6px;';
+    document.body.appendChild(_container);
+  }
+  var _bg = type === 'success' ? '#166534' : (type === 'error' ? '#991b1b' : '#1e40af');
+  var _icon = type === 'success' ? '✅' : (type === 'error' ? '❌' : 'ℹ️');
+  var _el = document.createElement('div');
+  _el.style.cssText = 'background:' + _bg + ';color:#fff;padding:10px 14px;border-radius:10px;font-size:13px;box-shadow:0 4px 12px rgba(0,0,0,0.3);animation:slideInRight 0.3s ease;cursor:pointer;';
+  _el.innerHTML = '<strong>' + _icon + '</strong> ' + msg + '<br><span style="font-size:10px;opacity:0.7;">点击关闭</span>';
+  _el.onclick = function() { _el.remove(); };
+  _container.appendChild(_el);
+  setTimeout(function() { if(_el.parentNode) _el.remove(); }, 8000);
+  sfxSuccess();
+}
+// 注入通知动画样式
+(function() {
+  var _s = document.createElement('style');
+  _s.textContent = '@keyframes slideInRight{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}';
+  document.head.appendChild(_s);
+})();
 
 // ===== LOGIN =====
 // Auto-migrate: clear old data if version changed
@@ -12763,16 +12852,18 @@ function canOperate(teamName) {
 }
 
 function updatePendingBadge() {
-  var ops = state.pendingOps || [];
+  var _allRecords = state.submitQueue || [];
+  // 只统计待审核的数量
+  var _pendingOnly = _allRecords.filter(function(r) { return r && r.status === 'pending'; });
   var count;
   if(currentUser && currentUser.isHost) {
-    count = ops.length; // 管理员看全部
+    count = _pendingOnly.length; // 管理员看全部待审核
   } else if(currentUser && currentUser.team) {
-    // 普通玩家只看与自己球队相关的操作
+    // 普通玩家只看与自己球队相关的待审核操作
     var myTeam = currentUser.team;
-    count = ops.filter(function(o) { return o.team === myTeam || (o.swap_with && o.swap_with === myTeam); }).length;
+    count = _pendingOnly.filter(function(o) { return (o.fromTeam || o.team) === myTeam || (o.swap_with && o.swap_with === myTeam); }).length;
   } else {
-    count = ops.length;
+    count = _pendingOnly.length;
   }
   const badge = document.getElementById('pending-count');
   if(badge) badge.textContent = count;
@@ -12823,6 +12914,10 @@ function getAllPlayers() {
     t.players.forEach(p => {
       players.push({ ...p, team: resolveTeamName(t.team), team_en: t.team_en, isPlayerTeam: t.is_player_team });
     });
+  });
+  // 🆓 同时包含自由球员池，确保全局搜索能搜到
+  (state.freeAgents || []).forEach(p => {
+    players.push({ ...p, team: '__free_agent__', team_en: 'Free Agents', isPlayerTeam: false });
   });
   return players;
 }
@@ -12997,11 +13092,11 @@ function filterPlayers() {
   if(search) players = players.filter(p => p.name.toLowerCase().includes(search) || (p.name_en || '').toLowerCase().includes(search));
   if(pos) players = players.filter(p => p.position && p.position.includes(pos));
   const activeTeam = state.selectedTeam || team;
-  if(activeTeam === '__free_agent__') {
+  // 🔍 有搜索词时不按球队过滤，确保自由球员也能被搜到
+  if(!search && activeTeam === '__free_agent__') {
     players = (state.freeAgents || []).map(function(p){ return {...p}; });
-    if(search) players = players.filter(p => p.name.toLowerCase().includes(search) || (p.name_en || '').toLowerCase().includes(search));
     if(pos) players = players.filter(p => p.position && p.position.includes(pos));
-  } else if(activeTeam) {
+  } else if(!search && activeTeam) {
     players = players.filter(p => p.team === activeTeam);
   }
   players = players.filter(p => p.overall >= ovrMin && p.overall <= ovrMax);
@@ -14679,20 +14774,44 @@ function initFirebaseSync() {
   // Listen for pendingOps changes (most critical - real-time notifications)
   _fbListen('pendingOps', function(data) {
     console.log('FB listen pendingOps fired, data:', JSON.stringify(data));
-    // Normalize: Firebase may return null for empty
     var _newOps = (data && Array.isArray(data)) ? data : [];
     if(JSON.stringify(_newOps) !== JSON.stringify(state.pendingOps)) {
       state.pendingOps = _newOps;
       localStorage.setItem('fc26_pendingOps', JSON.stringify(_newOps));
-      console.log('Firebase sync: pendingOps updated, count=' + _newOps.length);
-      renderPendingOps();
       updatePendingBadge();
       renderSettlement();
       renderQuickAccount();
-      // Also refresh budget page if visible
-      if(currentUser && currentUser.team) {
-        renderBudget();
-      }
+      if(currentUser && currentUser.team) { renderBudget(); }
+      filterPlayers();
+    }
+  });
+
+  // 🔥 Listen for submit_queue changes (NEW - 提交队列实时同步)
+  _fbListen('submit_queue', function(data) {
+    if(!data) return;
+    console.log('FB listen submit_queue fired, keys=', Object.keys(data).length);
+    var _arr = [];
+    for(var _k in data) { if(data.hasOwnProperty(_k) && data[_k]) _arr.push(data[_k]); }
+    if(JSON.stringify(_arr) !== JSON.stringify(state.submitQueue)) {
+      var _oldStatus = {};
+      (state.submitQueue || []).forEach(function(r) { if(r) _oldStatus[r.id] = r.status; });
+      state.submitQueue = _arr;
+      localStorage.setItem('fc26_submitQueue', JSON.stringify(_arr));
+      console.log('Firebase sync: submit_queue updated, count=' + _arr.length);
+
+      // 🔔 检测状态变化 → 触发通知
+      var _currentUserTeam = currentUser ? currentUser.team : null;
+      _arr.forEach(function(r) {
+        if(!r) return;
+        var _old = _oldStatus[r.id];
+        if(_currentUserTeam && (r.fromTeam === _currentUserTeam || r.team === _currentUserTeam || (r.swap_with && r.swap_with === _currentUserTeam))) {
+          if(_old !== 'approved' && r.status === 'approved') showSubmitNotification('✅ ' + r.action + ' 已通过审核！', 'success');
+          else if(_old !== 'rejected' && r.status === 'rejected') showSubmitNotification('❌ ' + r.action + ' 被驳回' + (r.reject_reason ? '：'+r.reject_reason : ''), 'error');
+        }
+      });
+
+      renderPendingOps(); updatePendingBadge(); renderSettlement();
+      if(currentUser && currentUser.team) { renderBudget(); }
       filterPlayers();
     }
   });
@@ -14872,6 +14991,20 @@ function initFirebaseSync() {
         filterPlayers();
       }
     });
+    // 🔥 30s 轮询 submit_queue
+    _fbRef(dbRef, 'submit_queue').once('value', function(snap) {
+      var data = snap.val();
+      if(data) {
+        var _arr = [];
+        for(var _k in data) { if(data.hasOwnProperty(_k) && data[_k]) _arr.push(data[_k]); }
+        if(JSON.stringify(_arr) !== JSON.stringify(state.submitQueue)) {
+          state.submitQueue = _arr;
+          localStorage.setItem('fc26_submitQueue', JSON.stringify(_arr));
+          renderPendingOps(); updatePendingBadge(); renderSettlement();
+          if(currentUser && currentUser.team) renderBudget();
+        }
+      }
+    });
     _fbRef(dbRef, 'budgets').once('value', function(snap) {
       var data = snap.val();
       if(data) {
@@ -15021,6 +15154,7 @@ function initFirebaseSync() {
       console.log('[FB] 页面恢复可见，强制拉取最新数据...');
       // 先取消旧监听避免重复
       try { _fbRef(dbRef, 'pendingOps').off(); } catch(e) {}
+      try { _fbRef(dbRef, 'submit_queue').off(); } catch(e) {}
       try { _fbRef(dbRef, 'budgets').off(); } catch(e) {}
       try { _fbRef(dbRef, 'bteams').off(); } catch(e) {}
       try { _fbRef(dbRef, 'awards').off(); } catch(e) {}
@@ -15084,6 +15218,25 @@ window.fbForceSync = function() {
     });
   } catch(e) {
     console.error('FB forceSync pendingOps error:', e);
+    checkDone();
+  }
+
+  // 🔥 forceSync submit_queue
+  try {
+    _fbRef(dbRef, 'submit_queue').once('value', function(snap) {
+      var data = snap.val();
+      if(data) {
+        var _arr = [];
+        for(var _k in data) { if(data.hasOwnProperty(_k) && data[_k]) _arr.push(data[_k]); }
+        state.submitQueue = _arr;
+        localStorage.setItem('fc26_submitQueue', JSON.stringify(_arr));
+        console.log('FB forceSync: submit_queue synced, count=' + _arr.length);
+        renderPendingOps(); updatePendingBadge(); renderSettlement();
+      }
+      checkDone();
+    });
+  } catch(e) {
+    console.error('FB forceSync submit_queue error:', e);
     checkDone();
   }
 
@@ -15803,8 +15956,7 @@ function executeBuy(team, playerIdx) {
     player_name: p.name, time: new Date().toLocaleString('zh-CN'),
     submitted_by: currentUser ? currentUser.name : 'unknown'
   };
-  state.pendingOps.push(op);
-  saveState(); renderBudget(); closeModal(); updatePendingBadge();
+  pushToSubmitQueue(op);
 }
 
 function executeSell(team, playerIdx) {
@@ -15819,8 +15971,7 @@ function executeSell(team, playerIdx) {
     player_name: p.name, time: new Date().toLocaleString('zh-CN'),
     submitted_by: currentUser ? currentUser.name : 'unknown'
   };
-  state.pendingOps.push(op);
-  saveState(); renderBudget(); closeModal(); updatePendingBadge();
+  pushToSubmitQueue(op);
 }
 
 // ===== QUICK ACTIONS (from player database) =====
@@ -15839,8 +15990,7 @@ function quickBuy(playerIdx, myTeam) {
     player_name: p.name, time: new Date().toLocaleString('zh-CN'),
     submitted_by: currentUser ? currentUser.name : 'unknown'
   };
-  state.pendingOps.push(op);
-  saveState(); renderBudget(); renderQuickAccount(); filterPlayers(); updatePendingBadge();
+  pushToSubmitQueue(op);
 }
 
 // Global click helper - avoids quote escaping issues in inline onclick
@@ -15867,8 +16017,7 @@ function quickSell(playerIdx, myTeam) {
     player_name: p.name, time: new Date().toLocaleString('zh-CN'),
     submitted_by: currentUser ? currentUser.name : 'unknown'
   };
-  state.pendingOps.push(op);
-  saveState(); renderBudget(); renderQuickAccount(); filterPlayers(); updatePendingBadge();
+  pushToSubmitQueue(op);
 }
 
 function quickP2P(playerIdx, myTeam) {
@@ -15954,8 +16103,7 @@ function submitHostBuy(playerIdx) {
     player_name: p.name, time: new Date().toLocaleString('zh-CN'),
     submitted_by: currentUser ? currentUser.name + '(管理员)' : 'admin'
   };
-  state.pendingOps.push(op);
-  saveState(); renderBudget(); renderQuickAccount(); filterPlayers(); closeModal(); updatePendingBadge();
+  pushToSubmitQueue(op);
 }
 
 function hostSellPlayer(playerIdx) {
@@ -15972,8 +16120,7 @@ function hostSellPlayer(playerIdx) {
     player_name: p.name, time: new Date().toLocaleString('zh-CN'),
     submitted_by: currentUser ? currentUser.name + '(管理员)' : 'admin'
   };
-  state.pendingOps.push(op);
-  saveState(); renderBudget(); renderQuickAccount(); filterPlayers(); updatePendingBadge();
+  pushToSubmitQueue(op);
 }
 
 function quickP2PSell(playerIdx, sellerTeam) {
@@ -16040,9 +16187,8 @@ function submitP2PSell(playerIdx, sellerTeam) {
     player_name: p.name, time: new Date().toLocaleString('zh-CN'),
     submitted_by: currentUser ? currentUser.name : 'unknown'
   };
-  state.pendingOps.push(opBuy);
-  state.pendingOps.push(opSell);
-  saveState(); renderBudget(); renderQuickAccount(); filterPlayers(); closeModal(); updatePendingBadge();
+  pushToSubmitQueue(opBuy);
+  pushToSubmitQueue(opSell);
 }
 
 function submitP2P(playerIdx, myTeam) {
@@ -16073,9 +16219,8 @@ function submitP2P(playerIdx, myTeam) {
     player_name: p.name, time: new Date().toLocaleString('zh-CN'),
     submitted_by: currentUser ? currentUser.name : 'unknown'
   };
-  state.pendingOps.push(opBuy);
-  state.pendingOps.push(opSell);
-  saveState(); renderBudget(); renderQuickAccount(); filterPlayers(); closeModal(); updatePendingBadge();
+  pushToSubmitQueue(opBuy);
+  pushToSubmitQueue(opSell);
 }
 
 // ===== PLAYER SWAP SYSTEM (多换多球员互换) =====
@@ -16303,8 +16448,7 @@ function submitSwap(myTeam) {
     submitted_by: currentUser ? currentUser.name : 'unknown'
   };
 
-  state.pendingOps.push(op);
-  saveState(); renderBudget(); renderQuickAccount(); filterPlayers(); closeModal(); updatePendingBadge();
+  pushToSubmitQueue(op);
 }
 
 function renderQuickAccount() {
@@ -16554,8 +16698,7 @@ function demotePlayer(team, playerIdx) {
     player_name: p.name, time: new Date().toLocaleString('zh-CN'),
     submitted_by: currentUser ? currentUser.name : 'unknown'
   };
-  state.pendingOps.push(op);
-  saveState(); renderBudget(); renderBteam(); closeModal(); updatePendingBadge();
+  pushToSubmitQueue(op);
 }
 
 function recallPlayer(team, index) {
@@ -16570,8 +16713,7 @@ function recallPlayer(team, index) {
     player_name: p.name, time: new Date().toLocaleString('zh-CN'),
     submitted_by: currentUser ? currentUser.name : 'unknown'
   };
-  state.pendingOps.push(op);
-  saveState(); renderBudget(); renderBteam(); updatePendingBadge();
+  pushToSubmitQueue(op);
 }
 
 function closeModal() { document.getElementById('transfer-modal').classList.remove('show'); }
@@ -16597,21 +16739,35 @@ function findPlayerNameEn(_chineseName) {
 function renderPendingOps() {
   const listEl = document.getElementById('pending-list');
   const countEl = document.getElementById('pending-count');
-  const ops = state.pendingOps || [];
-  countEl.textContent = ops.length;
-  
-  if(ops.length === 0) {
-    listEl.innerHTML = '<div class="pending-empty">\u2705 \u6240\u6709\u64CD\u4F5C\u5DF2\u5BA1\u6838\u5B8C\u6BD5</div>';
+
+  // 🔥 核心：从 state.submitQueue 读取（submit_queue 方案）
+  var _allRecords = state.submitQueue || [];
+
+  // 权限过滤
+  var _ops;
+  if(currentUser && currentUser.isHost) {
+    _ops = _allRecords.filter(function(r) { return r && r.status === 'pending'; });
+  } else if(currentUser && currentUser.team) {
+    var _myTeam = currentUser.team;
+    _ops = _allRecords.filter(function(r) { return r && (r.fromTeam === _myTeam || (r.swap_with && r.swap_with === _myTeam) || r.team === _myTeam); });
+  } else {
+    _ops = _allRecords.filter(function(r) { return r && r.status === 'pending'; });
+  }
+
+  countEl.textContent = _ops.length;
+
+  if(_ops.length === 0) {
+    listEl.innerHTML = '<div class="pending-empty">\u2705 ' + (currentUser && currentUser.isHost ? '\u6240\u6709\u64CD\u4F5C\u5DF2\u5BA1\u6838\u5B8C\u6BD5' : '\u6682\u65E0\u63D0\u4EA4\u8BB0\u5F55') + '</div>';
     return;
   }
-  
+
   try {
-  listEl.innerHTML = ops.map((op, i) => {
+  listEl.innerHTML = _ops.map(function(op, i) {
     if(!op) return '';
-    const color = TEAM_COLORS[op.team] || 'var(--accent)';
+    const color = TEAM_COLORS[op.fromTeam || op.team] || 'var(--accent)';
     const _ptsStr = String(op.pts || '0');
     const isPlus = !_ptsStr.startsWith('-');
-    let icon = '\uD83D\uDCB0';
+    var icon = '\uD83D\uDCB0';
     if(op.type === 'buy') icon = '\uD83D\uDCE5';
     else if(op.type === 'sell') icon = '\uD83D\uDCE4';
     else if(op.type === 'demote') icon = '\u2B07\uFE0F';
@@ -16621,64 +16777,83 @@ function renderPendingOps() {
     else if(op.type === 'p2p_swap') icon = '\uD83D\uDD04';
     else if(op.type === 'upgrade') icon = '\u26A1';
 
+    // 📊 状态标签
+    var _statusTag = '';
+    if(op.status === 'approved') _statusTag = '<span style="font-size:10px;color:var(--green);font-weight:600;margin-left:4px;">✅ 已通过</span>';
+    else if(op.status === 'rejected') _statusTag = '<span style="font-size:10px;color:var(--red);font-weight:600;margin-left:4px;">❌ 已驳回' + (op.reject_reason ? '：' + op.reject_reason : '') + '</span>';
+    else _statusTag = '<span style="font-size:10px;color:#f59e0b;font-weight:600;margin-left:4px;">⏳ 待审核</span>';
+
     const isSellToAI = op.type === 'sell';
-    const destTeamOptions = isSellToAI ? 
+    const destTeamOptions = isSellToAI ?
       TEAMS_DATA.filter(function(t){ return !PLAYER_TEAMS.includes(resolveTeamName(t.team)); }).map(function(t){ return '<option value="' + resolveTeamName(t.team) + '">' + resolveTeamName(t.team) + '</option>'; }).join('') : '';
-    
-    // Build detail: player name + destination
-    let detailLine = '';
+
+    var detailLine = '';
     if(op.type === 'p2p_swap') {
-      // Swap: show detailed two-way player list
       var swapColor = TEAM_COLORS[op.swap_with] || 'var(--accent)';
-      var outNames = (op.players_out || []).map(function(p) { var _en = findPlayerNameEn(p.name); return p.name + (_en ? ' <span style="color:var(--text2);font-size:10px;">' + _en + '</span>' : '') + '(' + p.overall + ')'; }).join('、');
-      var inNames = (op.players_in || []).map(function(p) { var _en = findPlayerNameEn(p.name); return p.name + (_en ? ' <span style="color:var(--text2);font-size:10px;">' + _en + '</span>' : '') + '(' + p.overall + ')'; }).join('、');
-      detailLine = '\uD83C\uDFC3 ' + op.team + ' 出：' + outNames +
-        '<br>\uD83C\uDFC3 <span style="color:' + swapColor + ';">' + op.swap_with + '</span> 出：' + inNames;
+      var outNames = (op.players_out || []).map(function(p) { var _en = findPlayerNameEn(p.name); return p.name + (_en ? ' <span style="color:var(--text2);font-size:10px;">' + _en + '</span>' : '') + '(' + p.overall + ')'; }).join('\u3001');
+      var inNames = (op.players_in || []).map(function(p) { var _en = findPlayerNameEn(p.name); return p.name + (_en ? ' <span style="color:var(--text2);font-size:10px;">' + _en + '</span>' : '') + '(' + p.overall + ')'; }).join('\u3001');
+      detailLine = '\uD83C\uDFC3 ' + (op.fromTeam || op.team) + ' \u51FA\uFF1A' + outNames +
+        '<br>\uD83C\uDFC3 <span style="color:' + swapColor + ';">' + op.swap_with + '</span> \u51FA\uFF1A' + inNames;
       if(op.myPts > 0 || op.targetPts > 0) {
-        detailLine += '<br>\uD83D\uDCB0 ' + op.team + ' 付' + (op.myPts || 0) + '点，' + op.swap_with + ' 付' + (op.targetPts || 0) + '点';
+        detailLine += '<br>\uD83D\uDCB0 ' + (op.fromTeam || op.team) + ' \u4ED8' + (op.myPts || 0) + '\u70B9\uFF0C' + op.swap_with + ' \u4ED8' + (op.targetPts || 0) + '\u70B9';
       }
     } else {
       if(op.player_name) {
         var _playerEn = findPlayerNameEn(op.player_name);
         detailLine += '\uD83C\uDFC3 ' + op.player_name + (_playerEn ? ' <span style="color:var(--text2);font-size:10px;">' + _playerEn + '</span>' : '');
       }
-      let destInfo = '';
-      if(op.fromTeam && op.type !== 'sell') destInfo += ' \u27A1\uFE0F ' + op.team;
+      var destInfo = '';
+      if(op.fromTeam && op.type !== 'sell') destInfo += ' \u27A1\uFE0F ' + (op.fromTeam || '');
       if(op.toTeam) destInfo += ' \u27A1\uFE0F ' + op.toTeam;
       if(destInfo && detailLine) detailLine += destInfo;
     }
 
     return '<div class="pending-row" style="' + (isSellToAI ? 'align-items:flex-start;' : '') + '">' +
-      '<span class="pr-team" style="color:' + color + '">' + op.team + '</span>' +
+      '<span class="pr-team" style="color:' + color + '">' + (op.fromTeam || op.team) + '</span>' +
       '<span class="si-icon">' + icon + '</span>' +
       '<span class="pr-action">' +
-        '<strong>' + op.action + '</strong>' +
+        '<strong>' + op.action + '</strong> ' + _statusTag +
         (detailLine ? '<br><span style="font-size:11px;color:var(--accent);">' + detailLine + '</span>' : '') +
         '<br><span style="color:var(--text2);font-size:11px;">\u63D0\u4EA4\u4EBA: ' + (op.submitted_by || '?') + ' \xB7 ' + (op.time || '') + '</span>' +
         (isSellToAI ?
         '<div style="margin-top:6px;display:flex;align-items:center;gap:6px;">' +
           '<label style="font-size:11px;color:var(--text2);white-space:nowrap;">\u7403\u5458\u53BB\u5411\uFF1A</label>' +
-          '<select id="sell-dest-' + i + '" style="padding:3px 6px;font-size:12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;">' +
-            '<option value="">-- \u9009\u62E9\u76EE\u6807\u7403\u961F --</option>' +
+          '<select id="sell-dest-' + op.id + '" style="padding:3px 6px;font-size:12px;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;">' +
+            '<option value="">-- \u9009\u62E9\u76EE标\u7403\u961F --</option>' +
             destTeamOptions +
             '<option value="__free_agent__">\u81EA\u7531\u7403\u5458\uFF08\u4E0D\u5F52\u5C5E\u4EFB\u4F55\u961F\uFF09</option>' +
           '</select>' +
         '</div>' : '') +
       '</span>' +
       '<span class="pr-pts ' + (isPlus?'plus':'minus') + '">' + _ptsStr + '</span>' +
-      (isSellToAI ?
-      '<button class="btn btn-sm" style="background:var(--green);color:#000;font-size:11px;padding:4px 8px;" onclick="approveSellPending(' + i + ')">\u2705 \u786E\u8BA4\u53BB\u5411</button>'
-      :
-      (op.type === 'p2p_swap' ?
-      '<button class="btn btn-sm" style="background:var(--green);color:#000;font-size:11px;padding:4px 8px;" onclick="approveSwapPending(' + i + ')">\u2705 确认互换</button>'
-      :
-      '<button class="btn btn-sm" style="background:var(--green);color:#000;font-size:11px;padding:4px 8px;" onclick="approvePending(' + i + ')">\u2705</button>')
-      ) +
-      '<button class="btn btn-red btn-sm" style="font-size:11px;padding:4px 8px;" onclick="rejectPending(' + i + ')">\u274C</button>' +
+      (function() {
+        if(currentUser && currentUser.isHost && op.status === 'pending') {
+          if(isSellToAI) {
+            return '<button class="btn btn-sm" style="background:var(--green);color:#000;font-size:11px;padding:4px 8px;" onclick="approveById(\'' + op.id + '\',\'sell\')">\u2705 \u786E\u8BA4\u53BB\u5411</button> ' +
+              '<button class="btn btn-red btn-sm" style="font-size:11px;padding:4px 8px;" onclick="rejectById(\'' + op.id + '\')">❌</button>';
+          } else if(op.type === 'p2p_swap') {
+            return '<button class="btn btn-sm" style="background:var(--green);color:#000;font-size:11px;padding:4px 8px;" onclick="approveById(\'' + op.id + '\',\'swap\')">\u2705 确认互换</button> ' +
+              '<button class="btn btn-red btn-sm" style="font-size:11px;padding:4px 8px;" onclick="rejectById(\'' + op.id + '\')">❌</button>';
+          } else {
+            return '<button class="btn btn-sm" style="background:var(--green);color:#000;font-size:11px;padding:4px 8px;" onclick="approveById(\'' + op.id + '\')">\u2705</button> ' +
+              '<button class="btn btn-red btn-sm" style="font-size:11px;padding:4px 8px;" onclick="rejectById(\'' + op.id + '\')">❌</button>';
+          }
+        } else if(op.status !== 'pending') {
+          if(op.status === 'approved' && currentUser && currentUser.isHost) {
+            return '<span style="font-size:10px;color:var(--green);">✅ 已通过 · ' + (op.reviewed_by||'') + '</span> ' +
+              '<button class="btn btn-sm" style="background:#eab308;color:#000;font-size:10px;padding:2px 6px;margin-left:4px;" onclick="revokeApproval(\'' + op.id + '\')" title="\u64A4\u9500\u6B64\u6761\u5DF2\u901A\u8FC7\u7684\u64CD\u4F5C\uFF0C\u72B6\u6001\u56DE\u9000\u5230\u5F85\u5BA1\u6838">↩ 撤销</button>';
+          }
+          return op.status === 'approved' ?
+            '<span style="font-size:10px;color:var(--green);">✅ 已通过 · ' + (op.reviewed_by||'') + '</span>' :
+            '<span style="font-size:10px;color:var(--red);">❌ 已驳回' + (op.reject_reason ? '·'+op.reject_reason : '') + '</span>';
+        } else {
+          return '<span style="font-size:10px;color:#f59e0b;">⏳ 等待审核...</span>';
+        }
+      })() +
     '</div>';
   }).join('');
   } catch(_e) {
-    console.error('[renderPendingOps] 渲染出错:', _e, 'ops数据:', JSON.stringify(ops).substring(0,500));
+    console.error('[renderPendingOps] 渲染出错:', _e);
     listEl.innerHTML = '<div style="color:var(--red);font-size:12px;">⚠️ 待审核数据渲染异常，请刷新页面重试</div>';
   }
 }
@@ -16686,133 +16861,128 @@ function renderPendingOps() {
 function executePendingOp(op) {
   var b = state.budgets[op.team];
   if(!b) return;
-  
   var v = parseInt(op.pts) || 0;
   b.balance += v;
-  
-  if(op.type === 'buy') {
-    b.tradeUsed++;
-    if(op.player && op.player.fromTeam) {
-      movePlayerInData(op.player.name, op.player.fromTeam, op.team);
-    }
-  } else if(op.type === 'sell') {
-    b.tradeUsed++;
-  } else if(op.type === 'p2p_buy') {
-    b.tradeUsed++;
-  } else if(op.type === 'p2p_sell') {
-    // Player-to-player sell: no tradeUsed for seller (negotiated directly)
-  } else if(op.type === 'p2p_swap') {
-    // Swap: deduct tradeUsed for my team's outgoing players
+  if(op.type === 'buy') { b.tradeUsed++; if(op.player && op.player.fromTeam) movePlayerInData(op.player.name, op.player.fromTeam, op.team); }
+  else if(op.type === 'sell') b.tradeUsed++;
+  else if(op.type === 'p2p_buy') b.tradeUsed++;
+  else if(op.type === 'p2p_sell') {}
+  else if(op.type === 'p2p_swap') {
     b.tradeUsed += (op.players_out ? op.players_out.length : 0);
-    // Also handle the other team's quota and balance
-    if(op.swap_with) {
-      var tb = state.budgets[op.swap_with];
-      if(tb) {
-        tb.tradeUsed += (op.players_in ? op.players_in.length : 0);
-        var targetNet = (op.targetPts || 0) - (op.myPts || 0);
-        tb.balance += targetNet;
-      }
-    }
-  } else if(op.type === 'upgrade') {
-    // Upgrade: just deduct points, no quota usage
-  } else if(op.type === 'demote') {
-    b.bteamUsed++;
-    if(op.player) state.bteams[op.team].demoted.push(op.player);
-  } else if(op.type === 'recall') {
-    b.bteamUsed++;
-    if(op.player) {
-      var idx = state.bteams[op.team].demoted.findIndex(function(p){ return p.name === op.player.name; });
-      if(idx >= 0) state.bteams[op.team].demoted.splice(idx, 1);
-    }
+    if(op.swap_with) { var tb = state.budgets[op.swap_with]; if(tb) { tb.tradeUsed += (op.players_in ? op.players_in.length : 0); tb.balance += ((op.targetPts||0)-(op.myPts||0)); } }
   }
-  
-  // Build detailed log entry with team, player, and destination info
+  else if(op.type === 'upgrade') {}
+  else if(op.type === 'demote') { b.bteamUsed++; if(op.player && state.bteams[op.team]) state.bteams[op.team].demoted.push(op.player); }
+  else if(op.type === 'recall') { b.bteamUsed++; if(op.player && state.bteams[op.team]) { var idx=state.bteams[op.team].demoted.findIndex(function(p){return p.name===op.player.name;}); if(idx>=0) state.bteams[op.team].demoted.splice(idx,1); } }
   var logAction = op.action || '';
-  // Ensure player name and team are in the action text
-  if(op.player_name && logAction.indexOf(op.player_name) < 0) {
-    logAction = logAction + ' — ' + op.player_name;
-  }
-  
+  if(op.player_name && logAction.indexOf(op.player_name)<0) logAction += ' — ' + op.player_name;
   if(!b.log) b.log = [];
-  b.log.unshift({
-    action: logAction,
-    pts: op.pts,
-    time: new Date().toLocaleString('zh-CN') + ' \u2713',
-    team: op.team,
-    player_name: op.player_name || '',
-    dest: op.dest || op.toTeam || op.fromTeam || ''
-  });
+  b.log.unshift({ action: logAction, pts: op.pts, time: new Date().toLocaleString('zh-CN')+' ✓', team: op.team, player_name: op.player_name||'', dest: op.dest||op.toTeam||op.fromTeam||'' });
 }
 
-// ===== GLOBAL CANCEL (accessible from inline onclick) =====
-window._cancelOp = function(idx) {
-  if(isNaN(idx)) return;
-  var op = state.pendingOps[idx];
+// 🔥 审批函数改造：全部基于 ID 操作
+
+window._cancelOp = function(id) {
+  var op = state.submitQueue.find(function(r){return r&&r.id===id;});
   if(!op) return;
-  if(!confirm('确认取消：' + op.action + '（' + op.pts + '点）？')) return;
-  state.pendingOps.splice(idx, 1);
-  saveState(); renderPendingOps(); renderBudget(); renderQuickAccount(); updatePendingBadge();
+  if(!confirm('确认取消：'+op.action+'（'+op.pts+'点）？')) return;
+  op.status='rejected';
+  op.reviewed_by=(currentUser?currentUser.name:'self')+'(\u64A4\u56DE)';
+  op.reviewed_at=new Date().toLocaleString('zh-CN');
+  op.reject_reason='\u63D0\u4EA4\u8005\u81EA\u884C\u64A4\u56DE';
+  _fbSave('submit_queue/'+id,op);
+  localStorage.setItem('fc26_submitQueue',JSON.stringify(state.submitQueue));
+  renderPendingOps(); updatePendingBadge();
 };
 
-function approvePending(idx) {
-  const op = state.pendingOps[idx];
-  if(!op) return;
-  sfxSuccess();
-  executePendingOp(op);
-  state.pendingOps.splice(idx, 1);
-  saveState(); renderPendingOps(); renderBudget(); renderBteam(); renderSettlement(); filterPlayers(); updatePendingBadge();
-}
-
-function approveSellPending(idx) {
-  const op = state.pendingOps[idx];
-  if(!op || op.type !== 'sell') return;
-  const destSelect = document.getElementById('sell-dest-' + idx);
-  const destTeam = destSelect ? destSelect.value : '';
-  if(!destTeam) { alert('请先选择球员去向球队！'); return; }
-  const destLabel = destTeam === '__free_agent__' ? '自由球员' : destTeam;
-  if(!confirm('确认：' + (op.player_name || op.action) + '\n去向：' + destLabel)) return;
-  // Save destination for log
-  op.dest = destLabel;
-  // Move player in TEAMS_DATA
-  if(destTeam !== '__free_agent__') {
-    movePlayerInData(op.player_name, op.team, destTeam);
-  } else {
-    movePlayerInData(op.player_name, op.team, null);
+function approveById(id,type){
+  var op=state.submitQueue.find(function(r){return r&&r.id===id;});
+  if(!op||op.status!=='pending') return;
+  if(type==='sell'||op.type==='sell'){
+    var ds=document.getElementById('sell-dest-'+id),dt=ds?ds.value:'';
+    if(!dt){alert('请先选择球员去向球队！');return;}
+    op.dest=dt==='__free_agent__'?'\u81EA\u7531\u7403\u5458':dt;
+    if(dt!=='__free_agent__') movePlayerInData(op.player_name,op.fromTeam||op.team,dt);
+    else movePlayerInData(op.player_name,op.fromTeam||op.team,null);
+  }
+  if(type==='swap'||op.type==='p2p_swap'){
+    sfxSuccess();
+    (op.players_out||[]).forEach(function(p){movePlayerInData(p.name,op.fromTeam||op.team,op.swap_with);});
+    (op.players_in||[]).forEach(function(p){movePlayerInData(p.name,op.swap_with,op.fromTeam||op.team);});
   }
   executePendingOp(op);
-  state.pendingOps.splice(idx, 1);
-  saveState(); renderPendingOps(); renderBudget(); renderBteam(); renderSettlement(); renderQuickAccount(); filterPlayers(); updatePendingBadge();
-}
-
-function approveSwapPending(idx) {
-  var op = state.pendingOps[idx];
-  if(!op || op.type !== 'p2p_swap') return;
-
-  var outNames = (op.players_out || []).map(function(p) { return p.name; }).join('、');
-  var inNames = (op.players_in || []).map(function(p) { return p.name; }).join('、');
-  var confirmMsg = '确认执行球员互换：\n\n' +
-    op.team + ' → ' + op.swap_with + '：' + outNames + '\n' +
-    op.swap_with + ' → ' + op.team + '：' + inNames;
-  if(op.myPts > 0 || op.targetPts > 0) {
-    confirmMsg += '\n\n点数补偿：' + op.team + ' 付' + (op.myPts || 0) + '点，' + op.swap_with + ' 付' + (op.targetPts || 0) + '点';
-  }
-  if(!confirm(confirmMsg)) return;
-
+  op.status='approved';op.reviewed_by=currentUser?currentUser.name:'admin';op.reviewed_at=new Date().toLocaleString('zh-CN');
+  _fbSave('submit_queue/'+id,op);
+  localStorage.setItem('fc26_submitQueue',JSON.stringify(state.submitQueue));
+  saveState();
   sfxSuccess();
-
-  // Move players in both directions
-  (op.players_out || []).forEach(function(p) {
-    movePlayerInData(p.name, op.team, op.swap_with);
-  });
-  (op.players_in || []).forEach(function(p) {
-    movePlayerInData(p.name, op.swap_with, op.team);
-  });
-
-  // Execute financial + quota changes
-  executePendingOp(op);
-  state.pendingOps.splice(idx, 1);
-  saveState(); renderPendingOps(); renderBudget(); renderBteam(); renderSettlement(); renderQuickAccount(); filterPlayers(); updatePendingBadge();
+  renderPendingOps();renderBudget();renderBteam();renderSettlement();filterPlayers();updatePendingBadge();
 }
+
+function rejectById(id){
+  var op=state.submitQueue.find(function(r){return r&&r.id===id;});
+  if(!op||op.status!=='pending') return;
+  var reason=prompt('驳回原因（可选）：\n\n'+op.action,'');
+  if(reason===null) return;
+  sfxError();
+  op.status='rejected';op.reject_reason=reason||'\u7BA1\u7406\u5458\u9A73\u56DE';
+  op.reviewed_by=currentUser?currentUser.name:'admin';op.reviewed_at=new Date().toLocaleString('zh-CN');
+  _fbSave('submit_queue/'+id,op);
+  localStorage.setItem('fc26_submitQueue',JSON.stringify(state.submitQueue));
+  renderPendingOps();renderBudget();updatePendingBadge();
+}
+
+function revokeApproval(id){
+  var op=state.submitQueue.find(function(r){return r&&r.id===id;});
+  if(!op||op.status!=='approved'){alert('该操作无法撤销');return;}
+  if(!confirm('⚠ 确定撤销此操作？\n\n'+op.action+'\n\n将回退所有财务和球员变动，状态恢复为待审核。')) return;
+  var b=state.budgets[op.team];if(!b)return;
+  var v=parseInt(op.pts)||0;b.balance-=v;
+  if(op.type==='buy'){if(b.tradeUsed>0)b.tradeUsed--;if(op.player&&op.player.name)movePlayerInData(op.player.name,op.team,op.player.fromTeam||null);}
+  else if(op.type==='sell'){if(b.tradeUsed>0)b.tradeUsed--;if(op.dest&&op.dest!=='\u81EA\u7531\u7403\u5458'&&op.player_name)movePlayerInData(op.player_name,op.dest,op.fromTeam||op.team);else if(op.player_name)movePlayerInData(op.player_name,null,op.fromTeam||op.team);}
+  else if(op.type==='p2p_buy'){if(b.tradeUsed>0)b.tradeUsed--;if(op.player_name)movePlayerInData(op.player_name,op.team,op.fromTeam||null);}
+  else if(op.type==='p2p_sell'){if(op.player_name)movePlayerInData(op.player_name,op.toTeam||null,op.fromTeam||op.team);}
+  else if(op.type==='p2p_swap'){
+    var oc=(op.players_out||[]).length;if(b.tradeUsed>=oc)b.tradeUsed-=oc;
+    (op.players_out||[]).forEach(function(p){movePlayerInData(p.name,op.swap_with,op.fromTeam||op.team);});
+    (op.players_in||[]).forEach(function(p){movePlayerInData(p.name,op.fromTeam||op.team,op.swap_with);});
+    if(op.swap_with){var tb=state.budgets[op.swap_with];if(tb){var ic=(op.players_in||[]).length;if(tb.tradeUsed>=ic)tb.tradeUsed-=ic;tb.balance-=((op.targetPts||0)-(op.myPts||0));}}
+  }else if(op.type==='upgrade'){}
+  else if(op.type==='demote'){if(b.bteamUsed>0)b.bteamUsed--;if(op.player&&state.bteams[op.team]){var di=state.bteams[op.team].demoted.findIndex(function(p){return p.name===op.player.name;});if(di>=0)state.bteams[op.team].demoted.splice(di,1);}}
+  else if(op.type==='recall'){if(b.bteamUsed>0)b.bteamUsed--;if(op.player&&state.bteams[op.team])state.bteams[op.team].demoted.push(op.player);}
+  if(!b.log)b.log=[];
+  b.log.unshift({action:'↩ 撤销: '+(op.action||''),pts:(-v).toString(),time:new Date().toLocaleString('zh-CN')});
+  op.status='pending';op.reviewed_by=null;op.reviewed_at=null;op.reject_reason='';
+  _fbSave('submit_queue/'+id,op);
+  localStorage.setItem('fc26_submitQueue',JSON.stringify(state.submitQueue));
+  saveState();
+  sfxError();renderPendingOps();renderBudget();renderBteam();renderSettlement();filterPlayers();updatePendingBadge();
+  showSubmitNotification('↩ 已撤销: '+op.action+'（状态恢复待审核）','info');
+}
+
+function approveAllPending(){
+  var pd=(state.submitQueue||[]).filter(function(r){return r&&r.status==='pending';});
+  if(!pd.length) return;
+  if(!confirm('确定全部确认 '+pd.length+' 项操作？')) return;
+  pd.forEach(function(o){executePendingOp(o);o.status='approved';o.reviewed_by=currentUser?currentUser.name:'admin';o.reviewed_at=new Date().toLocaleString('zh-CN');});
+  saveState();
+  pd.forEach(function(o){_fbSave('submit_queue/'+o.id,o);});
+  localStorage.setItem('fc26_submitQueue',JSON.stringify(state.submitQueue));
+  renderPendingOps();renderBudget();renderBteam();renderSettlement();filterPlayers();updatePendingBadge();
+}
+
+function rejectAllPending(){
+  var pd=(state.submitQueue||[]).filter(function(r){return r&&r.status==='pending';});
+  if(!pd.length) return;
+  if(!confirm('确定全部驳回 '+pd.length+' 项？')) return;
+  var n=new Date().toLocaleString('zh-CN'),rv=currentUser?currentUser.name:'admin';
+  pd.forEach(function(o){o.status='rejected';o.reject_reason='批量驳回';o.reviewed_by=rv;o.reviewed_at=n;});
+  saveState();
+  pd.forEach(function(o){_fbSave('submit_queue/'+o.id,o);});
+  localStorage.setItem('fc26_submitQueue',JSON.stringify(state.submitQueue));
+  renderPendingOps();renderBudget();updatePendingBadge();
+}
+
 
 function movePlayerInData(playerName, fromTeam, toTeam) {
   // Find player in TEAMS_DATA and move to destination team
@@ -16828,7 +16998,6 @@ function movePlayerInData(playerName, fromTeam, toTeam) {
     // Becoming free agent - store full data for filtering
     state.freeAgents.push({ ...player, team: '__free_agent__', _originalTeam: fromTeam });
   }
-  // Record move for Firebase sync
   state.playerMoves.push({ name: playerName, from: fromTeam, to: toTeam });
 }
 
@@ -16898,8 +17067,7 @@ function doPlayerUpgrade(playerIdx, team, type) {
     player_name: p.name, time: new Date().toLocaleString('zh-CN'),
     submitted_by: currentUser ? currentUser.name : 'unknown'
   };
-  state.pendingOps.push(op);
-  saveState(); renderBudget(); renderQuickAccount(); updatePendingBadge();
+  pushToSubmitQueue(op);
 }
 
 function getPrices(overall) {
