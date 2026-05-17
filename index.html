@@ -12765,6 +12765,16 @@ function _fbPullOnLogin() {
               if(_dstT) _dstT.players.push(_pl);
             }
           }
+          // 🔥 重初始化自由球员池（playerMoves已加载完毕）
+          state.freeAgents = data.filter(function(m) { return !m.to; }).map(function(m) {
+            var _src = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(m.from); });
+            if(_src) { var _p = (_src.players || []).find(function(p) { return p.name === m.name; }); if(_p) return { ..._p, team: '__free_agent__', _originalTeam: m.from }; }
+            var _found = null;
+            TEAMS_DATA.forEach(function(t) { if(!_found) { var _c = (t.players || []).find(function(p) { return p.name === m.name; }); if(_c) _found = { ..._c, team: '__free_agent__', _originalTeam: m.from }; }});
+            if(_found) return _found;
+            return { name:m.name, name_en:m.name_en||'', position:m.position||'?', overall:m.overall||0, number:m.number||'', market_value:m.market_value||0, sell_price:m.sell_price||0, market_price:m.market_price||0, is_player:!!m.is_player, is_legend:!!m.is_legend, team:'__free_agent__', _originalTeam:m.from, _stub:true };
+          });
+          console.log('[_fbPullOnLogin] freeAgents initialized:', state.freeAgents.length, 'players');
         } else if(path === 'pendingOps' && data) {
           state.pendingOps = data;
           localStorage.setItem('fc26_pendingOps', JSON.stringify(data));
@@ -15313,6 +15323,14 @@ window.fbForceSync = function() {
           }
           state.playerMoves = data;
           localStorage.setItem('fc26_playerMoves', JSON.stringify(data));
+          // 🔥 同步重初始化自由球员池
+          state.freeAgents = data.filter(function(m){return !m.to;}).map(function(m){
+            var _s=TEAMS_DATA.find(function(t){return t.team===fullTeamName(m.from);});
+            if(_s){var _p=(_s.players||[]).find(function(p){return p.name===m.name;});if(_p)return{..._p,team:'__free_agent__',_originalTeam:m.from};}
+            var _f=null;TEAMS_DATA.forEach(function(t){if(!_f){var _c=(t.players||[]).find(function(p){return p.name===m.name;});if(_c)_f=_c;}});
+            if(_f)return{..._f,team:'__free_agent__',_originalTeam:m.from};
+            return{name:m.name,name_en:m.name_en||'',position:m.position||'?',overall:m.overall||0,number:m.number||'',market_value:m.market_value||0,sell_price:m.sell_price||0,is_player:!!m.is_player,is_legend:!!m.is_legend,team:'__free_agent__',_originalTeam:m.from,_stub:true};
+          });
           filterPlayers();
         }
       }
