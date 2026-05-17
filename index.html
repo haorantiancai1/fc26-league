@@ -755,6 +755,39 @@ tbody td {
   .pprice { font-size: 8px; }
   .pitch-slot { width: 40px; height: 40px; font-size: 20px; }
 }
+/* ========== TOAST NOTIFICATION ========== */
+.toast-container {
+  position: fixed;
+  top: calc(var(--header-height) + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 90%;
+  max-width: 380px;
+}
+.toast-item {
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: toastIn 0.3s ease-out, toastOut 0.3s ease-in 2.5s forwards;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  pointer-events: auto;
+}
+.toast-success { background: rgba(0,230,118,0.15); color: #00e676; border: 1px solid rgba(0,230,118,0.3); }
+.toast-error { background: rgba(255,82,82,0.15); color: #ff5252; border: 1px solid rgba(255,82,82,0.3); }
+.toast-warn { background: rgba(255,171,0,0.15); color: #ffab00; border: 1px solid rgba(255,171,0,0.3); }
+.toast-info { background: rgba(124,77,255,0.15); color: #7c4dff; border: 1px solid rgba(124,77,255,0.3); }
+@keyframes toastIn { from { opacity: 0; transform: translateY(-16px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes toastOut { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(-8px) scale(0.95); } }
+
 </style>
 <script src="firebase-sdk/firebase-app-compat.js"></script>
 <script src="firebase-sdk/firebase-database-compat.js"></script>
@@ -12592,6 +12625,9 @@ function pushToSubmitQueue(op) {
 
   console.log('[submit_queue] 提交成功:', _id, _record.action, 'by', _record.submitted_by);
 
+  // 🔔 Toast 提示用户提交成功
+  showToast('✅ 已提交审核：' + (_record.action || '操作') + '，等待管理员处理', 'success');
+
   // 刷新 UI
   renderPendingOps();
   updatePendingBadge();
@@ -17869,6 +17905,29 @@ function adminMovePlayer(fromTeam, playerKey) {
   adminAddLog(`🔄 移动球员：${playerData.name} ${fromTeam} → ${toTeam}`);
   alert(`✅ ${playerData.name} 已从 ${fromTeam} 移动到 ${toTeam}`);
   adminSearchMovePlayer(); // refresh
+}
+</script>
+
+<!-- 🔔 Toast 通知容器 -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- 🔔 Toast 函数 -->
+<script>
+function showToast(msg, type) {
+  type = type || 'success';
+  var container = document.getElementById('toast-container');
+  if (!container) return;
+  var toast = document.createElement('div');
+  toast.className = 'toast-item toast-' + type;
+  var iconMap = { success: '✅', error: '❌', warn: '⚠️', info: 'ℹ️' };
+  toast.innerHTML = (iconMap[type] || '') + ' ' + msg;
+  container.appendChild(toast);
+  // 自动移除
+  setTimeout(function() {
+    if (toast.parentNode) toast.parentNode.removeChild(toast);
+    // 容器空时清理
+    if (container.childNodes.length === 0) container.innerHTML = '';
+  }, 3000);
 }
 </script>
 </body>
