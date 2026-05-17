@@ -12551,7 +12551,8 @@ function pushToSubmitQueue(op) {
   var _record = {
     id: _id,
     type: op.type || 'unknown',
-    fromTeam: op.team || '',
+    team: op.team || '',              // 🔥 买家/操作方球队（executePendingOp依赖此字段）
+    fromTeam: op.fromTeam || (op.player && op.player.fromTeam) || '',  // 球员原球队
     player: op.player || null,
     action: op.action || '',
     pts: op.pts || '0',
@@ -16877,8 +16878,9 @@ function renderPendingOps() {
 }
 
 function executePendingOp(op) {
-  var b = state.budgets[op.team];
-  if(!b) return;
+  var _team = op.team || op.fromTeam || '';
+  var b = state.budgets[_team];
+  if(!b) { console.warn('[executePendingOp] no budget for team:', _team, 'op:', op); return; }
   var v = parseInt(op.pts) || 0;
   b.balance += v;
   if(op.type === 'buy') { b.tradeUsed++; if(op.player && op.player.fromTeam) movePlayerInData(op.player.name, op.player.fromTeam, op.team); }
@@ -16890,12 +16892,12 @@ function executePendingOp(op) {
     if(op.swap_with) { var tb = state.budgets[op.swap_with]; if(tb) { tb.tradeUsed += (op.players_in ? op.players_in.length : 0); tb.balance += ((op.targetPts||0)-(op.myPts||0)); } }
   }
   else if(op.type === 'upgrade') {}
-  else if(op.type === 'demote') { b.bteamUsed++; if(op.player && state.bteams[op.team]) state.bteams[op.team].demoted.push(op.player); }
-  else if(op.type === 'recall') { b.bteamUsed++; if(op.player && state.bteams[op.team]) { var idx=state.bteams[op.team].demoted.findIndex(function(p){return p.name===op.player.name;}); if(idx>=0) state.bteams[op.team].demoted.splice(idx,1); } }
+  else if(op.type === 'demote') { b.bteamUsed++; if(op.player && state.bteams[_team]) state.bteams[_team].demoted.push(op.player); }
+  else if(op.type === 'recall') { b.bteamUsed++; if(op.player && state.bteams[_team]) { var idx=state.bteams[_team].demoted.findIndex(function(p){return p.name===op.player.name;}); if(idx>=0) state.bteams[_team].demoted.splice(idx,1); } }
   var logAction = op.action || '';
   if(op.player_name && logAction.indexOf(op.player_name)<0) logAction += ' — ' + op.player_name;
   if(!b.log) b.log = [];
-  b.log.unshift({ action: logAction, pts: op.pts, time: new Date().toLocaleString('zh-CN')+' ✓', team: op.team, player_name: op.player_name||'', dest: op.dest||op.toTeam||op.fromTeam||'' });
+  b.log.unshift({ action: logAction, pts: op.pts, time: new Date().toLocaleString('zh-CN')+' ✓', team: _team, player_name: op.player_name||'', dest: op.dest||op.toTeam||op.fromTeam||'' });
 }
 
 // 🔥 审批函数改造：全部基于 ID 操作
