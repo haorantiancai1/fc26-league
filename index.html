@@ -15184,6 +15184,18 @@ function initFirebaseSync() {
         renderBudget();
       }
     });
+    // 🔥 Poll budgets - sync budget logs from Firebase (fixes settlement page not updating after approvals)
+    _fbRef(dbRef, 'budgets').once('value', function(snap) {
+      var data = snap.val();
+      if(data && JSON.stringify(data) !== JSON.stringify(state.budgets)) {
+        console.log('FB poll: budgets changed from Firebase, syncing');
+        state.budgets = data;
+        localStorage.setItem('fc26_budgets', JSON.stringify(data));
+        renderBudget();
+        renderSettlement();
+        renderQuickAccount();
+      }
+    });
   }, 30000);
 
   // ===== VISIBILITY RECONNECT (微信小程序 WebView 从后台切回时自动重连) =====
