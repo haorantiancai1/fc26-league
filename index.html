@@ -3300,6 +3300,15 @@ try {
         "market_value": 10,
         "sell_price": 3,
         "is_player": true
+      },
+      {
+        "name": "卡比亚",
+        "name_en": "I Kabia",
+        "position": "RW",
+        "overall": 65,
+        "sell_price": 1,
+        "market_value": 3,
+        "market_price": 2
       }
     ],
     "team": "阿森纳",
@@ -14857,18 +14866,34 @@ function initFirebaseSync() {
   // Listen for budgets changes
   _fbListen('budgets', function(data) {
     if(data && JSON.stringify(data) !== JSON.stringify(state.budgets)) {
-      // Ensure every team budget has all required fields (Firebase may lack some)
-      var requiredKeys = ['balance','initialPoints','pendingOps','tradeUsed','bteamUsed','log'];
-      for(var team in data) {
-        if(data[team]) {
-          for(var i = 0; i < requiredKeys.length; i++) {
-            if(data[team][requiredKeys[i]] === undefined) {
-              data[team][requiredKeys[i]] = requiredKeys[i] === 'log' ? [] : (requiredKeys[i] === 'pendingOps' ? [] : 0);
+      // 🔥 防止用Firebase旧数据覆盖本地新写入的log（_fbSave是异步的！）
+      var _recentWrite = window._budgetsWriteTime && (Date.now() - window._budgetsWriteTime < 5000);
+      if(_recentWrite) {
+        console.log('FB listen: budgets changed but skipping overwrite (local write ' + (Date.now() - window._budgetsWriteTime) + 'ms ago) — merging logs instead');
+        // 仅合并Firebase多出的log条目到本地
+        PLAYER_TEAMS.forEach(function(t) {
+          var _fbLogs = (data[t] && data[t].log) || [];
+          var _localLogs = (state.budgets[t] && state.budgets[t].log) || [];
+          _fbLogs.forEach(function(flog) {
+            var _key = (flog.action||'') + '|' + (flog.time||'');
+            var _exists = _localLogs.some(function(l) { return (l.action||'') + '|' + (l.time||'') === _key; });
+            if(!_exists && state.budgets[t]) state.budgets[t].log.push(flog);
+          });
+        });
+      } else {
+        // Ensure every team budget has all required fields (Firebase may lack some)
+        var requiredKeys = ['balance','initialPoints','pendingOps','tradeUsed','bteamUsed','log'];
+        for(var team in data) {
+          if(data[team]) {
+            for(var i = 0; i < requiredKeys.length; i++) {
+              if(data[team][requiredKeys[i]] === undefined) {
+                data[team][requiredKeys[i]] = requiredKeys[i] === 'log' ? [] : (requiredKeys[i] === 'pendingOps' ? [] : 0);
+              }
             }
           }
         }
+        state.budgets = data;
       }
-      state.budgets = data;
       // Ensure all PLAYER_TEAMS have budget entries (new teams may not exist in Firebase yet)
       PLAYER_TEAMS.forEach(function(t) {
         if(!data[t]) {
@@ -15185,12 +15210,32 @@ function initFirebaseSync() {
       }
     });
     // 🔥 Poll budgets - sync budget logs from Firebase (fixes settlement page not updating after approvals)
+    // ⚠️ 防止用Firebase旧数据覆盖本地新写入的log（_fbSave是异步的！）
     _fbRef(dbRef, 'budgets').once('value', function(snap) {
       var data = snap.val();
       if(data && JSON.stringify(data) !== JSON.stringify(state.budgets)) {
-        console.log('FB poll: budgets changed from Firebase, syncing');
-        state.budgets = data;
-        localStorage.setItem('fc26_budgets', JSON.stringify(data));
+        var _now = Date.now();
+        var _recentLocalWrite = window._budgetsWriteTime && (_now - window._budgetsWriteTime < 5000);
+        if(_recentLocalWrite) {
+          console.log('FB poll: budgets changed but skipping overwrite (local write ' + (_now - window._budgetsWriteTime) + 'ms ago) — merging logs instead');
+          // 仅合并：把Firebase中多出的log条目补到本地（其他客户端新增的）
+          PLAYER_TEAMS.forEach(function(t) {
+            var _fbLogs = (data[t] && data[t].log) || [];
+            var _localLogs = (state.budgets[t] && state.budgets[t].log) || [];
+            // 找出Firebase有但本地没有的log条目（按action+time匹配）
+            _fbLogs.forEach(function(flog) {
+              var _key = (flog.action||'') + '|' + (flog.time||'');
+              var _exists = _localLogs.some(function(l) { return (l.action||'') + '|' + (l.time||'') === _key; });
+              if(!_exists && !state.budgets[t]) state.budgets[t] = { balance:0, initialPoints:0, tradeUsed:0, bteamUsed:0, log:[] };
+              if(_exists || !state.budgets[t]) return;
+              state.budgets[t].log.push(flog);
+            });
+          });
+        } else {
+          console.log('FB poll: budgets changed from Firebase, syncing');
+          state.budgets = data;
+        }
+        localStorage.setItem('fc26_budgets', JSON.stringify(state.budgets));
         renderBudget();
         renderSettlement();
         renderQuickAccount();
@@ -16974,6 +17019,7 @@ function approveById(id,type){
   _fbSave('submit_queue/'+id,op);
   localStorage.setItem('fc26_submitQueue',JSON.stringify(state.submitQueue));
   saveState();
+  window._budgetsWriteTime = Date.now(); // 🔥 标记本地刚写入，防止30秒轮询覆盖
   sfxSuccess();
   renderPendingOps();renderBudget();renderBteam();renderSettlement();filterPlayers();updatePendingBadge();
 }
@@ -17015,6 +17061,7 @@ function revokeApproval(id){
   _fbSave('submit_queue/'+id,op);
   localStorage.setItem('fc26_submitQueue',JSON.stringify(state.submitQueue));
   saveState();
+  window._budgetsWriteTime = Date.now(); // 🔥 标记本地刚写入，防止30秒轮询覆盖
   sfxError();renderPendingOps();renderBudget();renderBteam();renderSettlement();filterPlayers();updatePendingBadge();
   showSubmitNotification('↩ 已撤销: '+op.action+'（状态恢复待审核）','info');
 }
@@ -17025,6 +17072,7 @@ function approveAllPending(){
   if(!confirm('确定全部确认 '+pd.length+' 项操作？')) return;
   pd.forEach(function(o){executePendingOp(o);o.status='approved';o.reviewed_by=currentUser?currentUser.name:'admin';o.reviewed_at=new Date().toLocaleString('zh-CN');});
   saveState();
+  window._budgetsWriteTime = Date.now(); // 🔥 标记本地刚写入，防止30秒轮询覆盖
   pd.forEach(function(o){_fbSave('submit_queue/'+o.id,o);});
   localStorage.setItem('fc26_submitQueue',JSON.stringify(state.submitQueue));
   renderPendingOps();renderBudget();renderBteam();renderSettlement();filterPlayers();updatePendingBadge();
@@ -17044,18 +17092,29 @@ function rejectAllPending(){
 
 
 function movePlayerInData(playerName, fromTeam, toTeam) {
-  // Find player in TEAMS_DATA and move to destination team
-  const srcTeam = TEAMS_DATA.find(t => t.team === fullTeamName(fromTeam));
-  if(!srcTeam) return;
-  const pIdx = srcTeam.players.findIndex(p => p.name === playerName);
-  if(pIdx < 0) return;
-  const player = srcTeam.players.splice(pIdx, 1)[0];
+  var player;
+  // 🔥 Handle free agent source (fromTeam = '__free_agent__' or not in TEAMS_DATA)
+  var _srcTeamObj = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(fromTeam); });
+  if(fromTeam === '__free_agent__' || fromTeam === '自由球员' || !_srcTeamObj) {
+    // Find player in freeAgents pool
+    var _faPool = state.freeAgents || [];
+    var faIdx = _faPool.findIndex(function(p) { return p.name === playerName; });
+    if(faIdx < 0) { console.warn('[movePlayerInData] Player not found in freeAgents:', playerName, 'fromTeam=', fromTeam); return; }
+    player = _faPool.splice(faIdx, 1)[0];
+    console.log('[movePlayerInData] Removed', playerName, 'from freeAgents pool, moving to', toTeam || '(free agent)');
+  } else {
+    // Normal team-to-team transfer
+    var pIdx = _srcTeamObj.players.findIndex(function(p) { return p.name === playerName; });
+    if(pIdx < 0) { console.warn('[movePlayerInData] Player not found in source team:', playerName, 'fromTeam=', fromTeam); return; }
+    player = _srcTeamObj.players.splice(pIdx, 1)[0];
+  }
   if(toTeam) {
-    const destTeam = TEAMS_DATA.find(t => t.team === fullTeamName(toTeam));
+    const destTeam = TEAMS_DATA.find(function(t) { return t.team === fullTeamName(toTeam); });
     if(destTeam) destTeam.players.push(player);
+    else console.warn('[movePlayerInData] Dest team not in TEAMS_DATA:', toTeam);
   } else {
     // Becoming free agent - store full data for filtering
-    state.freeAgents.push({ ...player, team: '__free_agent__', _originalTeam: fromTeam });
+    state.freeAgents.push({ name:player.name, name_en:player.name_en||'', position:player.position||'', overall:player.overall||0, number:player.number||'', market_value:player.market_value||0, sell_price:player.sell_price||0, market_price:player.market_price||0, is_player:!!player.is_player, is_legend:!!player.is_legend, team:'__free_agent__', _originalTeam:fromTeam });
   }
   state.playerMoves.push({ name: playerName, name_en: player.name_en||'', position: player.position||'', overall: player.overall||0, number: player.number||'', market_value: player.market_value||0, sell_price: player.sell_price||0, market_price: player.market_price||0, is_player: !!player.is_player, is_legend: !!player.is_legend, from: fromTeam, to: toTeam });
 }
