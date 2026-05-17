@@ -12816,9 +12816,16 @@ function _fbPullOnLogin() {
           state.pendingOps = data;
           localStorage.setItem('fc26_pendingOps', JSON.stringify(data));
         } else if(path === 'budgets' && data) {
+          // Firebase may omit empty arrays (log, pendingOps), ensure all required fields exist
+          PLAYER_TEAMS.forEach(function(t) {
+            if(!data[t]) { data[t] = { balance:0, initialPoints:0, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] }; }
+            else {
+              if(!Array.isArray(data[t].log)) data[t].log = [];
+              if(!Array.isArray(data[t].pendingOps)) data[t].pendingOps = [];
+            }
+          });
           state.budgets = data;
-          PLAYER_TEAMS.forEach(function(t) { if(!data[t]) { data[t] = { balance:0, initialPoints:0, pendingOps:[], tradeUsed:0, bteamUsed:0, log:[] }; } });
-          localStorage.setItem('fc26_budgets', JSON.stringify(data));
+          localStorage.setItem('fc26_budgets', JSON.stringify(state.budgets));
         } else if(path === 'bteams' && data) {
           state.bteams = data;
           PLAYER_TEAMS.forEach(function(t) { if(!data[t]) { data[t] = { name:'', demoted:[] }; } });
