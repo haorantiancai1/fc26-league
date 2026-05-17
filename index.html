@@ -17875,6 +17875,7 @@ function adminAdjustBudget() {
 
   state.budgets[team].balance = newPts;
   state.budgets[team].log.unshift({ action: '🔧 ' + actionText + ' ' + pts + '点（管理员操作）', pts: (action==='add'?'+':'') + pts, time: new Date().toLocaleString('zh-CN') });
+  window._budgetsWriteTime = Date.now();
   saveState();
 
   adminAddLog('💰 调整点数：' + team + ' ' + oldPts + '点 → ' + newPts + '点（' + actionText + pts + '）');
